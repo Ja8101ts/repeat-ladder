@@ -244,9 +244,12 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .banner { border-radius: 12px; padding: 10px 14px; font-weight: 700; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .banner.up { background: var(--ok-soft); color: var(--ok); }
 .banner.tip { background: var(--rec-soft); color: var(--ink); font-weight: 600; }
+.banner.down { background: var(--rec-soft); color: var(--ink); }
 .save-line { font-size: .8rem; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .id-line { font-family: var(--font-code); font-size: .76rem; color: var(--muted); overflow-wrap: anywhere; }
 .save-line.err { color: var(--miss); }
+.selfok { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
+.selfok .hint { font-size: .8rem; color: var(--muted); flex: 1 1 220px; min-width: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .pop { animation: pop .45s cubic-bezier(.2, .9, .3, 1.3); }
   @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -262,6 +265,8 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .dots { display: inline-flex; gap: 4px; vertical-align: middle; margin-left: 4px; }
 .dots i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ok); }
 .dots i.on { background: var(--ok); }
+.dots.miss i { border-color: var(--rec); }
+.dots.miss i.on { background: var(--rec); }
 details.recent { padding: 0 4px; }
 details.recent summary { cursor: pointer; color: var(--muted); font-size: .86rem; }
 .recent ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
@@ -383,7 +388,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     <ol id="recentList"></ol>
   </details>
 
-  <footer>Repeat Ladder v2.2 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
+  <footer>Repeat Ladder v2.4 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
 </div>
 
 <dialog id="settings" aria-labelledby="settingsTitle">
@@ -409,7 +414,18 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
             <select id="optUpAfter"><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select>
             で1語増やす</label>
         </div>
+        <div class="row">
+          <label class="switch" style="flex:1 1 260px"><span>自動レベルダウン<br><span class="hint">パーフェクトでなかった答えを「間違い」として数えます。声が聞き取れなかった回は数えません。</span></span><input type="checkbox" id="optAutoDown"></label>
+          <label class="hint" for="optDownAfter">連続で間違えたら
+            <select id="optDownAfter"><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select>
+            で1語減らす</label>
+        </div>
         <label class="switch"><span>きびしく判定する<br><span class="hint">オフ：音声認識の候補の中から一番近いものを使います。オン：第1候補だけで判定します。</span></span><input type="checkbox" id="optStrict"></label>
+        <label class="switch"><span>お手本の単語を優先して聞き取る<br><span class="hint">パソコンのGoogle Chromeで、端末の中で動く音声認識が使えるときだけ働きます。<br>いまの状態：<span id="hintState">確認中…</span></span></span><input type="checkbox" id="optHints"></label>
+        <div class="row" id="hintInstallRow" hidden>
+          <button class="btn small" id="hintInstall" type="button">英語の音声データをダウンロード</button>
+          <span class="hint">最初の1回だけ。1言語あたり約60MBです。</span>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -554,15 +570,16 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     next: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>',
     wait: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     up: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>',
+    down: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>',
     check: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>'
   };
 
   // ---------- settings ----------
   var APP_VERSION = 2;
   var DEFAULTS = {
-    level: 5, mode: 'test', preview: false, hint: true, showJa: true, autoUp: true, upAfter: 3, strict: false,
+    level: 5, mode: 'test', preview: false, hint: true, showJa: true, autoUp: true, upAfter: 3, autoDown: true, downAfter: 3, strict: false,
     rate: 1.0, voiceUS: '', voiceGB: '', accent: 'both', answerTime: 'auto', autoMic: true, sheetUrl: '',
-    saveToSheet: true, mistakesAll: false
+    saveToSheet: true, mistakesAll: false, hints: true
   };
   var settings = Object.assign({}, DEFAULTS, store.get('settings', {}));
   if (settings.voice && !settings.voiceUS) settings.voiceUS = settings.voice;   // setting name from v1
@@ -575,6 +592,73 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   var TTS = ('speechSynthesis' in window) ? window.speechSynthesis : null;
   var UA = navigator.userAgent || '';
   var IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(UA) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(UA));
+
+  // ---------- word hints (contextual biasing) ----------
+  // Newer desktop Chrome can run speech recognition on the device and accept a list of expected phrases.
+  // When that is available, the target sentence is passed as hints so rare words (toured, carrels) are heard as such.
+  var HINT_LANGS = ['en-US', 'en-GB'];
+  var hintStatus = {};      // lang -> available | downloadable | downloading | unavailable | unsupported
+  var hintBroken = false;   // set when the browser refused the hints; normal recognition is used from then on
+  var HINT_STOP = { a: 1, an: 1, the: 1, to: 1, of: 1, in: 1, on: 1, at: 1, is: 1, are: 1, was: 1, and: 1, or: 1, for: 1,
+    it: 1, i: 1, you: 1, we: 1, my: 1, our: 1, your: 1, be: 1, by: 1, with: 1, this: 1, that: 1 };
+  function hintsPossible() {
+    return !!(SR && typeof SR.available === 'function' && typeof window.SpeechRecognitionPhrase === 'function');
+  }
+  function checkHints() {
+    if (!hintsPossible()) {
+      HINT_LANGS.forEach(function (l) { hintStatus[l] = 'unsupported'; });
+      renderHintState();
+      return Promise.resolve();
+    }
+    return Promise.all(HINT_LANGS.map(function (l) {
+      return Promise.resolve()
+        .then(function () { return SR.available({ langs: [l], processLocally: true }); })
+        .then(function (s) { hintStatus[l] = String(s || 'unavailable'); }, function () { hintStatus[l] = 'unsupported'; });
+    })).then(renderHintState);
+  }
+  function hintsFor(lang) {
+    return !!settings.hints && !hintBroken && hintStatus[lang] === 'available';
+  }
+  function makePhrases(sentence) {
+    var clean = String(sentence).replace(/[^A-Za-zÀ-ɏ' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    var list = [new window.SpeechRecognitionPhrase(clean.toLowerCase(), 4.0)];
+    var seen = {};
+    clean.split(' ').forEach(function (w) {
+      var k = w.toLowerCase();
+      if (k.length < 3 || HINT_STOP[k] || seen[k]) return;
+      seen[k] = true;
+      list.push(new window.SpeechRecognitionPhrase(k, 3.0));
+    });
+    return list;
+  }
+  function installHints() {
+    var langs = HINT_LANGS.filter(function (l) { return hintStatus[l] === 'downloadable'; });
+    if (!langs.length || !SR || typeof SR.install !== 'function') return;
+    langs.forEach(function (l) { hintStatus[l] = 'downloading'; });
+    renderHintState();
+    Promise.resolve()
+      .then(function () { return SR.install({ langs: langs, processLocally: true }); })
+      .then(function () { hintBroken = false; return checkHints(); }, function () { return checkHints(); });
+  }
+  function renderHintState() {
+    var el = document.getElementById('hintState');
+    var row = document.getElementById('hintInstallRow');
+    if (!el || !row) return;
+    var us = hintStatus['en-US'], gb = hintStatus['en-GB'];
+    var all = [us, gb];
+    var text;
+    if (!us && !gb) text = '確認中…';
+    else if (hintBroken) text = 'うまく動かなかったので、ふつうの音声認識に戻しました（ページを読み込み直すと、もう一度ためします）';
+    else if (all.indexOf('unsupported') >= 0) text = 'このブラウザでは使えません（パソコンの新しいGoogle Chromeで使えます）';
+    else if (us === 'available' && gb === 'available') text = settings.hints ? '使っています（アメリカ英語・イギリス英語）' : '使えます（オンにすると使います）';
+    else if (all.indexOf('downloading') >= 0) text = '音声データをダウンロード中…';
+    else if (all.indexOf('downloadable') >= 0) text = '使うには、英語の音声データのダウンロードが必要です' + (us === 'available' ? '（アメリカ英語は使えます）' : '');
+    else if (us === 'available') text = 'アメリカ英語の文だけ使えます';
+    else if (gb === 'available') text = 'イギリス英語の文だけ使えます';
+    else text = 'この端末では使えません';
+    el.textContent = text;
+    row.hidden = hintBroken || all.indexOf('downloadable') < 0;
+  }
 
   // =====================================================================
   //  Scoring: compare the sentence with what the recognizer heard
@@ -908,6 +992,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   }
 
   function runTrial() {
+    if (pending.some(function (r) { return r.hold; })) releaseHeld();
     var id = ++trialId;
     if (listen) { listen.abort(); listen = null; }
     lastResult = null;
@@ -942,6 +1027,11 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     r.interimResults = true;
     r.maxAlternatives = settings.strict ? 1 : 3;
     r.continuous = !IS_MOBILE;
+    var hinted = hintsFor(r.lang);
+    if (hinted) {
+      try { r.processLocally = true; r.phrases = makePhrases(current.en); }
+      catch (e) { hinted = false; try { r.processLocally = false; r.phrases = []; } catch (e2) { /* ignore */ } }
+    }
 
     function begin() {
       if (startedAt || finished) return;
@@ -971,6 +1061,13 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       cleanup();
       if (id !== trialId) return;
       D.timer.hidden = true;
+      if (hinted && !hasSpeech && /^(phrases-not-supported|language-not-supported|service-not-allowed)$/.test(lastError)) {
+        // The on-device recognizer or the hints were refused: switch back to normal recognition and listen again.
+        hintBroken = true;
+        renderHintState();
+        startListening(id);
+        return;
+      }
       if (lastError === 'not-allowed' || lastError === 'service-not-allowed') {
         if (micReady && settings.autoMic && SR) {
           settings.autoMic = false; saveSettings(); syncSettingsForm();
@@ -988,7 +1085,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       var heard = settings.strict
         ? segments.map(function (s) { return s.alts[0] || ''; }).join(' ').replace(/\s+/g, ' ').trim()
         : pickTranscript(segments, current.en);
-      evaluate(heard);
+      evaluate(heard, hinted);
     }
     r.onstart = begin;
     r.onaudiostart = begin;
@@ -1023,11 +1120,12 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     if (state !== 'listening') setState('gap');
   }
 
-  function evaluate(heard) {
+  function evaluate(heard, hinted) {
     var g = grade(current.en, heard);
     lastResult = { words: g.words, heardWords: g.heardWords, correct: g.correct, total: g.total, perfect: g.perfect,
       missed: g.missed, heard: heard, en: current.en, ja: current.ja, level: current.level, id: current.id, accent: current.accent,
-      levelUp: null, suggestDown: null };
+      levelUp: null, levelDown: null, suggestDown: null, selfOk: false, selfOkLate: false, recId: null,
+      before: { streak: streak, missStreak: missStreak, level: settings.level } };
 
     if (today.date !== todayKey()) today = { date: todayKey(), count: 0, perfect: 0, recent: [] };
     today.count++;
@@ -1035,23 +1133,68 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     today.recent.unshift({ en: current.en, level: current.level, correct: g.correct, total: g.total, perfect: g.perfect, missed: g.missed });
     today.recent = today.recent.slice(0, 30);
 
-    if (g.perfect) { streak++; missStreak = 0; }
+    applyProgress(lastResult, g.perfect, !!heard, g.correct * 2 < g.total);
+    saveProgress();
+    lastResult.recId = queueRecord(g, heard, hinted);
+    setState('result');
+  }
+
+  // Level up after N perfects in a row; level down after N misses in a row (an answer nothing was heard for is not counted).
+  function applyProgress(res, ok, heardSomething, underHalf) {
+    if (ok) { streak++; missStreak = 0; }
     else {
       streak = 0;
-      if (g.correct * 2 < g.total) missStreak++; else missStreak = 0;
+      if (settings.autoDown) { if (heardSomething) missStreak++; }
+      else if (underHalf) missStreak++;
+      else missStreak = 0;
     }
-    if (settings.autoUp && g.perfect && streak >= Number(settings.upAfter)) {
-      var up = neighborLevel(current.level, +1);
-      if (up) { lastResult.levelUp = up; setLevel(up, true); }
+    if (settings.autoUp && ok && streak >= Number(settings.upAfter)) {
+      var up = neighborLevel(res.level, +1);
+      if (up) { res.levelUp = up; setLevel(up, true); }
       streak = 0;
-    } else if (missStreak >= 3) {
-      var down = neighborLevel(current.level, -1);
-      if (down) lastResult.suggestDown = down;
+    } else if (settings.autoDown && !ok && missStreak >= Number(settings.downAfter)) {
+      var down = neighborLevel(res.level, -1);
+      if (down) { res.levelDown = down; setLevel(down, true); }
+      missStreak = 0;
+    } else if (!settings.autoDown && missStreak >= 3) {
+      var lower = neighborLevel(res.level, -1);
+      if (lower) res.suggestDown = lower;
       missStreak = 0;
     }
+  }
+
+  // "I said it correctly": the recognizer misheard. Count the answer as correct and mark the sheet row.
+  function markRecognitionError() {
+    var r = lastResult;
+    if (!r || r.perfect || r.selfOk || !r.heard || (state !== 'result' && state !== 'replaying')) return;
+    r.selfOk = true;
+    today.perfect++;
+    cleared[r.level] = true;
+    if (today.recent[0] && today.recent[0].en === r.en) today.recent[0].selfOk = true;
+    // undo what this miss changed, then count it as a correct answer
+    if (r.levelDown) {
+      settings.level = r.before.level;
+      saveSettings();
+      if (current && current.en === r.en) current.stale = false;
+      r.levelDown = null;
+    }
+    r.suggestDown = null;
+    streak = r.before.streak;
+    missStreak = r.before.missStreak;
+    applyProgress(r, true, true, false);
     saveProgress();
-    queueRecord(g, heard);
-    setState('result');
+    var rec = r.recId ? pending.filter(function (x) { return x.id === r.recId; })[0] : null;
+    if (rec) {
+      rec.heard = '【認識ミス】' + rec.heard;
+      rec.mode = rec.mode + '・認識ミス';
+      store.set('pending', pending);
+      releaseHeld();
+    } else if (r.recId) {
+      r.selfOkLate = true;
+    }
+    renderLadder();
+    if (state === 'result') setState('result');
+    else { D.result.hidden = true; renderResult(); }
   }
 
   function neighborLevel(level, dir) {
@@ -1192,28 +1335,51 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   }
 
   var flushing = false;
-  function queueRecord(g, heard) {
-    if (!settings.sheetUrl || !settings.saveToSheet) { saveStatus = ''; return; }
-    pending.push({
+  var HOLD_MS = 60000;
+  var releaseTimer = null;
+  // A missed answer is kept for a moment before it is sent, so "正しく言えた（認識ミス）" can still mark it.
+  // It goes out when the next sentence starts, when the page is hidden, or after HOLD_MS.
+  function queueRecord(g, heard, hinted) {
+    if (!settings.sheetUrl || !settings.saveToSheet) { saveStatus = ''; return null; }
+    var rec = {
       id: uid(), sentenceId: current.id || '', accent: current.accent || '', time: new Date().toISOString(),
       level: current.level, target: current.en, heard: heard,
       correct: g.correct, total: g.total, perfect: g.perfect, missed: g.missed,
-      mode: settings.mode === 'test' ? '本番' : '練習'
-    });
+      mode: (settings.mode === 'test' ? '本番' : '練習') + (hinted ? '・単語ヒント' : '')
+    };
+    var hold = !g.perfect && !!heard;
+    if (hold) rec.hold = true;
+    pending.push(rec);
     pending = pending.slice(-500);
     store.set('pending', pending);
+    if (hold) {
+      saveStatus = 'held';
+      clearTimeout(releaseTimer);
+      releaseTimer = setTimeout(releaseHeld, HOLD_MS);
+    }
     flushPending();
+    return rec.id;
   }
-  function flushPending() {
-    if (flushing || !pending.length || !settings.sheetUrl || !settings.saveToSheet) { renderPending(); return; }
+  function releaseHeld(keepalive) {
+    clearTimeout(releaseTimer);
+    releaseTimer = null;
+    var any = false;
+    pending.forEach(function (r) { if (r.hold) { delete r.hold; any = true; } });
+    if (any) store.set('pending', pending);
+    flushPending(keepalive);
+  }
+  function flushPending(keepalive) {
+    var ready = pending.filter(function (r) { return !r.hold; });
+    if (flushing || !ready.length || !settings.sheetUrl || !settings.saveToSheet) { renderSaveLine(); renderPending(); return; }
     flushing = true;
     saveStatus = 'saving'; renderSaveLine(); renderPending();
-    var batch = pending.slice(0, 25);
+    var batch = ready.slice(0, 25);
     fetch(settings.sheetUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ version: APP_VERSION, mistakesIncludePerfect: !!settings.mistakesAll, records: batch }),
-      redirect: 'follow'
+      redirect: 'follow',
+      keepalive: keepalive === true
     }).then(function (res) { return res.text(); }).then(function (text) {
       var data = JSON.parse(text);
       if (!data || data.ok !== true) throw new Error((data && data.error) || 'server');
@@ -1224,9 +1390,9 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       pending = pending.filter(function (r) { return !done[r.id]; });
       store.set('pending', pending);
       flushing = false;
-      saveStatus = 'saved';
+      saveStatus = pending.some(function (r) { return r.hold; }) ? 'held' : 'saved';
       renderSaveLine(); renderPending();
-      if (pending.length) flushPending();
+      if (pending.some(function (r) { return !r.hold; })) flushPending();
     }).catch(function () {
       flushing = false;
       saveStatus = 'failed';
@@ -1370,6 +1536,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
         break;
       case 'result':
         if (lastResult && lastResult.perfect) { lampState = 'ok'; tag = 'PERFECT'; status = 'パーフェクト！'; }
+        else if (lastResult && lastResult.selfOk) { lampState = 'ok'; tag = 'OK'; status = '認識ミスとして正解にしました'; }
         else { lampState = 'miss'; tag = 'CHECK'; status = 'あと少し。色のついた語を確認しよう'; }
         p.innerHTML = primaryContent('next', '次の文へ', 'Space');
         D.replayBtn.hidden = false;
@@ -1461,6 +1628,10 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       var b = mk('span', 'badge ok pop');
       b.innerHTML = ICONS.check + 'パーフェクト';
       score.appendChild(b);
+    } else if (r.selfOk) {
+      var so = mk('span', 'badge ok pop');
+      so.innerHTML = ICONS.check + '正解（認識ミス）';
+      score.appendChild(so);
     } else if (!r.heard) {
       score.appendChild(mk('span', 'badge miss', '声が聞き取れませんでした'));
     } else {
@@ -1468,10 +1639,29 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     }
     box.appendChild(score);
 
+    if (!r.perfect && r.heard && !r.selfOk) {
+      var fix = mk('div', 'selfok');
+      var fb = mk('button', 'btn small', '正しく言えた（認識ミス）');
+      fb.type = 'button';
+      fb.id = 'selfOkBtn';
+      fb.addEventListener('click', markRecognitionError);
+      fix.appendChild(fb);
+      fix.appendChild(mk('span', 'hint', '音声認識の聞き間違いだと思ったら押してください。正解として数え、シートには【認識ミス】と書きます。'));
+      box.appendChild(fix);
+    }
+    if (r.selfOk) {
+      box.appendChild(mk('div', 'banner up', '音声認識の聞き間違いとして、正解に数えました。'));
+    }
+
     if (r.levelUp) {
       var up = mk('div', 'banner up pop');
       up.innerHTML = ICONS.up + '<span>レベルアップ！ 次は ' + r.levelUp + '語の文です</span>';
       box.appendChild(up);
+    }
+    if (r.levelDown) {
+      var dn = mk('div', 'banner down pop');
+      dn.innerHTML = ICONS.down + '<span>' + Number(settings.downAfter) + '回続けて間違えたので、' + r.levelDown + '語に下げました。慣れたら、また上がれます。</span>';
+      box.appendChild(dn);
     }
     if (r.suggestDown) {
       var tip = mk('div', 'banner tip');
@@ -1523,11 +1713,14 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     if (!sl) return;
     sl.className = 'save-line';
     if (!settings.sheetUrl || !settings.saveToSheet) { sl.textContent = ''; return; }
-    if (saveStatus === 'saving') sl.textContent = 'スプレッドシートに記録しています…';
+    var late = lastResult && lastResult.selfOkLate ? '（この結果は「認識ミス」を押す前に送られたため、シートの行はそのままです）' : '';
+    if (saveStatus === 'held') sl.textContent = 'この結果は、次の文に進むときにスプレッドシートへ記録します';
+    else if (saveStatus === 'saving') sl.textContent = 'スプレッドシートに記録しています…';
     else if (saveStatus === 'saved') {
       if (pending.length) sl.textContent = '記録を送信中（残り ' + pending.length + '件）';
       else if (serverVersion && serverVersion < APP_VERSION) { sl.className = 'save-line err'; sl.textContent = '「記録」に書き込みました。「間違いログ」は、スプレッドシート側のコードを新しくすると使えます。'; }
-      else if (lastResult && (!lastResult.perfect || settings.mistakesAll)) sl.textContent = '「記録」と「間違いログ」に書き込みました';
+      else if (lastResult && lastResult.selfOk && !late) sl.textContent = '【認識ミス】として「記録」と「間違いログ」に書き込みました';
+      else if (lastResult && (!lastResult.perfect || settings.mistakesAll)) sl.textContent = '「記録」と「間違いログ」に書き込みました' + late;
       else sl.textContent = '「記録」に書き込みました';
     }
     else if (saveStatus === 'failed') { sl.className = 'save-line err'; sl.textContent = '記録を送れませんでした（未送信 ' + pending.length + '件）。次の記録のときに自動で送り直します。'; }
@@ -1556,6 +1749,16 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       c.appendChild(dots);
       t.appendChild(c);
     }
+    if (settings.autoDown && missStreak > 0 && neighborLevel(settings.level, -1)) {
+      var needD = Number(settings.downAfter);
+      var d = mk('span');
+      d.appendChild(document.createTextNode('1段下がるまで'));
+      var dd = mk('span', 'dots miss');
+      dd.setAttribute('aria-label', '続けて間違えた回数 ' + Math.min(missStreak, needD) + '／' + needD);
+      for (var j = 0; j < needD; j++) dd.appendChild(mk('i', j < missStreak ? 'on' : null));
+      d.appendChild(dd);
+      t.appendChild(d);
+    }
     renderRecent();
   }
 
@@ -1565,7 +1768,9 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     D.recentList.innerHTML = '';
     today.recent.slice(0, 15).forEach(function (r) {
       var li = mk('li');
-      li.appendChild(mk('span', 'sc' + (r.perfect ? ' ok' : ''), r.correct + '/' + r.total));
+      var sc = mk('span', 'sc' + (r.perfect || r.selfOk ? ' ok' : ''), r.correct + '/' + r.total + (r.selfOk ? '✓' : ''));
+      if (r.selfOk) sc.title = '認識ミスとして正解';
+      li.appendChild(sc);
       var tx = mk('span', 'tx');
       tx.appendChild(document.createTextNode(r.en));
       if (r.missed && r.missed.length) {
@@ -1656,6 +1861,8 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     $('#optJa').checked = !!settings.showJa;
     $('#optAutoUp').checked = !!settings.autoUp;
     $('#optUpAfter').value = String(settings.upAfter);
+    $('#optAutoDown').checked = !!settings.autoDown;
+    $('#optDownAfter').value = String(settings.downAfter);
     $('#optStrict').checked = !!settings.strict;
     $('#optRate').value = String(settings.rate);
     $('#rateOut').textContent = Number(settings.rate).toFixed(2) + '×';
@@ -1663,6 +1870,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     $('#optAutoMic').checked = !!settings.autoMic;
     $('#optSave').checked = !!settings.saveToSheet;
     $('#optMistakesAll').checked = !!settings.mistakesAll;
+    $('#optHints').checked = !!settings.hints;
     if (document.activeElement !== $('#sheetUrl')) $('#sheetUrl').value = settings.sheetUrl || '';
   }
   function bindSettings() {
@@ -1674,6 +1882,8 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     onChange('#optJa', function (t) { settings.showJa = t.checked; });
     onChange('#optAutoUp', function (t) { settings.autoUp = t.checked; });
     onChange('#optUpAfter', function (t) { settings.upAfter = Number(t.value); });
+    onChange('#optAutoDown', function (t) { settings.autoDown = t.checked; missStreak = 0; });
+    onChange('#optDownAfter', function (t) { settings.downAfter = Number(t.value); });
     onChange('#optStrict', function (t) { settings.strict = t.checked; });
     onChange('#optTime', function (t) { settings.answerTime = t.value; });
     onChange('#optAutoMic', function (t) { settings.autoMic = t.checked; });
@@ -1697,7 +1907,9 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     $('#connectBtn').addEventListener('click', function () { connectSheet($('#sheetUrl').value, false); });
     $('#sheetUrl').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); connectSheet(e.target.value, false); } });
     $('#disconnectBtn').addEventListener('click', disconnectSheet);
-    $('#flushBtn').addEventListener('click', flushPending);
+    $('#flushBtn').addEventListener('click', function () { releaseHeld(); });
+    onChange('#optHints', function (t) { settings.hints = t.checked; if (t.checked) hintBroken = false; renderHintState(); });
+    $('#hintInstall').addEventListener('click', installHints);
     $('#copyCode').addEventListener('click', function () {
       var ta = $('#gasCode');
       var btn = $('#copyCode');
@@ -1731,6 +1943,8 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     else if (state !== 'result' && state !== 'reveal') setState('idle');
     syncSettingsForm();
     renderVoiceOptions();
+    renderHintState();
+    checkHints();
     if (typeof D.dialog.showModal === 'function') D.dialog.showModal(); else D.dialog.setAttribute('open', '');
     if (focusSheet) {
       $('#sheetSection').scrollIntoView({ block: 'start' });
@@ -1779,6 +1993,17 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     }
     renderEnvNotice();
     syncSettingsForm();
+    checkHints();
+
+    // results held back when the page was closed last time go out now
+    if (pending.some(function (r) { return r.hold; })) {
+      pending.forEach(function (r) { delete r.hold; });
+      store.set('pending', pending);
+    }
+    function sendBeforeLeaving() { if (pending.some(function (r) { return r.hold; })) releaseHeld(true); }
+    // (anything not sent is kept on this device and goes out the next time the app opens)
+    window.addEventListener('pagehide', sendBeforeLeaving);
+    if (IS_MOBILE) document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') sendBeforeLeaving(); });
 
     if (settings.sheetUrl) {
       sheetState = (sheetCache && sheetCache.url === settings.sheetUrl) ? 'ok' : 'loading';
