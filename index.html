@@ -277,6 +277,89 @@ details.recent summary { cursor: pointer; color: var(--muted); font-size: .86rem
 .recent .tx em { font-style: normal; color: var(--miss); }
 footer { color: var(--muted); font-size: .76rem; text-align: center; }
 
+/* ---------- mode switch (left column on wide screens, tabs on top on phones) ---------- */
+.shell { display: block; }
+.view { display: grid; gap: 18px; min-width: 0; }
+.modes {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
+  max-width: 760px; margin: 0 auto;
+}
+.mode-btn {
+  appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer; min-width: 0;
+}
+.mode-btn b { display: block; font-family: var(--font-en); font-size: .9rem; color: var(--ink); line-height: 1.25; }
+.mode-btn small { display: block; font-size: .72rem; line-height: 1.3; }
+.mode-btn span { min-width: 0; }
+.mode-btn:hover { border-color: var(--accent); }
+.mode-btn[aria-current="page"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--ink); box-shadow: inset 3px 0 0 var(--accent); }
+.mode-btn svg.i { color: var(--accent); }
+@media (min-width: 1040px) {
+  .shell { display: grid; grid-template-columns: 210px minmax(0, 760px); justify-content: center; gap: 28px; }
+  .modes { grid-template-columns: 1fr; align-content: start; position: sticky; top: 0; padding: 22px 0 0; margin: 0; max-width: none; }
+  .mode-btn { padding: 12px; }
+  .modes .modes-cap { display: block; }
+  .wrap { margin: 0; }
+}
+.modes-cap { display: none; color: var(--muted); font-size: .74rem; letter-spacing: .08em; padding: 0 4px 2px; font-family: var(--font-en); font-weight: 700; }
+
+/* ---------- interview ---------- */
+.iv-gate { display: grid; gap: 10px; }
+.stage.compact { min-height: 0; }
+.badge.mid { background: var(--rec-soft); color: var(--ink); }
+@media (max-width: 440px) {
+  .brand h1 { font-size: 1.3rem; white-space: nowrap; }
+  .modes { gap: 6px; }
+  .mode-btn { padding: 8px; gap: 8px; }
+  .mode-btn small { display: none; }
+}
+.iv-gate h3, .iv-card h3 { margin: 0; font-size: 1rem; }
+.iv-gate ol, .iv-gate ul { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
+.iv-pick { display: grid; gap: 6px; }
+.iv-pick select { width: 100%; }
+.iv-facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.iv-q { font-family: var(--font-en); font-size: clamp(1.1rem, .95rem + .8vw, 1.35rem); line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+.iv-clock { font-family: var(--font-en); font-variant-numeric: tabular-nums; font-size: 2.6rem; font-weight: 700; line-height: 1; }
+.iv-clock small { font-size: 1rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+.iv-steps { display: flex; gap: 6px; }
+.iv-steps i { flex: 1; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--muted) 25%, transparent); }
+.iv-steps i.done { background: var(--ok); }
+.iv-steps i.now { background: var(--rec); }
+.iv-result { display: grid; gap: 14px; }
+.iv-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.iv-total { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+.iv-total .big { font-family: var(--font-en); font-size: 2.3rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.iv-total .big small { font-size: 1rem; color: var(--muted); font-weight: 400; }
+.iv-total .lbl { color: var(--muted); font-size: .78rem; display: block; margin-bottom: 4px; }
+.iv-ans { font-family: var(--font-en); overflow-wrap: anywhere; }
+.iv-sub { display: flex; flex-wrap: wrap; gap: 6px; }
+.iv-fixes { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.iv-fixes li { font-family: var(--font-en); overflow-wrap: anywhere; }
+.iv-fixes .from { color: var(--miss); text-decoration: line-through; }
+.iv-fixes .to { color: var(--ok); font-weight: 700; }
+.iv-fixes .why { color: var(--muted); font-family: var(--font-ja); font-size: .85rem; }
+.iv-improved { font-family: var(--font-en); background: var(--ok-soft); border-radius: 10px; padding: 10px 12px; overflow-wrap: anywhere; }
+.iv-status { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.iv-level { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--muted) 22%, transparent); overflow: hidden; }
+.iv-level i { display: block; height: 100%; width: calc(var(--lv, 0) * 100%); background: var(--ok); border-radius: inherit; transition: width .12s linear; }
+.iv-recnote { color: var(--muted); font-size: .85rem; }
+.iv-also { color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+.iv-also span { font-family: var(--font-en); }
+.iv-unclear { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.iv-unclear .lbl { color: var(--muted); font-size: .8rem; }
+.iv-unclear b { font-family: var(--font-en); font-weight: 600; font-size: .85rem; border-radius: 999px; padding: 1px 9px; background: var(--rec-soft); }
+.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); flex: none; }
+@media (prefers-reduced-motion: no-preference) { .spinner { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } } }
+.iv-history ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.iv-history li { display: block; }
+.iv-history button { appearance: none; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 10px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; }
+.iv-history button:hover { border-color: var(--accent); }
+.iv-history .t { font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.iv-history .d { color: var(--muted); font-size: .78rem; }
+.iv-history .s { grid-row: span 2; align-self: center; font-family: var(--font-en); font-weight: 700; font-variant-numeric: tabular-nums; }
+.iv-history .s.wait { color: var(--muted); font-family: var(--font-ja); font-weight: 400; font-size: .82rem; }
+
 /* ---------- settings dialog ---------- */
 dialog {
   border: none; border-radius: 18px; padding: 0; background: var(--surface); color: var(--ink);
@@ -322,12 +405,24 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
 </style>
 </head>
 <body>
+<div class="shell">
+<nav class="modes" id="modes" aria-label="練習の種類">
+  <span class="modes-cap">PRACTICE</span>
+  <button class="mode-btn" type="button" data-view="repeat">
+    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+    <span><b>Listen &amp; Repeat</b><small>聞いて、そのまま言う</small></span>
+  </button>
+  <button class="mode-btn" type="button" data-view="interview">
+    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
+    <span><b>Interview &amp; Speak</b><small>質問に45秒で答える・AI採点</small></span>
+  </button>
+</nav>
 <div class="wrap">
 
   <header class="top">
     <div class="brand">
       <h1>Repeat Ladder</h1>
-      <span class="sub">TOEFL Listen and Repeat を一段ずつ</span>
+      <span class="sub" id="brandSub">TOEFL Listen and Repeat を一段ずつ</span>
     </div>
     <div class="top-actions">
       <button class="chip" id="sheetChip" type="button" title="スプレッドシート連携の設定を開く"><span class="dot"></span><span id="sheetChipText">サンプル文</span></button>
@@ -340,6 +435,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   <div id="envNotice" class="notice warn" hidden></div>
   <div id="notice" class="notice" hidden role="alert"></div>
 
+  <div class="view" id="repeatView">
   <section class="ladder-box" aria-label="語数を選ぶ">
     <div class="ladder-cap"><strong>語数</strong><span>短い文 → 長い文（本番は最大16語くらい）</span></div>
     <div class="ladder" id="ladder"></div>
@@ -387,8 +483,27 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     <summary id="recentSummary">今日の結果</summary>
     <ol id="recentList"></ol>
   </details>
+  </div>
 
-  <footer>Repeat Ladder v2.4 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
+  <div class="view" id="interviewView" hidden>
+    <section class="booth" aria-label="インタビュー">
+      <div class="booth-head">
+        <div class="lamp" id="ivLamp" data-state="idle"><i></i><span class="tag" id="ivTag">INTERVIEW</span></div>
+        <div class="meta" id="ivMeta"></div>
+      </div>
+      <p class="status-big" id="ivStatus" aria-live="polite"></p>
+      <div class="stage" id="ivStage"></div>
+      <div class="controls" id="ivControls"></div>
+    </section>
+    <div class="iv-result" id="ivResult" hidden></div>
+    <details class="recent iv-history" id="ivHistory" hidden>
+      <summary id="ivHistorySummary">これまでの結果</summary>
+      <ol id="ivHistoryList"></ol>
+    </details>
+  </div>
+
+  <footer>Repeat Ladder v3.1 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
+</div>
 </div>
 
 <dialog id="settings" aria-labelledby="settingsTitle">
@@ -462,6 +577,17 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
         <label class="switch"><span>合図のあと自動で録音を始める<br><span class="hint">オフにすると、毎回「話す」ボタンを押してから話します。</span></span><input type="checkbox" id="optAutoMic"></label>
       </fieldset>
 
+      <fieldset>
+        <legend>インタビュー（Interview &amp; Speak）</legend>
+        <div class="field">
+          <label for="optIvSeconds">1問あたりの回答時間</label>
+          <select id="optIvSeconds"><option value="30">30秒</option><option value="45">45秒（TOEFLと同じ）</option><option value="60">60秒</option></select>
+        </div>
+        <label class="switch"><span>質問の文字を表示する<br><span class="hint">本番は音声だけです。慣れるまではオンにしてもOK。</span></span><input type="checkbox" id="optIvText"></label>
+        <label class="switch"><span>答えを録音する<br><span class="hint">録音はGoogleドライブに保存され、パソコンの採点プログラムが Whisper で文字起こしし直して採点します（ブラウザの音声認識のミスに左右されにくくなります）。スマホでは録音だけを行います。</span></span><input type="checkbox" id="optIvAudio"></label>
+        <p class="hint">インタビューは、スプレッドシートにつないだときだけ使えます。問題はシート「インタビュー問題」に入れます。採点は、Windowsパソコンで動かす採点プログラム（Claude Code を使います）が行い、結果はシート「インタビュー回答」とこのアプリに出ます。</p>
+      </fieldset>
+
       <fieldset id="sheetSection">
         <legend>Googleスプレッドシート連携</legend>
         <div class="field">
@@ -486,7 +612,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
             <li>スプレッドシートのメニュー「拡張機能」→「Apps Script」を開きます。</li>
             <li>最初から書いてあるコードをすべて消して、下の「コードをコピー」で写したコードを貼り付け、保存します（Ctrl+S／⌘+S）。</li>
             <li>上の関数の選択で <code>setup</code> を選び「実行」。初回だけ権限の確認が出ます：自分のアカウントを選ぶ →「詳細」→「〜（安全ではないページ）に移動」→「許可」（チェックボックスが出たら「すべて選択」→「続行」）。自分で作ったスクリプトなので大丈夫です。</li>
-            <li>スプレッドシートに戻ると、シート「5」〜「16」「間違いログ」「記録」ができて、サンプル文が入っています。</li>
+            <li>スプレッドシートに戻ると、シート「5」〜「16」「間違いログ」「記録」「インタビュー問題」「インタビュー回答」ができて、練習用のサンプル文が入っています（インタビューの問題は入っていません）。</li>
             <li>Apps Scriptの右上「デプロイ」→「新しいデプロイ」→ 歯車アイコン →「ウェブアプリ」。<br>「次のユーザーとして実行：自分」「アクセスできるユーザー：全員」にして「デプロイ」します。</li>
             <li>表示された「ウェブアプリのURL」（最後が <code>/exec</code>）をコピーして、上の欄に貼り付け、「接続する」を押します。</li>
           </ol>
@@ -494,7 +620,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
             <div class="row"><span class="hint">Apps Scriptに貼るコード（ファイル Code.gs と同じ中身）</span><button class="btn small" id="copyCode" type="button">コードをコピー</button></div>
             <textarea class="code" id="gasCode" readonly aria-label="Apps Scriptのコード"></textarea>
           </div>
-          <p class="hint"><b>前のコードで設定済みの場合</b>：Apps Scriptのコードを下のコードに貼り替えて保存 → <code>setup</code> を実行 →「デプロイ」→「デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」。URLは変わらないので、この画面の設定はそのままでOKです。</p>
+          <p class="hint"><b>前のコードで設定済みの場合</b>：Apps Scriptのコードを下のコードに貼り替えて保存 → <code>setup</code> を実行 →「デプロイ」→「デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」。URLは変わらないので、この画面の設定はそのままでOKです。v3.1 にすると、<code>setup</code> の実行時に Googleドライブを使う許可を求められます（インタビューの録音を保存するため）。「許可」してください。</p>
           <p class="hint"><b>文の入れ方</b>：シート「5」〜「16」のB列（2行目から）に1行1文で入れます。A列のIDは空欄のままでOK（自動でつきます）。イギリス英語で読ませたい文は、A列に「B」とだけ書いてください。イギリス英語の文はイギリス式のつづり（colour、centre など）で書いて大丈夫です。判定では、アメリカ式のつづりと同じ語として扱います。デプロイし直す必要はありません。</p>
           <p class="hint"><b>IDの形</b>：<code>AA00000000000001</code> は、1文字目＝語数（A=5語 … L=16語）、2文字目＝発音（A=アメリカ英語、B=イギリス英語）、残り14桁＝その語数で作った順番です。</p>
           <p class="hint">ウェブアプリのURLは他の人に教えないでください。</p>
@@ -531,7 +657,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   'use strict';
 
   var BUILTIN = {"5": [["AA00000000000001", "The library opens early today.", "今日は図書館が早く開きます。"], ["AB00000000000002", "Please queue at this desk.", "この窓口に並んでください。"], ["AA00000000000003", "Our class starts after lunch.", "私たちの授業は昼食の後に始まります。"], ["AB00000000000004", "The lecturer answered every question.", "講師はすべての質問に答えました。"], ["AA00000000000005", "Students can borrow laptops here.", "学生はここでノートパソコンを借りられます。"], ["AB00000000000006", "The lift is not working.", "エレベーターが動いていません。"], ["AA00000000000007", "Bring a pencil to class.", "授業に鉛筆を持ってきてください。"], ["AB00000000000008", "I forgot my mobile phone.", "携帯電話を忘れました。"], ["AA00000000000009", "The cafeteria sells fresh sandwiches.", "学食では作りたてのサンドイッチを売っています。"], ["AB00000000000010", "Turn left at the roundabout.", "ロータリー（環状交差点）で左に曲がってください。"]], "6": [["BA00000000000001", "The bookstore is beside the gym.", "書店は体育館の隣にあります。"], ["BB00000000000002", "Please queue outside the lecture theatre.", "大教室の外に並んでください。"], ["BA00000000000003", "Our lab meeting starts at noon.", "研究室のミーティングは正午に始まります。"], ["BB00000000000004", "Printers are on the ground floor.", "プリンターは1階にあります。"], ["BA00000000000005", "The parking lot is almost full.", "駐車場はほぼ満車です。"], ["BB00000000000006", "She is studying biology this term.", "彼女は今学期、生物学を勉強しています。"], ["BA00000000000007", "Remember to submit your essay online.", "小論文をオンラインで提出するのを忘れないでください。"], ["BB00000000000008", "Tours start from the car park.", "ツアーは駐車場から出発します。"], ["BA00000000000009", "Many students live in the dormitory.", "多くの学生が寮に住んでいます。"], ["BB00000000000010", "Lunch is served in the refectory.", "昼食は学生食堂で出されます。"]], "7": [["CA00000000000001", "Study rooms must be reserved in advance.", "自習室は事前に予約が必要です。"], ["CB00000000000002", "Return your books to the issue desk.", "本は貸出カウンターに返却してください。"], ["CA00000000000003", "The lecture moved to a larger room.", "講義はもっと広い教室に移りました。"], ["CB00000000000004", "Our seminar group presents its project tomorrow.", "私たちのゼミのグループは、明日プロジェクトを発表します。"], ["CA00000000000005", "The gallery is on the second floor.", "ギャラリーは2階にあります。"], ["CB00000000000006", "Free tea is available in the foyer.", "ロビーで無料の紅茶が飲めます。"], ["CA00000000000007", "I often study in the library alone.", "私はよく図書館で一人で勉強します。"], ["CB00000000000008", "The bus stops just outside our halls.", "バスは私たちの寮のすぐ外に止まります。"], ["CA00000000000009", "You should check your email every morning.", "毎朝メールを確認したほうがいいです。"], ["CB00000000000010", "The science building has a new lift.", "理学部棟には新しいエレベーターがあります。"]], "8": [["DA00000000000001", "Please turn off your phone during the lecture.", "講義中は携帯電話の電源を切ってください。"], ["DB00000000000002", "The lecturer posted the reading list last night.", "講師は昨夜、課題図書のリストを掲載しました。"], ["DA00000000000003", "Visitors must wear a badge inside the laboratory.", "来訪者は実験室の中でバッジを着けなければなりません。"], ["DB00000000000004", "The writing centre helps students improve their essays.", "ライティングセンターは学生が小論文を上達させる手助けをします。"], ["DA00000000000005", "Our biology class will visit the botanical garden.", "生物学の授業で植物園を訪れます。"], ["DB00000000000006", "The library has quiet rooms for exam revision.", "図書館には試験勉強用の静かな部屋があります。"], ["DA00000000000007", "You can find more information on the website.", "詳しい情報はウェブサイトで見られます。"], ["DB00000000000008", "This exhibition shows colourful paintings by local artists.", "この展覧会では、地元の画家によるカラフルな絵を展示しています。"], ["DA00000000000009", "Most freshmen take this course in the spring.", "ほとんどの1年生は春にこの科目を履修します。"], ["DB00000000000010", "The main canteen closes early on Friday afternoons.", "中央食堂は金曜日の午後は早く閉まります。"]], "9": [["EA00000000000001", "If you have any questions, please ask a librarian.", "質問があれば、司書に聞いてください。"], ["EB00000000000002", "The new student centre will open early next month.", "新しい学生センターは来月初めにオープンします。"], ["EA00000000000003", "Remember to bring your lab coat and safety glasses.", "白衣と保護メガネを忘れずに持ってきてください。"], ["EB00000000000004", "The museum has a large collection of Roman jewellery.", "その博物館は、ローマ時代の宝飾品を数多く所蔵しています。"], ["EA00000000000005", "Our professor gave us an extra week to finish.", "教授は仕上げるための期間をもう1週間くれました。"], ["EB00000000000006", "Students in halls can use the pool for free.", "寮に住む学生はプールを無料で使えます。"], ["EA00000000000007", "The guide will explain the history of this building.", "ガイドがこの建物の歴史を説明します。"], ["EB00000000000008", "Please leave your rucksacks in the lockers before entering.", "入る前に、リュックをロッカーに入れてください。"], ["EA00000000000009", "The concert in the music hall begins after dinner.", "音楽ホールでのコンサートは夕食の後に始まります。"], ["EB00000000000010", "Many plants in this garden flower in the autumn.", "この庭園の植物の多くは、秋に花を咲かせます。"]], "10": [["FA00000000000001", "The library will be closed on Saturday for the holiday.", "図書館は祝日のため土曜日は休館です。"], ["FB00000000000002", "Enrol on your modules before the end of this week.", "今週末までに履修科目の登録をしてください。"], ["FA00000000000003", "The professor asked us to read the next chapter carefully.", "教授は次の章を注意深く読むように言いました。"], ["FB00000000000004", "You can renew your library books online for another fortnight.", "図書館の本は、オンラインでさらに2週間延長できます。"], ["FA00000000000005", "Our research team collected water samples from the nearby lake.", "私たちの研究チームは近くの湖から水のサンプルを採取しました。"], ["FB00000000000006", "The museum guide organised a short tour for our group.", "博物館のガイドが、私たちのグループのために短いツアーを企画してくれました。"], ["FA00000000000007", "Please make sure your phone is silent during the performance.", "公演中は携帯電話を必ずマナーモードにしてください。"], ["FB00000000000008", "The bus timetable changes during the exam period each term.", "バスの時刻表は、毎学期の試験期間中に変わります。"], ["FA00000000000009", "Some animals in the desert sleep during the hottest hours.", "砂漠の動物の中には、最も暑い時間帯に眠るものがいます。"], ["FB00000000000010", "This workshop shows students how to write a better CV.", "このワークショップでは、より良い履歴書の書き方を学べます。"]], "11": [["GA00000000000001", "If you lose your student card, please report it right away.", "学生証をなくしたら、すぐに届け出てください。"], ["GB00000000000002", "The lecturer will hold extra office hours before the final exams.", "講師は期末試験の前に、追加のオフィスアワーを設けます。"], ["GA00000000000003", "Our class is going to visit a local farm next Thursday.", "私たちのクラスは来週の木曜日に地元の農場を訪問します。"], ["GB00000000000004", "The library has computers that you can use for your coursework.", "図書館には、課題に使えるパソコンがあります。"], ["GA00000000000005", "Scientists believe that this mountain was formed millions of years ago.", "科学者たちは、この山は何百万年も前にできたと考えています。"], ["GB00000000000006", "Please leave your wet coat and umbrella in the cloakroom downstairs.", "ぬれたコートと傘は、下の階のクロークに預けてください。"], ["GA00000000000007", "The dining hall offers vegetarian meals for students who request them.", "食堂では希望する学生にベジタリアン向けの食事を用意しています。"], ["GB00000000000008", "Many birds fly south in the autumn to find warmer weather.", "多くの鳥は秋になると、より暖かい気候を求めて南へ飛んでいきます。"], ["GA00000000000009", "You need to sign up online before joining the campus tour.", "キャンパスツアーに参加する前に、オンラインで申し込む必要があります。"], ["GB00000000000010", "The theatre society is always looking for new members to join.", "演劇サークルは、いつでも新しいメンバーを募集しています。"]], "12": [["HA00000000000001", "The library stays open later during the last weeks of the semester.", "学期の最後の数週間は、図書館が遅くまで開いています。"], ["HB00000000000002", "Before you start the practical, please read all the safety instructions carefully.", "実習を始める前に、安全上の注意をすべてよく読んでください。"], ["HA00000000000003", "Our professor recommended a few articles to help us with the essay.", "教授は小論文の助けになる論文をいくつか勧めてくれました。"], ["HB00000000000004", "Free tutoring in maths and writing is available at the learning centre.", "ラーニングセンターでは、数学とライティングの無料個別指導が受けられます。"], ["HA00000000000005", "The museum is famous for its collection of paintings by local artists.", "その美術館は地元の画家の作品のコレクションで有名です。"], ["HB00000000000006", "If the weather is bad, the outdoor concert will be moved inside.", "天気が悪ければ、野外コンサートは屋内で行われます。"], ["HA00000000000007", "This new research suggests that sleep plays an important role in memory.", "この新しい研究は、睡眠が記憶に重要な役割を果たすことを示しています。"], ["HB00000000000008", "Write your name and candidate number at the top of the page.", "ページの一番上に、名前と受験番号を書いてください。"], ["HA00000000000009", "The campus bookstore sells used textbooks for much less than new ones.", "大学の書店では、中古の教科書を新品よりずっと安く売っています。"], ["HB00000000000010", "Many ancient cities were built near rivers because people needed fresh water.", "人々は真水を必要としていたため、多くの古代都市は川の近くに作られました。"]], "13": [["IA00000000000001", "The career fair will take place in the main gym next Friday afternoon.", "就職説明会は来週金曜日の午後、メイン体育館で行われます。"], ["IB00000000000002", "Students who want to change their course should speak to their personal tutor.", "学科を変えたい学生は、担当の指導教員に相談してください。"], ["IA00000000000003", "The professor explained that the experiment failed because the samples were too warm.", "教授は、サンプルの温度が高すぎたので実験が失敗したと説明しました。"], ["IB00000000000004", "Please do not eat or drink while you are in the reading room.", "閲覧室では飲食をしないでください。"], ["IA00000000000005", "This painting was created centuries ago by an artist whose name is unknown.", "この絵は何世紀も前に、名前の知られていない画家によって描かれました。"], ["IB00000000000006", "You can book a group study room online through the main library website.", "グループ学習室は、中央図書館のウェブサイトからオンラインで予約できます。"], ["IA00000000000007", "Bees play an important role in helping many kinds of plants produce fruit.", "ハチは多くの種類の植物が実をつけるのを助ける重要な役割を担っています。"], ["IB00000000000008", "The new science building was designed to use less energy than older buildings.", "新しい理学部棟は、古い建物より使うエネルギーが少なくなるよう設計されました。"], ["IA00000000000009", "If you miss a class, you can ask a classmate for their notes.", "授業を休んだら、クラスメートにノートを見せてもらうよう頼めます。"], ["IB00000000000010", "The guided tour of the old campus lasts about an hour in total.", "旧キャンパスのガイドツアーは全部で約1時間です。"]], "14": [["JA00000000000001", "The library offers free workshops on how to find reliable sources for research papers.", "図書館では、研究論文のための信頼できる情報源の探し方について無料のワークショップを開いています。"], ["JB00000000000002", "Students living in halls must keep the noise down late at night on weekdays.", "寮に住む学生は、平日の夜遅くは静かにしなければなりません。"], ["JA00000000000003", "Our professor said that the final exam will cover everything we studied this semester.", "教授は、期末試験は今学期に学んだことすべてが範囲だと言いました。"], ["JB00000000000004", "Before you leave the laboratory, make sure that all the equipment is turned off.", "実験室を出る前に、すべての機器の電源が切れていることを確認してください。"], ["JA00000000000005", "The new exhibit shows how people lived in this region thousands of years ago.", "新しい展示は、何千年も前にこの地域で人々がどのように暮らしていたかを紹介しています。"], ["JB00000000000006", "Many students find it helpful to revise their notes right after each lecture ends.", "多くの学生は、毎回の講義が終わった直後にノートを復習すると役に立つと感じています。"], ["JA00000000000007", "The city built a new bridge so people could cross the river more easily.", "市は、人々がもっと楽に川を渡れるように新しい橋を建設しました。"], ["JB00000000000008", "To join the volunteer programme, please fill in the online application form by Friday.", "ボランティアプログラムに参加するには、金曜日までにオンラインの申込書に記入してください。"], ["JA00000000000009", "Some desert plants store water in their thick leaves to survive long dry seasons.", "砂漠の植物の中には、長い乾季を生き抜くために厚い葉に水を蓄えるものがあります。"], ["JB00000000000010", "The student union is planning a big festival to celebrate the end of term.", "学生自治会は、学期の終わりを祝う大きなお祭りを計画しています。"]], "15": [["KA00000000000001", "The library will be closed for repairs next week, so please return your books early.", "図書館は来週修理のため休館するので、本は早めに返却してください。"], ["KB00000000000002", "Students who need help choosing their modules can book an appointment with a tutor online.", "履修科目の選び方に助けが必要な学生は、オンラインでチューターとの面談を予約できます。"], ["KA00000000000003", "The professor showed us a short video about how volcanoes form under the ocean floor.", "教授は、海底で火山がどのようにできるかについての短い動画を見せてくれました。"], ["KB00000000000004", "Keep your student card with you because you will need it to enter the building.", "建物に入るのに必要なので、学生証を持ち歩いてください。"], ["KA00000000000005", "The guide told us that the statue was discovered by farmers working in a field.", "ガイドは、その像は畑で働いていた農民によって発見されたと教えてくれました。"], ["KB00000000000006", "Researchers found that students who exercise regularly tend to perform better on their final exams.", "研究者たちは、定期的に運動する学生は期末試験の成績が良い傾向にあることを発見しました。"], ["KA00000000000007", "If you are interested in studying abroad, please come to the information session on Wednesday.", "留学に興味がある人は、水曜日の説明会に来てください。"], ["KB00000000000008", "The new recycling programme has helped the university reduce the amount of rubbish it produces.", "新しいリサイクル制度のおかげで、大学は出すごみの量を減らすことができました。"], ["KA00000000000009", "Many early maps were not accurate because explorers had no reliable way to measure distance.", "探検家たちには距離を正確に測る方法がなかったため、初期の地図の多くは不正確でした。"], ["KB00000000000010", "The student newspaper is looking for writers who can report on football and campus events.", "学生新聞は、サッカーや学内行事を取材できる記者を募集しています。"]], "16": [["LA00000000000001", "The guided tour of the historic campus lasts about an hour and ends at the library.", "歴史あるキャンパスのガイドツアーは約1時間で、図書館で終わります。"], ["LB00000000000002", "During Freshers Week, new students meet their personal tutors and take a tour of the campus.", "新入生歓迎週間（フレッシャーズ・ウィーク）には、新入生は担当の指導教員と会い、キャンパスツアーに参加します。"], ["LA00000000000003", "The professor asked each group to choose a topic and give a short presentation next week.", "教授は各グループにテーマを選んで、来週短い発表をするように言いました。"], ["LB00000000000004", "The research team spent several months studying how climate change affects the birds in the mountains.", "研究チームは、気候変動が山にすむ鳥にどう影響するかを数か月かけて調べました。"], ["LA00000000000005", "If you want to use the music practice rooms, you need to reserve them in advance.", "音楽練習室を使いたい場合は、事前に予約する必要があります。"], ["LB00000000000006", "The lecturer explained that the ancient city was abandoned after the river slowly changed its course.", "講師は、川の流れが少しずつ変わった後、その古代都市は捨てられたと説明しました。"], ["LA00000000000007", "Visitors may not take photos with a flash because the bright light can damage the paintings.", "強い光は絵画を傷めることがあるため、来館者はフラッシュ撮影ができません。"], ["LB00000000000008", "Students who live off campus can use the east car park if they buy a permit.", "学外に住む学生は、許可証を買えば東駐車場を使えます。"], ["LA00000000000009", "The cafeteria has started offering more healthy options because many students asked for them last year.", "昨年多くの学生から要望があったため、学食は健康的なメニューを増やし始めました。"], ["LB00000000000010", "Scientists use satellites to track the movement of ice sheets and measure how fast they melt.", "科学者たちは人工衛星を使って氷床の動きを追跡し、どれくらいの速さで溶けているかを測っています。"]]};
-  var GAS_CODE = "/**\n * Repeat Ladder ─ Googleスプレッドシート連携スクリプト（v2.1）\n *\n * 【はじめて使うとき】\n *  1. このコードを全部、スプレッドシートの「拡張機能 > Apps Script」に貼り付けて保存（Ctrl+S／⌘+S）\n *  2. 上のメニューで関数「setup」を選んで ▶実行\n *     （初回だけ「権限を確認」→ 自分のアカウント →「詳細」→「（安全ではないページ）に移動」→「許可」。\n *       チェックボックスが出たら「すべて選択」にしてから「続行」）\n *     → シート「5」〜「16」「間違いログ」「記録」ができて、サンプル文が入ります\n *  3. 右上の「デプロイ > 新しいデプロイ」→ 歯車アイコンで「ウェブアプリ」を選ぶ\n *       次のユーザーとして実行 ：自分\n *       アクセスできるユーザー ：全員\n *     →「デプロイ」→ 表示された「ウェブアプリのURL（最後が /exec）」をコピー\n *  4. アプリの「設定 > スプレッドシート連携」にURLを貼り付けて「接続する」\n *\n * 【前のコード（v1）から更新するとき】\n *  1. 前のコードを全部消して、このコードを貼り付けて保存\n *  2. 関数「setup」を ▶実行（ID列と「間違いログ」が追加されます。今までの文と記録はそのまま残ります）\n *  3. 「デプロイ > デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」\n *     （URLは変わりません。アプリ側の設定はそのままでOK）\n *\n * 【シートの形】\n *  ・シート「5」〜「16」：A列＝ID、B列＝英文、C列＝日本語訳（なくてもOK）。2行目から1行に1文\n *  ・IDは16文字：1文字目＝語数（A=5語, B=6語 … L=16語）、2文字目＝発音（A=アメリカ英語, B=イギリス英語）、\n *    残り14桁＝その語数のシートで作った順番。例：AA00000000000001 ＝ 5語・アメリカ英語・1番目\n *  ・ID欄を空にしておくか「A」「B」だけ書いておくと、アプリが文を読み込むときに自動でIDがつきます\n *    （空欄はアメリカ英語になります。あとから2文字目をBに変えればイギリス英語になります）\n *  ・「間違いログ」：パーフェクトでなかった答えが入ります（アプリの設定で、パーフェクトも入れられます）\n *  ・「記録」：すべての答えが入ります。間違いログの「過去〜回数」はこのシートから数えます\n *  ・イギリス英語の文（IDの2文字目がB）は、イギリス式のつづり・単語で書いて大丈夫です（colour, lift, term など）\n *  ・文を追加・変更しても、デプロイし直す必要はありません\n *  ・このコード自体を書き換えたときだけ、上の「更新するとき」の3番で新バージョンにします\n *  ・v2で作ったシートにこのコードで setup を実行すると、手を加えていないサンプル文が、イギリス英語版に入れ替わります\n *  ・ウェブアプリのURLは他の人に教えないでください（知っている人は文を読んだり、記録を書き込んだりできます）\n */\n\nconst VERSION = 2;\nconst LEVELS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];\nconst MISTAKE_SHEET_NAME = '間違いログ';\nconst LOG_SHEET_NAME = '記録';\nconst MISTAKE_HEADERS = ['日時', '語数', 'お手本', '自分の答え', '当たっている語数', 'パーフェクト', '過去のパーフェクト回数', '過去にやった回数', 'ID'];\nconst LOG_HEADERS = ['日時', '語数', 'お手本の文', '聞き取られたあなたの声', '言えた語数', '全体の語数', 'パーフェクト', '抜けた語', 'モード', '記録ID（自動）', '文ID', '発音'];\nconst ACCENT_NAMES = { A: 'アメリカ英語', B: 'イギリス英語' };\nconst ID_RE = /^[A-Z][AB]\\d{14}$/;\nconst SAMPLES = {\n  \"5\": [\n    [\"AA00000000000001\", \"The library opens early today.\", \"今日は図書館が早く開きます。\"],\n    [\"AB00000000000002\", \"Please queue at this desk.\", \"この窓口に並んでください。\"],\n    [\"AA00000000000003\", \"Our class starts after lunch.\", \"私たちの授業は昼食の後に始まります。\"],\n    [\"AB00000000000004\", \"The lecturer answered every question.\", \"講師はすべての質問に答えました。\"],\n    [\"AA00000000000005\", \"Students can borrow laptops here.\", \"学生はここでノートパソコンを借りられます。\"],\n    [\"AB00000000000006\", \"The lift is not working.\", \"エレベーターが動いていません。\"],\n    [\"AA00000000000007\", \"Bring a pencil to class.\", \"授業に鉛筆を持ってきてください。\"],\n    [\"AB00000000000008\", \"I forgot my mobile phone.\", \"携帯電話を忘れました。\"],\n    [\"AA00000000000009\", \"The cafeteria sells fresh sandwiches.\", \"学食では作りたてのサンドイッチを売っています。\"],\n    [\"AB00000000000010\", \"Turn left at the roundabout.\", \"ロータリー（環状交差点）で左に曲がってください。\"]\n  ],\n  \"6\": [\n    [\"BA00000000000001\", \"The bookstore is beside the gym.\", \"書店は体育館の隣にあります。\"],\n    [\"BB00000000000002\", \"Please queue outside the lecture theatre.\", \"大教室の外に並んでください。\"],\n    [\"BA00000000000003\", \"Our lab meeting starts at noon.\", \"研究室のミーティングは正午に始まります。\"],\n    [\"BB00000000000004\", \"Printers are on the ground floor.\", \"プリンターは1階にあります。\"],\n    [\"BA00000000000005\", \"The parking lot is almost full.\", \"駐車場はほぼ満車です。\"],\n    [\"BB00000000000006\", \"She is studying biology this term.\", \"彼女は今学期、生物学を勉強しています。\"],\n    [\"BA00000000000007\", \"Remember to submit your essay online.\", \"小論文をオンラインで提出するのを忘れないでください。\"],\n    [\"BB00000000000008\", \"Tours start from the car park.\", \"ツアーは駐車場から出発します。\"],\n    [\"BA00000000000009\", \"Many students live in the dormitory.\", \"多くの学生が寮に住んでいます。\"],\n    [\"BB00000000000010\", \"Lunch is served in the refectory.\", \"昼食は学生食堂で出されます。\"]\n  ],\n  \"7\": [\n    [\"CA00000000000001\", \"Study rooms must be reserved in advance.\", \"自習室は事前に予約が必要です。\"],\n    [\"CB00000000000002\", \"Return your books to the issue desk.\", \"本は貸出カウンターに返却してください。\"],\n    [\"CA00000000000003\", \"The lecture moved to a larger room.\", \"講義はもっと広い教室に移りました。\"],\n    [\"CB00000000000004\", \"Our seminar group presents its project tomorrow.\", \"私たちのゼミのグループは、明日プロジェクトを発表します。\"],\n    [\"CA00000000000005\", \"The gallery is on the second floor.\", \"ギャラリーは2階にあります。\"],\n    [\"CB00000000000006\", \"Free tea is available in the foyer.\", \"ロビーで無料の紅茶が飲めます。\"],\n    [\"CA00000000000007\", \"I often study in the library alone.\", \"私はよく図書館で一人で勉強します。\"],\n    [\"CB00000000000008\", \"The bus stops just outside our halls.\", \"バスは私たちの寮のすぐ外に止まります。\"],\n    [\"CA00000000000009\", \"You should check your email every morning.\", \"毎朝メールを確認したほうがいいです。\"],\n    [\"CB00000000000010\", \"The science building has a new lift.\", \"理学部棟には新しいエレベーターがあります。\"]\n  ],\n  \"8\": [\n    [\"DA00000000000001\", \"Please turn off your phone during the lecture.\", \"講義中は携帯電話の電源を切ってください。\"],\n    [\"DB00000000000002\", \"The lecturer posted the reading list last night.\", \"講師は昨夜、課題図書のリストを掲載しました。\"],\n    [\"DA00000000000003\", \"Visitors must wear a badge inside the laboratory.\", \"来訪者は実験室の中でバッジを着けなければなりません。\"],\n    [\"DB00000000000004\", \"The writing centre helps students improve their essays.\", \"ライティングセンターは学生が小論文を上達させる手助けをします。\"],\n    [\"DA00000000000005\", \"Our biology class will visit the botanical garden.\", \"生物学の授業で植物園を訪れます。\"],\n    [\"DB00000000000006\", \"The library has quiet rooms for exam revision.\", \"図書館には試験勉強用の静かな部屋があります。\"],\n    [\"DA00000000000007\", \"You can find more information on the website.\", \"詳しい情報はウェブサイトで見られます。\"],\n    [\"DB00000000000008\", \"This exhibition shows colourful paintings by local artists.\", \"この展覧会では、地元の画家によるカラフルな絵を展示しています。\"],\n    [\"DA00000000000009\", \"Most freshmen take this course in the spring.\", \"ほとんどの1年生は春にこの科目を履修します。\"],\n    [\"DB00000000000010\", \"The main canteen closes early on Friday afternoons.\", \"中央食堂は金曜日の午後は早く閉まります。\"]\n  ],\n  \"9\": [\n    [\"EA00000000000001\", \"If you have any questions, please ask a librarian.\", \"質問があれば、司書に聞いてください。\"],\n    [\"EB00000000000002\", \"The new student centre will open early next month.\", \"新しい学生センターは来月初めにオープンします。\"],\n    [\"EA00000000000003\", \"Remember to bring your lab coat and safety glasses.\", \"白衣と保護メガネを忘れずに持ってきてください。\"],\n    [\"EB00000000000004\", \"The museum has a large collection of Roman jewellery.\", \"その博物館は、ローマ時代の宝飾品を数多く所蔵しています。\"],\n    [\"EA00000000000005\", \"Our professor gave us an extra week to finish.\", \"教授は仕上げるための期間をもう1週間くれました。\"],\n    [\"EB00000000000006\", \"Students in halls can use the pool for free.\", \"寮に住む学生はプールを無料で使えます。\"],\n    [\"EA00000000000007\", \"The guide will explain the history of this building.\", \"ガイドがこの建物の歴史を説明します。\"],\n    [\"EB00000000000008\", \"Please leave your rucksacks in the lockers before entering.\", \"入る前に、リュックをロッカーに入れてください。\"],\n    [\"EA00000000000009\", \"The concert in the music hall begins after dinner.\", \"音楽ホールでのコンサートは夕食の後に始まります。\"],\n    [\"EB00000000000010\", \"Many plants in this garden flower in the autumn.\", \"この庭園の植物の多くは、秋に花を咲かせます。\"]\n  ],\n  \"10\": [\n    [\"FA00000000000001\", \"The library will be closed on Saturday for the holiday.\", \"図書館は祝日のため土曜日は休館です。\"],\n    [\"FB00000000000002\", \"Enrol on your modules before the end of this week.\", \"今週末までに履修科目の登録をしてください。\"],\n    [\"FA00000000000003\", \"The professor asked us to read the next chapter carefully.\", \"教授は次の章を注意深く読むように言いました。\"],\n    [\"FB00000000000004\", \"You can renew your library books online for another fortnight.\", \"図書館の本は、オンラインでさらに2週間延長できます。\"],\n    [\"FA00000000000005\", \"Our research team collected water samples from the nearby lake.\", \"私たちの研究チームは近くの湖から水のサンプルを採取しました。\"],\n    [\"FB00000000000006\", \"The museum guide organised a short tour for our group.\", \"博物館のガイドが、私たちのグループのために短いツアーを企画してくれました。\"],\n    [\"FA00000000000007\", \"Please make sure your phone is silent during the performance.\", \"公演中は携帯電話を必ずマナーモードにしてください。\"],\n    [\"FB00000000000008\", \"The bus timetable changes during the exam period each term.\", \"バスの時刻表は、毎学期の試験期間中に変わります。\"],\n    [\"FA00000000000009\", \"Some animals in the desert sleep during the hottest hours.\", \"砂漠の動物の中には、最も暑い時間帯に眠るものがいます。\"],\n    [\"FB00000000000010\", \"This workshop shows students how to write a better CV.\", \"このワークショップでは、より良い履歴書の書き方を学べます。\"]\n  ],\n  \"11\": [\n    [\"GA00000000000001\", \"If you lose your student card, please report it right away.\", \"学生証をなくしたら、すぐに届け出てください。\"],\n    [\"GB00000000000002\", \"The lecturer will hold extra office hours before the final exams.\", \"講師は期末試験の前に、追加のオフィスアワーを設けます。\"],\n    [\"GA00000000000003\", \"Our class is going to visit a local farm next Thursday.\", \"私たちのクラスは来週の木曜日に地元の農場を訪問します。\"],\n    [\"GB00000000000004\", \"The library has computers that you can use for your coursework.\", \"図書館には、課題に使えるパソコンがあります。\"],\n    [\"GA00000000000005\", \"Scientists believe that this mountain was formed millions of years ago.\", \"科学者たちは、この山は何百万年も前にできたと考えています。\"],\n    [\"GB00000000000006\", \"Please leave your wet coat and umbrella in the cloakroom downstairs.\", \"ぬれたコートと傘は、下の階のクロークに預けてください。\"],\n    [\"GA00000000000007\", \"The dining hall offers vegetarian meals for students who request them.\", \"食堂では希望する学生にベジタリアン向けの食事を用意しています。\"],\n    [\"GB00000000000008\", \"Many birds fly south in the autumn to find warmer weather.\", \"多くの鳥は秋になると、より暖かい気候を求めて南へ飛んでいきます。\"],\n    [\"GA00000000000009\", \"You need to sign up online before joining the campus tour.\", \"キャンパスツアーに参加する前に、オンラインで申し込む必要があります。\"],\n    [\"GB00000000000010\", \"The theatre society is always looking for new members to join.\", \"演劇サークルは、いつでも新しいメンバーを募集しています。\"]\n  ],\n  \"12\": [\n    [\"HA00000000000001\", \"The library stays open later during the last weeks of the semester.\", \"学期の最後の数週間は、図書館が遅くまで開いています。\"],\n    [\"HB00000000000002\", \"Before you start the practical, please read all the safety instructions carefully.\", \"実習を始める前に、安全上の注意をすべてよく読んでください。\"],\n    [\"HA00000000000003\", \"Our professor recommended a few articles to help us with the essay.\", \"教授は小論文の助けになる論文をいくつか勧めてくれました。\"],\n    [\"HB00000000000004\", \"Free tutoring in maths and writing is available at the learning centre.\", \"ラーニングセンターでは、数学とライティングの無料個別指導が受けられます。\"],\n    [\"HA00000000000005\", \"The museum is famous for its collection of paintings by local artists.\", \"その美術館は地元の画家の作品のコレクションで有名です。\"],\n    [\"HB00000000000006\", \"If the weather is bad, the outdoor concert will be moved inside.\", \"天気が悪ければ、野外コンサートは屋内で行われます。\"],\n    [\"HA00000000000007\", \"This new research suggests that sleep plays an important role in memory.\", \"この新しい研究は、睡眠が記憶に重要な役割を果たすことを示しています。\"],\n    [\"HB00000000000008\", \"Write your name and candidate number at the top of the page.\", \"ページの一番上に、名前と受験番号を書いてください。\"],\n    [\"HA00000000000009\", \"The campus bookstore sells used textbooks for much less than new ones.\", \"大学の書店では、中古の教科書を新品よりずっと安く売っています。\"],\n    [\"HB00000000000010\", \"Many ancient cities were built near rivers because people needed fresh water.\", \"人々は真水を必要としていたため、多くの古代都市は川の近くに作られました。\"]\n  ],\n  \"13\": [\n    [\"IA00000000000001\", \"The career fair will take place in the main gym next Friday afternoon.\", \"就職説明会は来週金曜日の午後、メイン体育館で行われます。\"],\n    [\"IB00000000000002\", \"Students who want to change their course should speak to their personal tutor.\", \"学科を変えたい学生は、担当の指導教員に相談してください。\"],\n    [\"IA00000000000003\", \"The professor explained that the experiment failed because the samples were too warm.\", \"教授は、サンプルの温度が高すぎたので実験が失敗したと説明しました。\"],\n    [\"IB00000000000004\", \"Please do not eat or drink while you are in the reading room.\", \"閲覧室では飲食をしないでください。\"],\n    [\"IA00000000000005\", \"This painting was created centuries ago by an artist whose name is unknown.\", \"この絵は何世紀も前に、名前の知られていない画家によって描かれました。\"],\n    [\"IB00000000000006\", \"You can book a group study room online through the main library website.\", \"グループ学習室は、中央図書館のウェブサイトからオンラインで予約できます。\"],\n    [\"IA00000000000007\", \"Bees play an important role in helping many kinds of plants produce fruit.\", \"ハチは多くの種類の植物が実をつけるのを助ける重要な役割を担っています。\"],\n    [\"IB00000000000008\", \"The new science building was designed to use less energy than older buildings.\", \"新しい理学部棟は、古い建物より使うエネルギーが少なくなるよう設計されました。\"],\n    [\"IA00000000000009\", \"If you miss a class, you can ask a classmate for their notes.\", \"授業を休んだら、クラスメートにノートを見せてもらうよう頼めます。\"],\n    [\"IB00000000000010\", \"The guided tour of the old campus lasts about an hour in total.\", \"旧キャンパスのガイドツアーは全部で約1時間です。\"]\n  ],\n  \"14\": [\n    [\"JA00000000000001\", \"The library offers free workshops on how to find reliable sources for research papers.\", \"図書館では、研究論文のための信頼できる情報源の探し方について無料のワークショップを開いています。\"],\n    [\"JB00000000000002\", \"Students living in halls must keep the noise down late at night on weekdays.\", \"寮に住む学生は、平日の夜遅くは静かにしなければなりません。\"],\n    [\"JA00000000000003\", \"Our professor said that the final exam will cover everything we studied this semester.\", \"教授は、期末試験は今学期に学んだことすべてが範囲だと言いました。\"],\n    [\"JB00000000000004\", \"Before you leave the laboratory, make sure that all the equipment is turned off.\", \"実験室を出る前に、すべての機器の電源が切れていることを確認してください。\"],\n    [\"JA00000000000005\", \"The new exhibit shows how people lived in this region thousands of years ago.\", \"新しい展示は、何千年も前にこの地域で人々がどのように暮らしていたかを紹介しています。\"],\n    [\"JB00000000000006\", \"Many students find it helpful to revise their notes right after each lecture ends.\", \"多くの学生は、毎回の講義が終わった直後にノートを復習すると役に立つと感じています。\"],\n    [\"JA00000000000007\", \"The city built a new bridge so people could cross the river more easily.\", \"市は、人々がもっと楽に川を渡れるように新しい橋を建設しました。\"],\n    [\"JB00000000000008\", \"To join the volunteer programme, please fill in the online application form by Friday.\", \"ボランティアプログラムに参加するには、金曜日までにオンラインの申込書に記入してください。\"],\n    [\"JA00000000000009\", \"Some desert plants store water in their thick leaves to survive long dry seasons.\", \"砂漠の植物の中には、長い乾季を生き抜くために厚い葉に水を蓄えるものがあります。\"],\n    [\"JB00000000000010\", \"The student union is planning a big festival to celebrate the end of term.\", \"学生自治会は、学期の終わりを祝う大きなお祭りを計画しています。\"]\n  ],\n  \"15\": [\n    [\"KA00000000000001\", \"The library will be closed for repairs next week, so please return your books early.\", \"図書館は来週修理のため休館するので、本は早めに返却してください。\"],\n    [\"KB00000000000002\", \"Students who need help choosing their modules can book an appointment with a tutor online.\", \"履修科目の選び方に助けが必要な学生は、オンラインでチューターとの面談を予約できます。\"],\n    [\"KA00000000000003\", \"The professor showed us a short video about how volcanoes form under the ocean floor.\", \"教授は、海底で火山がどのようにできるかについての短い動画を見せてくれました。\"],\n    [\"KB00000000000004\", \"Keep your student card with you because you will need it to enter the building.\", \"建物に入るのに必要なので、学生証を持ち歩いてください。\"],\n    [\"KA00000000000005\", \"The guide told us that the statue was discovered by farmers working in a field.\", \"ガイドは、その像は畑で働いていた農民によって発見されたと教えてくれました。\"],\n    [\"KB00000000000006\", \"Researchers found that students who exercise regularly tend to perform better on their final exams.\", \"研究者たちは、定期的に運動する学生は期末試験の成績が良い傾向にあることを発見しました。\"],\n    [\"KA00000000000007\", \"If you are interested in studying abroad, please come to the information session on Wednesday.\", \"留学に興味がある人は、水曜日の説明会に来てください。\"],\n    [\"KB00000000000008\", \"The new recycling programme has helped the university reduce the amount of rubbish it produces.\", \"新しいリサイクル制度のおかげで、大学は出すごみの量を減らすことができました。\"],\n    [\"KA00000000000009\", \"Many early maps were not accurate because explorers had no reliable way to measure distance.\", \"探検家たちには距離を正確に測る方法がなかったため、初期の地図の多くは不正確でした。\"],\n    [\"KB00000000000010\", \"The student newspaper is looking for writers who can report on football and campus events.\", \"学生新聞は、サッカーや学内行事を取材できる記者を募集しています。\"]\n  ],\n  \"16\": [\n    [\"LA00000000000001\", \"The guided tour of the historic campus lasts about an hour and ends at the library.\", \"歴史あるキャンパスのガイドツアーは約1時間で、図書館で終わります。\"],\n    [\"LB00000000000002\", \"During Freshers Week, new students meet their personal tutors and take a tour of the campus.\", \"新入生歓迎週間（フレッシャーズ・ウィーク）には、新入生は担当の指導教員と会い、キャンパスツアーに参加します。\"],\n    [\"LA00000000000003\", \"The professor asked each group to choose a topic and give a short presentation next week.\", \"教授は各グループにテーマを選んで、来週短い発表をするように言いました。\"],\n    [\"LB00000000000004\", \"The research team spent several months studying how climate change affects the birds in the mountains.\", \"研究チームは、気候変動が山にすむ鳥にどう影響するかを数か月かけて調べました。\"],\n    [\"LA00000000000005\", \"If you want to use the music practice rooms, you need to reserve them in advance.\", \"音楽練習室を使いたい場合は、事前に予約する必要があります。\"],\n    [\"LB00000000000006\", \"The lecturer explained that the ancient city was abandoned after the river slowly changed its course.\", \"講師は、川の流れが少しずつ変わった後、その古代都市は捨てられたと説明しました。\"],\n    [\"LA00000000000007\", \"Visitors may not take photos with a flash because the bright light can damage the paintings.\", \"強い光は絵画を傷めることがあるため、来館者はフラッシュ撮影ができません。\"],\n    [\"LB00000000000008\", \"Students who live off campus can use the east car park if they buy a permit.\", \"学外に住む学生は、許可証を買えば東駐車場を使えます。\"],\n    [\"LA00000000000009\", \"The cafeteria has started offering more healthy options because many students asked for them last year.\", \"昨年多くの学生から要望があったため、学食は健康的なメニューを増やし始めました。\"],\n    [\"LB00000000000010\", \"Scientists use satellites to track the movement of ice sheets and measure how fast they melt.\", \"科学者たちは人工衛星を使って氷床の動きを追跡し、どれくらいの速さで溶けているかを測っています。\"]\n  ]\n};\n// 前の版のサンプル文（イギリス英語版に入れ替える前の英文）。setup が入れ替えに使います\nconst OLD_SAMPLES = {\n  \"AB00000000000002\": \"Please sign your name here.\",\n  \"AB00000000000004\": \"The professor answered every question.\",\n  \"AB00000000000006\": \"The museum is closed tomorrow.\",\n  \"AB00000000000008\": \"I forgot my student card.\",\n  \"AB00000000000010\": \"Turn left at the fountain.\",\n  \"BB00000000000002\": \"Please keep your voice down here.\",\n  \"BB00000000000004\": \"You can print on this floor.\",\n  \"BB00000000000006\": \"She is studying biology this semester.\",\n  \"BB00000000000008\": \"The tour begins at the entrance.\",\n  \"BB00000000000010\": \"Lunch is served in the courtyard.\",\n  \"CB00000000000002\": \"Return your books to the front desk.\",\n  \"CB00000000000004\": \"Our group will present the project tomorrow.\",\n  \"CB00000000000006\": \"Free coffee is available in the lobby.\",\n  \"CB00000000000008\": \"The shuttle bus stops near the dormitory.\",\n  \"CB00000000000010\": \"The science building has a new elevator.\",\n  \"DB00000000000002\": \"The professor posted the reading list last night.\",\n  \"DB00000000000004\": \"The writing center helps students improve their essays.\",\n  \"DB00000000000006\": \"The library offers quiet rooms for group study.\",\n  \"DB00000000000008\": \"The exhibition shows paintings from the last century.\",\n  \"DB00000000000010\": \"The main cafeteria closes early on Friday afternoons.\",\n  \"EB00000000000002\": \"The new student center will open early next month.\",\n  \"EB00000000000004\": \"The museum has a large collection of ancient pottery.\",\n  \"EB00000000000006\": \"Campus residents can use the swimming pool for free.\",\n  \"EB00000000000008\": \"Please put your bags in the lockers before entering.\",\n  \"EB00000000000010\": \"Many plants in this garden come from tropical regions.\",\n  \"FB00000000000002\": \"Register for your classes before the end of this week.\",\n  \"FB00000000000004\": \"You can borrow several books at once with your card.\",\n  \"FB00000000000006\": \"The museum guide explained how these old machines once worked.\",\n  \"FB00000000000008\": \"The campus shuttle runs more often during the exam period.\",\n  \"FB00000000000010\": \"This workshop teaches students how to write better cover letters.\",\n  \"GB00000000000002\": \"The professor will hold extra office hours before the final exam.\",\n  \"GB00000000000004\": \"The library has computers that you can use for your research.\",\n  \"GB00000000000006\": \"Please leave your wet umbrella at the entrance of the gallery.\",\n  \"GB00000000000008\": \"Many birds fly south in the fall to find warmer weather.\",\n  \"GB00000000000010\": \"The theater club is always looking for new members to join.\",\n  \"HB00000000000002\": \"Before you start the experiment, please read all the safety instructions carefully.\",\n  \"HB00000000000004\": \"Free tutoring in math and writing is available at the learning center.\",\n  \"HB00000000000008\": \"Write your name and student number at the top of the page.\",\n  \"IB00000000000002\": \"Students who want to change their major should talk to an academic advisor.\",\n  \"IB00000000000006\": \"You can reserve a group study room online through the main library website.\",\n  \"JB00000000000002\": \"Students living in the dormitory must observe quiet hours late at night on weekdays.\",\n  \"JB00000000000006\": \"Many students find it helpful to review their notes right after each lecture ends.\",\n  \"JB00000000000008\": \"To join the volunteer program, please fill out the online application form by Friday.\",\n  \"JB00000000000010\": \"The student council is planning a festival to celebrate the end of the year.\",\n  \"KB00000000000002\": \"Students who need help choosing their classes can make an appointment with an advisor online.\",\n  \"KB00000000000008\": \"The new recycling program has helped the university reduce the amount of waste it produces.\",\n  \"KB00000000000010\": \"The student newspaper is looking for writers who can report on sports and campus events.\",\n  \"LB00000000000002\": \"During the orientation, new students will meet their advisors and take a tour of the campus.\",\n  \"LB00000000000006\": \"The professor explained that the ancient city was abandoned after the river slowly changed its course.\",\n  \"LB00000000000008\": \"Students who live off campus can park in the east lot if they buy a permit.\"\n};\n\n/** スプレッドシートを開いたときにメニューを追加します */\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu('Repeat Ladder')\n    .addItem('初期設定・更新（シートを作る）', 'setup')\n    .addItem('空欄にIDをつける', 'fillIds')\n    .addItem('語数とIDをチェック', 'checkSheets')\n    .addToUi();\n}\n\n/** シートを作る・前の形から更新する（何回実行しても大丈夫） */\nfunction setup() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let added = 0;\n  let migrated = 0;\n  let newIds = 0;\n  let refreshed = 0;\n\n  LEVELS.forEach(function (n) {\n    const name = String(n);\n    let sh = ss.getSheetByName(name);\n    if (!sh) sh = ss.insertSheet(name);\n    if (sh.getLastRow() === 0) {\n      writeLevelHeader_(sh, n);\n      const rows = (SAMPLES[name] || []).map(function (p) { return [p[0], p[1], p[2]]; });\n      if (rows.length) {\n        sh.getRange(2, 1, rows.length, 3).setValues(rows);\n        added += rows.length;\n      }\n    } else if (!isV2Level_(sh)) {\n      migrated += migrateLevel_(sh, n);\n    }\n    refreshed += refreshSamples_(sh, n);\n  });\n  levelSheets_().forEach(function (x) {\n    if (LEVELS.indexOf(x.n) < 0 && x.sh.getLastRow() > 0 && !isV2Level_(x.sh)) migrated += migrateLevel_(x.sh, x.n);\n    newIds += assignIds_(x.sh, x.n);\n  });\n\n  const mistakes = ensureMistakeSheet_(ss);\n  const log = ensureLogSheet_(ss);\n\n  // 並び順：5, 6, … 16, 間違いログ, 記録\n  let pos = 1;\n  LEVELS.forEach(function (n) {\n    ss.setActiveSheet(ss.getSheetByName(String(n)));\n    ss.moveActiveSheet(pos++);\n  });\n  ss.setActiveSheet(mistakes);\n  ss.moveActiveSheet(pos++);\n  ss.setActiveSheet(log);\n  ss.moveActiveSheet(pos++);\n\n  // 最初からある空の「シート1」を消す\n  ss.getSheets().forEach(function (sh) {\n    if (/^(シート|Sheet)\\d+$/.test(sh.getName()) && sh.getLastRow() === 0 && sh.getLastColumn() === 0 && ss.getSheets().length > 1) {\n      ss.deleteSheet(sh);\n    }\n  });\n\n  ss.setActiveSheet(ss.getSheetByName('5'));\n  const parts = [];\n  if (added) parts.push('サンプル文を ' + added + ' 文入れました');\n  if (migrated) parts.push(migrated + ' 文にID列を追加しました');\n  if (refreshed) parts.push('サンプル文 ' + refreshed + ' 文をイギリス英語版に入れ替えました');\n  if (newIds) parts.push(newIds + ' 文に新しいIDをつけました');\n  const msg = '準備できました。' + (parts.length ? parts.join('。') + '。' : '') + '（v' + VERSION + '）';\n  ss.toast(msg, 'Repeat Ladder', 10);\n  Logger.log(msg);\n}\n\n/** ID欄が空、または「A」「B」だけの行にIDをつけます */\nfunction fillIds() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let n = 0;\n  levelSheets_().forEach(function (x) { n += assignIds_(x.sh, x.n); });\n  const msg = n + ' 文にIDをつけました。';\n  ss.toast(msg, 'Repeat Ladder', 8);\n  Logger.log(msg);\n}\n\n/** 語数が合わない英文を黄色に、重複・形のおかしいIDをオレンジにします */\nfunction checkSheets() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let checked = 0;\n  let badCount = 0;\n  let badIds = 0;\n  levelSheets_().forEach(function (x) {\n    const sh = x.sh;\n    const last = sh.getLastRow();\n    if (last < 2) return;\n    const v2 = isV2Level_(sh);\n    const enCol = v2 ? 2 : 1;\n    const enRange = sh.getRange(2, enCol, last - 1, 1);\n    const enColors = enRange.getDisplayValues().map(function (r) {\n      const s = String(r[0]).trim();\n      if (!s) return [null];\n      checked++;\n      if (s.split(/\\s+/).length !== x.n) { badCount++; return ['#ffe08a']; }\n      return [null];\n    });\n    enRange.setBackgrounds(enColors);\n    if (!v2) return;\n    const idRange = sh.getRange(2, 1, last - 1, 1);\n    const ids = idRange.getDisplayValues().map(function (r) { return String(r[0]).trim().toUpperCase(); });\n    const seen = {};\n    ids.forEach(function (id) { if (id) seen[id] = (seen[id] || 0) + 1; });\n    const letter = levelLetter_(x.n);\n    idRange.setBackgrounds(ids.map(function (id) {\n      if (!id) return [null];\n      if (!ID_RE.test(id) || id.charAt(0) !== letter || seen[id] > 1) { badIds++; return ['#ffc9a8']; }\n      return [null];\n    }));\n  });\n  const msg = checked + ' 文をチェックしました。語数が合わない文：' + badCount + '（黄色）／ IDの重複や形の間違い：' + badIds + '（オレンジ）';\n  ss.toast(msg, 'Repeat Ladder', 12);\n  Logger.log(msg);\n}\n\n/** 前の版のメニューから呼ばれても動くように残しています */\nfunction checkWordCounts() { checkSheets(); }\n\n/** アプリが文を読み込むときに呼ばれます */\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  try {\n    if ((p.action || 'sentences') === 'sentences') {\n      const lock = LockService.getScriptLock();\n      try {\n        lock.waitLock(15000);\n        levelSheets_().forEach(function (x) { assignIds_(x.sh, x.n); });\n      } catch (lockErr) {\n        // ロックが取れなくても、文の読み込みは続けます\n      } finally {\n        try { lock.releaseLock(); } catch (ignore) {}\n      }\n      return json_({ ok: true, app: 'repeat-ladder', version: VERSION, levels: readSentences_() });\n    }\n    return json_({ ok: true, app: 'repeat-ladder', version: VERSION });\n  } catch (err) {\n    return json_({ ok: false, version: VERSION, error: String(err) });\n  }\n}\n\n/** アプリが練習の記録を書き込むときに呼ばれます */\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(20000);\n    const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');\n    const records = Array.isArray(body.records) ? body.records.slice(0, 200) : [];\n    const includePerfect = body.mistakesIncludePerfect === true;\n    if (!records.length) return json_({ ok: true, version: VERSION, saved: 0, mistakes: 0, ids: [] });\n\n    const ss = SpreadsheetApp.getActiveSpreadsheet();\n    const log = ensureLogSheet_(ss);\n    const mistakeSheet = ensureMistakeSheet_(ss);\n    const hist = readHistory_(log);\n    const ids = [];\n    const logRows = [];\n    const mistakeRows = [];\n\n    records.forEach(function (r) {\n      const recId = String(r.id || '');\n      if (recId) ids.push(recId);\n      if (recId && hist.recIds[recId]) return; // 送信済み（再送）なのでスキップ\n      if (recId) hist.recIds[recId] = true;\n\n      let t = new Date(r.time || Date.now());\n      if (isNaN(t.getTime())) t = new Date();\n      const sid = String(r.sentenceId || '').trim().toUpperCase();\n      const target = String(r.target || '').trim();\n      const accent = (r.accent === 'A' || r.accent === 'B') ? r.accent : (ID_RE.test(sid) ? sid.charAt(1) : '');\n      const perfect = r.perfect === true;\n      const prev = pastCounts_(hist, sid, target);\n\n      logRows.push([\n        t,\n        Number(r.level) || '',\n        safe_(target),\n        safe_(r.heard),\n        Number(r.correct) || 0,\n        Number(r.total) || 0,\n        perfect ? '◎' : '',\n        safe_(Array.isArray(r.missed) ? r.missed.join(', ') : r.missed),\n        safe_(r.mode),\n        safe_(recId),\n        safe_(sid),\n        accent ? ACCENT_NAMES[accent] : ''\n      ]);\n      if (!perfect || includePerfect) {\n        mistakeRows.push([\n          t,\n          Number(r.level) || '',\n          safe_(target),\n          safe_(r.heard),\n          Number(r.correct) || 0,\n          perfect ? '◎' : '×',\n          prev.perfects,\n          prev.attempts,\n          safe_(sid)\n        ]);\n      }\n      addHistory_(hist, sid, target, perfect);\n    });\n\n    if (logRows.length) log.getRange(log.getLastRow() + 1, 1, logRows.length, LOG_HEADERS.length).setValues(logRows);\n    if (mistakeRows.length) mistakeSheet.getRange(mistakeSheet.getLastRow() + 1, 1, mistakeRows.length, MISTAKE_HEADERS.length).setValues(mistakeRows);\n    return json_({ ok: true, version: VERSION, saved: logRows.length, mistakes: mistakeRows.length, ids: ids });\n  } catch (err) {\n    return json_({ ok: false, version: VERSION, error: String(err) });\n  } finally {\n    try { lock.releaseLock(); } catch (ignore) {}\n  }\n}\n\n// ───────────── ここから下は内部で使う関数です ─────────────\n\nfunction levelSheets_() {\n  return SpreadsheetApp.getActiveSpreadsheet().getSheets()\n    .map(function (sh) { return { sh: sh, name: sh.getName().trim() }; })\n    .filter(function (x) { return /^\\d{1,2}$/.test(x.name); })\n    .map(function (x) { return { sh: x.sh, n: Number(x.name) }; });\n}\n\nfunction levelLetter_(n) {\n  const i = Number(n) - 5;\n  return (i >= 0 && i < 26) ? String.fromCharCode(65 + i) : 'Z';\n}\n\nfunction makeId_(n, accent, seq) {\n  return levelLetter_(n) + accent + ('00000000000000' + seq).slice(-14);\n}\n\nfunction isV2Level_(sh) {\n  return String(sh.getRange(1, 1).getDisplayValue()).trim().toUpperCase() === 'ID';\n}\n\nfunction writeLevelHeader_(sh, n) {\n  sh.getRange(1, 1, 1, 3)\n    .setValues([['ID', '英文（' + n + '語）', '日本語訳（なくてもOK）']])\n    .setFontWeight('bold')\n    .setBackground('#e3eef0');\n  sh.setFrozenRows(1);\n  sh.setColumnWidth(1, 170);\n  sh.setColumnWidth(2, 560);\n  sh.setColumnWidth(3, 420);\n}\n\n/** 前の形（A列＝英文）のシートに、ID列を差し込みます */\nfunction migrateLevel_(sh, n) {\n  sh.insertColumnBefore(1);\n  writeLevelHeader_(sh, n);\n  const last = sh.getLastRow();\n  if (last < 2) return 0;\n  const sampleIds = {};\n  (SAMPLES[String(n)] || []).forEach(function (p) { sampleIds[String(p[1]).trim()] = p[0]; });\n  Object.keys(OLD_SAMPLES).forEach(function (id) { if (id.charAt(0) === levelLetter_(n)) sampleIds[OLD_SAMPLES[id]] = id; });\n  const used = {};\n  const out = sh.getRange(2, 2, last - 1, 1).getDisplayValues().map(function (r) {\n    const id = sampleIds[String(r[0]).trim()];\n    if (id && !used[id]) { used[id] = true; return [id]; }\n    return [''];\n  });\n  sh.getRange(2, 1, out.length, 1).setValues(out);\n  return out.length;\n}\n\n/** 手を加えていない前の版のサンプル文（IDと英文が前のまま）を、新しいサンプル文に入れ替えます */\nfunction refreshSamples_(sh, n) {\n  const last = sh.getLastRow();\n  if (last < 2 || !isV2Level_(sh)) return 0;\n  const byId = {};\n  (SAMPLES[String(n)] || []).forEach(function (p) { byId[p[0]] = p; });\n  const range = sh.getRange(2, 1, last - 1, 3);\n  const vals = range.getValues();\n  let changed = 0;\n  vals.forEach(function (r) {\n    const id = String(r[0]).trim().toUpperCase();\n    const old = OLD_SAMPLES[id];\n    if (old && byId[id] && String(r[1]).trim() === old) {\n      r[1] = byId[id][1];\n      r[2] = byId[id][2];\n      changed++;\n    }\n  });\n  if (changed) range.setValues(vals);\n  return changed;\n}\n\n/** 空欄・「A」「B」だけのID欄に、続きの番号でIDをつけます */\nfunction assignIds_(sh, n) {\n  const last = sh.getLastRow();\n  if (last < 2 || !isV2Level_(sh)) return 0;\n  const vals = sh.getRange(2, 1, last - 1, 2).getDisplayValues();\n  const letter = levelLetter_(n);\n  let maxSeq = 0;\n  vals.forEach(function (r) {\n    const id = String(r[0]).trim().toUpperCase();\n    if (ID_RE.test(id) && id.charAt(0) === letter) maxSeq = Math.max(maxSeq, Number(id.slice(2)));\n  });\n  let changed = 0;\n  const out = vals.map(function (r) {\n    const raw = String(r[0]).trim();\n    const en = String(r[1]).trim();\n    if (!en) return [raw];\n    if (ID_RE.test(raw.toUpperCase())) {\n      if (raw !== raw.toUpperCase()) changed++;\n      return [raw.toUpperCase()];\n    }\n    const accent = accentFromHint_(raw);\n    if (!accent) return [raw]; // 何か別の文字が書いてあるときは、そのままにします\n    maxSeq++;\n    changed++;\n    return [makeId_(n, accent, maxSeq)];\n  });\n  if (changed) sh.getRange(2, 1, out.length, 1).setValues(out);\n  return changed;\n}\n\nfunction accentFromHint_(raw) {\n  const s = String(raw).trim().toUpperCase();\n  if (s === '' || s === 'A' || s === 'US' || s === 'アメリカ') return 'A';\n  if (s === 'B' || s === 'UK' || s === 'GB' || s === 'イギリス') return 'B';\n  return '';\n}\n\nfunction readSentences_() {\n  const out = {};\n  levelSheets_().forEach(function (x) {\n    const sh = x.sh;\n    const last = sh.getLastRow();\n    const key = String(x.n);\n    if (last < 2) { out[key] = []; return; }\n    if (isV2Level_(sh)) {\n      out[key] = sh.getRange(2, 1, last - 1, 3).getDisplayValues()\n        .map(function (r) { return [String(r[0]).trim().toUpperCase(), String(r[1]).trim(), String(r[2]).trim()]; })\n        .filter(function (r) { return r[1] !== ''; });\n    } else {\n      out[key] = sh.getRange(2, 1, last - 1, 2).getDisplayValues()\n        .map(function (r) { return ['', String(r[0]).trim(), String(r[1]).trim()]; })\n        .filter(function (r) { return r[1] !== ''; });\n    }\n  });\n  return out;\n}\n\nfunction ensureMistakeSheet_(ss) {\n  let sh = ss.getSheetByName(MISTAKE_SHEET_NAME);\n  if (!sh) sh = ss.insertSheet(MISTAKE_SHEET_NAME);\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, MISTAKE_HEADERS.length)\n      .setValues([MISTAKE_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#f6dcd7');\n    sh.setFrozenRows(1);\n    [150, 50, 420, 420, 110, 80, 140, 120, 170].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n    sh.getRange('A2:A').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n  }\n  return sh;\n}\n\nfunction ensureLogSheet_(ss) {\n  let sh = ss.getSheetByName(LOG_SHEET_NAME);\n  if (!sh) sh = ss.insertSheet(LOG_SHEET_NAME);\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, LOG_HEADERS.length)\n      .setValues([LOG_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#f6ead5');\n    sh.setFrozenRows(1);\n    [150, 50, 420, 420, 80, 80, 80, 200, 70, 120, 170, 100].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n    sh.getRange('A2:A').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n    return sh;\n  }\n  // 前の版の見出し（10列）に「文ID」「発音」を足します\n  const head = sh.getRange(1, 1, 1, LOG_HEADERS.length).getDisplayValues()[0];\n  let fixed = false;\n  const newHead = head.map(function (h, i) {\n    if (i === 9 && String(h).trim() === 'ID（自動）') { fixed = true; return LOG_HEADERS[i]; }\n    if (!String(h).trim()) { fixed = true; return LOG_HEADERS[i]; }\n    return h;\n  });\n  if (fixed) sh.getRange(1, 1, 1, LOG_HEADERS.length).setValues([newHead]).setFontWeight('bold');\n  return sh;\n}\n\n/** 「記録」シートから、文ごとの過去の回数を数えます */\nfunction readHistory_(log) {\n  const h = { recIds: {}, byId: {}, byText: {} };\n  const last = log.getLastRow();\n  if (last < 2) return h;\n  log.getRange(2, 1, last - 1, LOG_HEADERS.length).getValues().forEach(function (r) {\n    const target = String(r[2] || '').trim();\n    const perfect = String(r[6] || '').trim() === '◎';\n    const recId = String(r[9] || '').trim();\n    const sid = String(r[10] || '').trim().toUpperCase();\n    if (recId) h.recIds[recId] = true;\n    if (sid) bump_(h.byId, sid, perfect);\n    else if (target) bump_(h.byText, target, perfect);\n  });\n  return h;\n}\n\nfunction bump_(map, key, perfect) {\n  const c = map[key] || (map[key] = { attempts: 0, perfects: 0 });\n  c.attempts++;\n  if (perfect) c.perfects++;\n}\n\n/** IDで数え、IDがなかった頃（v1）の記録は同じ英文で数えます */\nfunction pastCounts_(h, sid, target) {\n  const a = (sid && h.byId[sid]) || { attempts: 0, perfects: 0 };\n  const b = (target && h.byText[target]) || { attempts: 0, perfects: 0 };\n  return { attempts: a.attempts + b.attempts, perfects: a.perfects + b.perfects };\n}\n\nfunction addHistory_(h, sid, target, perfect) {\n  if (sid) bump_(h.byId, sid, perfect);\n  else if (target) bump_(h.byText, target, perfect);\n}\n\nfunction safe_(v) {\n  let s = (v === undefined || v === null) ? '' : String(v);\n  s = s.slice(0, 1000);\n  if (/^[=+\\-@]/.test(s)) s = \"'\" + s; // 数式として解釈されないように\n  return s;\n}\n\nfunction json_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
+  var GAS_CODE = "/**\n * Repeat Ladder ─ Googleスプレッドシート連携スクリプト（v3.1）\n *\n * 【v3.0 から v3.1 に更新するとき】（インタビューの答えを録音してGoogleドライブに保存するために必要です）\n *  1. 前のコードを全部消して、このコードを貼り付けて保存\n *  2. 関数「setup」を ▶実行。Googleドライブを使う許可を求められるので「許可」します\n *     （ドライブに「Repeat Ladder 録音」フォルダができ、「インタビュー回答」に録音・文字起こしの列が増えます）\n *  3. 「デプロイ > デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」（URLは変わりません）\n *\n * 【v2 から v3 に更新するとき】（インタビュー機能を使うために必要です）\n *  1. 前のコードを全部消して、このコードを貼り付けて保存\n *  2. 関数「setup」を ▶実行（シート「インタビュー問題」「インタビュー回答」が追加されます。今までの文と記録はそのまま残ります）\n *     ※ 初回は権限の確認がもう一度出ることがあります（下の「はじめて使うとき」の2番と同じように「許可」）\n *  3. 「デプロイ > デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」（URLは変わりません）\n *  4. スプレッドシートを開き直し、メニュー「Repeat Ladder > インタビュー：採点プログラム用の合言葉」で合言葉を表示して、\n *     Windowsの採点プログラムに貼り付けます\n *\n * 【はじめて使うとき】\n *  1. このコードを全部、スプレッドシートの「拡張機能 > Apps Script」に貼り付けて保存（Ctrl+S／⌘+S）\n *  2. 上のメニューで関数「setup」を選んで ▶実行\n *     （初回だけ「権限を確認」→ 自分のアカウント →「詳細」→「（安全ではないページ）に移動」→「許可」。\n *       チェックボックスが出たら「すべて選択」にしてから「続行」）\n *     → シート「5」〜「16」「間違いログ」「記録」ができて、サンプル文が入ります\n *  3. 右上の「デプロイ > 新しいデプロイ」→ 歯車アイコンで「ウェブアプリ」を選ぶ\n *       次のユーザーとして実行 ：自分\n *       アクセスできるユーザー ：全員\n *     →「デプロイ」→ 表示された「ウェブアプリのURL（最後が /exec）」をコピー\n *  4. アプリの「設定 > スプレッドシート連携」にURLを貼り付けて「接続する」\n *\n * 【前のコード（v1）から更新するとき】\n *  1. 前のコードを全部消して、このコードを貼り付けて保存\n *  2. 関数「setup」を ▶実行（ID列と「間違いログ」が追加されます。今までの文と記録はそのまま残ります）\n *  3. 「デプロイ > デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」\n *     （URLは変わりません。アプリ側の設定はそのままでOK）\n *\n * 【シートの形】\n *  ・シート「5」〜「16」：A列＝ID、B列＝英文、C列＝日本語訳（なくてもOK）。2行目から1行に1文\n *  ・IDは16文字：1文字目＝語数（A=5語, B=6語 … L=16語）、2文字目＝発音（A=アメリカ英語, B=イギリス英語）、\n *    残り14桁＝その語数のシートで作った順番。例：AA00000000000001 ＝ 5語・アメリカ英語・1番目\n *  ・ID欄を空にしておくか「A」「B」だけ書いておくと、アプリが文を読み込むときに自動でIDがつきます\n *    （空欄はアメリカ英語になります。あとから2文字目をBに変えればイギリス英語になります）\n *  ・「間違いログ」：パーフェクトでなかった答えが入ります（アプリの設定で、パーフェクトも入れられます）\n *  ・「記録」：すべての答えが入ります。間違いログの「過去〜回数」はこのシートから数えます\n *  ・イギリス英語の文（IDの2文字目がB）は、イギリス式のつづり・単語で書いて大丈夫です（colour, lift, term など）\n *  ・文を追加・変更しても、デプロイし直す必要はありません\n *  ・このコード自体を書き換えたときだけ、上の「更新するとき」の3番で新バージョンにします\n *  ・v2で作ったシートにこのコードで setup を実行すると、手を加えていないサンプル文が、イギリス英語版に入れ替わります\n *  ・ウェブアプリのURLは他の人に教えないでください（知っている人は文を読んだり、記録を書き込んだりできます）\n *\n * 【インタビュー（Interview & Speak）】\n *  ・「インタビュー問題」：1行に1セット。A列＝ID（空欄か A／B だけ書けば自動でつきます。V＋発音＋14桁）、\n *    B列＝テーマ、C列＝面接官の導入（なくてもOK）、D〜G列＝質問1〜4（質問1は必須。2〜4は空でも動きます）、H列＝メモ\n *  ・「インタビュー回答」：アプリで答えると、1問1行で「採点待ち」として入ります。\n *    Windowsの採点プログラムが採点すると「採点済み」になり、点数・コメント・改善例が入ります\n *  ・採点プログラムは合言葉（メニューで表示）を知っているときだけ、採点を書き込めます\n *  ・録音：アプリで録音した答えは、Googleドライブの「Repeat Ladder 録音」フォルダに1問1ファイルで保存され、\n *    「インタビュー回答」の「録音」列から聞けます。採点プログラムが Whisper で文字起こしし直して採点に使います\n */\n\nconst VERSION = 3;\nconst REVISION = '3.1';\nconst LEVELS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];\nconst MISTAKE_SHEET_NAME = '間違いログ';\nconst LOG_SHEET_NAME = '記録';\nconst MISTAKE_HEADERS = ['日時', '語数', 'お手本', '自分の答え', '当たっている語数', 'パーフェクト', '過去のパーフェクト回数', '過去にやった回数', 'ID'];\nconst LOG_HEADERS = ['日時', '語数', 'お手本の文', '聞き取られたあなたの声', '言えた語数', '全体の語数', 'パーフェクト', '抜けた語', 'モード', '記録ID（自動）', '文ID', '発音'];\nconst ACCENT_NAMES = { A: 'アメリカ英語', B: 'イギリス英語' };\nconst ID_RE = /^[A-Z][AB]\\d{14}$/;\nconst IV_Q_SHEET = 'インタビュー問題';\nconst IV_A_SHEET = 'インタビュー回答';\nconst IV_Q_HEADERS = ['ID', 'テーマ', '面接官の導入（なくてもOK）', '質問1', '質問2', '質問3', '質問4', 'メモ（日本語訳など）'];\nconst IV_A_HEADERS = ['受付ID', '日時', '問題ID', '発音', 'テーマ', '質問番号', '質問', 'あなたの答え（音声認識）',\n  '回答時間（秒）', '話し始め（秒）', '語数', '1分あたりの語数', '状態', '点数（0〜5）', '内容', '言葉づかい', '流暢さ',\n  'コメント', '直したい表現', '改善例', '総合（0〜5）', 'バンド目安（1〜6）', '総合コメント', '次に意識すること', '採点日時', 'スレッドID',\n  '録音', '録音ID', '文字起こし（録音から）', '聞き取りにくかった語', '間の回数（1秒以上）', '最長の間（秒）', 'つなぎ言葉（um・uhなど）'];\nconst IV_A_WIDTHS = [130, 150, 170, 90, 180, 60, 320, 420, 70, 70, 60, 70, 80, 70, 50, 50, 50, 360, 320, 420, 70, 80, 360, 260, 150, 290,\n  80, 120, 420, 220, 80, 80, 90];\nconst IV = {};   // 見出し名 → 列番号（1から）\nIV_A_HEADERS.forEach(function (h, i) { IV[h] = i + 1; });\nconst IV_ID_RE = /^V[AB]\\d{14}$/;\nconst IV_STATUS = { WAIT: '採点待ち', WORK: '採点中', DONE: '採点済み', ERR: 'エラー' };\nconst IV_STALE_MINUTES = 20;   // 採点中のまま止まったものは、この時間がたつと採点し直します\nconst AUDIO_FOLDER_NAME = 'Repeat Ladder 録音';\nconst AUDIO_MAX_BYTES = 25 * 1024 * 1024;\nconst AUDIO_TYPES = { 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a', 'audio/aac': 'aac', 'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'audio/x-wav': 'wav' };\nconst IV_SESSION_RE = /^IV[A-Z0-9]{6,24}$/;\nconst DRIVE_ID_RE = /^[A-Za-z0-9_-]{10,120}$/;\nconst SAMPLES = {\n  \"5\": [\n    [\"AA00000000000001\", \"The library opens early today.\", \"今日は図書館が早く開きます。\"],\n    [\"AB00000000000002\", \"Please queue at this desk.\", \"この窓口に並んでください。\"],\n    [\"AA00000000000003\", \"Our class starts after lunch.\", \"私たちの授業は昼食の後に始まります。\"],\n    [\"AB00000000000004\", \"The lecturer answered every question.\", \"講師はすべての質問に答えました。\"],\n    [\"AA00000000000005\", \"Students can borrow laptops here.\", \"学生はここでノートパソコンを借りられます。\"],\n    [\"AB00000000000006\", \"The lift is not working.\", \"エレベーターが動いていません。\"],\n    [\"AA00000000000007\", \"Bring a pencil to class.\", \"授業に鉛筆を持ってきてください。\"],\n    [\"AB00000000000008\", \"I forgot my mobile phone.\", \"携帯電話を忘れました。\"],\n    [\"AA00000000000009\", \"The cafeteria sells fresh sandwiches.\", \"学食では作りたてのサンドイッチを売っています。\"],\n    [\"AB00000000000010\", \"Turn left at the roundabout.\", \"ロータリー（環状交差点）で左に曲がってください。\"]\n  ],\n  \"6\": [\n    [\"BA00000000000001\", \"The bookstore is beside the gym.\", \"書店は体育館の隣にあります。\"],\n    [\"BB00000000000002\", \"Please queue outside the lecture theatre.\", \"大教室の外に並んでください。\"],\n    [\"BA00000000000003\", \"Our lab meeting starts at noon.\", \"研究室のミーティングは正午に始まります。\"],\n    [\"BB00000000000004\", \"Printers are on the ground floor.\", \"プリンターは1階にあります。\"],\n    [\"BA00000000000005\", \"The parking lot is almost full.\", \"駐車場はほぼ満車です。\"],\n    [\"BB00000000000006\", \"She is studying biology this term.\", \"彼女は今学期、生物学を勉強しています。\"],\n    [\"BA00000000000007\", \"Remember to submit your essay online.\", \"小論文をオンラインで提出するのを忘れないでください。\"],\n    [\"BB00000000000008\", \"Tours start from the car park.\", \"ツアーは駐車場から出発します。\"],\n    [\"BA00000000000009\", \"Many students live in the dormitory.\", \"多くの学生が寮に住んでいます。\"],\n    [\"BB00000000000010\", \"Lunch is served in the refectory.\", \"昼食は学生食堂で出されます。\"]\n  ],\n  \"7\": [\n    [\"CA00000000000001\", \"Study rooms must be reserved in advance.\", \"自習室は事前に予約が必要です。\"],\n    [\"CB00000000000002\", \"Return your books to the issue desk.\", \"本は貸出カウンターに返却してください。\"],\n    [\"CA00000000000003\", \"The lecture moved to a larger room.\", \"講義はもっと広い教室に移りました。\"],\n    [\"CB00000000000004\", \"Our seminar group presents its project tomorrow.\", \"私たちのゼミのグループは、明日プロジェクトを発表します。\"],\n    [\"CA00000000000005\", \"The gallery is on the second floor.\", \"ギャラリーは2階にあります。\"],\n    [\"CB00000000000006\", \"Free tea is available in the foyer.\", \"ロビーで無料の紅茶が飲めます。\"],\n    [\"CA00000000000007\", \"I often study in the library alone.\", \"私はよく図書館で一人で勉強します。\"],\n    [\"CB00000000000008\", \"The bus stops just outside our halls.\", \"バスは私たちの寮のすぐ外に止まります。\"],\n    [\"CA00000000000009\", \"You should check your email every morning.\", \"毎朝メールを確認したほうがいいです。\"],\n    [\"CB00000000000010\", \"The science building has a new lift.\", \"理学部棟には新しいエレベーターがあります。\"]\n  ],\n  \"8\": [\n    [\"DA00000000000001\", \"Please turn off your phone during the lecture.\", \"講義中は携帯電話の電源を切ってください。\"],\n    [\"DB00000000000002\", \"The lecturer posted the reading list last night.\", \"講師は昨夜、課題図書のリストを掲載しました。\"],\n    [\"DA00000000000003\", \"Visitors must wear a badge inside the laboratory.\", \"来訪者は実験室の中でバッジを着けなければなりません。\"],\n    [\"DB00000000000004\", \"The writing centre helps students improve their essays.\", \"ライティングセンターは学生が小論文を上達させる手助けをします。\"],\n    [\"DA00000000000005\", \"Our biology class will visit the botanical garden.\", \"生物学の授業で植物園を訪れます。\"],\n    [\"DB00000000000006\", \"The library has quiet rooms for exam revision.\", \"図書館には試験勉強用の静かな部屋があります。\"],\n    [\"DA00000000000007\", \"You can find more information on the website.\", \"詳しい情報はウェブサイトで見られます。\"],\n    [\"DB00000000000008\", \"This exhibition shows colourful paintings by local artists.\", \"この展覧会では、地元の画家によるカラフルな絵を展示しています。\"],\n    [\"DA00000000000009\", \"Most freshmen take this course in the spring.\", \"ほとんどの1年生は春にこの科目を履修します。\"],\n    [\"DB00000000000010\", \"The main canteen closes early on Friday afternoons.\", \"中央食堂は金曜日の午後は早く閉まります。\"]\n  ],\n  \"9\": [\n    [\"EA00000000000001\", \"If you have any questions, please ask a librarian.\", \"質問があれば、司書に聞いてください。\"],\n    [\"EB00000000000002\", \"The new student centre will open early next month.\", \"新しい学生センターは来月初めにオープンします。\"],\n    [\"EA00000000000003\", \"Remember to bring your lab coat and safety glasses.\", \"白衣と保護メガネを忘れずに持ってきてください。\"],\n    [\"EB00000000000004\", \"The museum has a large collection of Roman jewellery.\", \"その博物館は、ローマ時代の宝飾品を数多く所蔵しています。\"],\n    [\"EA00000000000005\", \"Our professor gave us an extra week to finish.\", \"教授は仕上げるための期間をもう1週間くれました。\"],\n    [\"EB00000000000006\", \"Students in halls can use the pool for free.\", \"寮に住む学生はプールを無料で使えます。\"],\n    [\"EA00000000000007\", \"The guide will explain the history of this building.\", \"ガイドがこの建物の歴史を説明します。\"],\n    [\"EB00000000000008\", \"Please leave your rucksacks in the lockers before entering.\", \"入る前に、リュックをロッカーに入れてください。\"],\n    [\"EA00000000000009\", \"The concert in the music hall begins after dinner.\", \"音楽ホールでのコンサートは夕食の後に始まります。\"],\n    [\"EB00000000000010\", \"Many plants in this garden flower in the autumn.\", \"この庭園の植物の多くは、秋に花を咲かせます。\"]\n  ],\n  \"10\": [\n    [\"FA00000000000001\", \"The library will be closed on Saturday for the holiday.\", \"図書館は祝日のため土曜日は休館です。\"],\n    [\"FB00000000000002\", \"Enrol on your modules before the end of this week.\", \"今週末までに履修科目の登録をしてください。\"],\n    [\"FA00000000000003\", \"The professor asked us to read the next chapter carefully.\", \"教授は次の章を注意深く読むように言いました。\"],\n    [\"FB00000000000004\", \"You can renew your library books online for another fortnight.\", \"図書館の本は、オンラインでさらに2週間延長できます。\"],\n    [\"FA00000000000005\", \"Our research team collected water samples from the nearby lake.\", \"私たちの研究チームは近くの湖から水のサンプルを採取しました。\"],\n    [\"FB00000000000006\", \"The museum guide organised a short tour for our group.\", \"博物館のガイドが、私たちのグループのために短いツアーを企画してくれました。\"],\n    [\"FA00000000000007\", \"Please make sure your phone is silent during the performance.\", \"公演中は携帯電話を必ずマナーモードにしてください。\"],\n    [\"FB00000000000008\", \"The bus timetable changes during the exam period each term.\", \"バスの時刻表は、毎学期の試験期間中に変わります。\"],\n    [\"FA00000000000009\", \"Some animals in the desert sleep during the hottest hours.\", \"砂漠の動物の中には、最も暑い時間帯に眠るものがいます。\"],\n    [\"FB00000000000010\", \"This workshop shows students how to write a better CV.\", \"このワークショップでは、より良い履歴書の書き方を学べます。\"]\n  ],\n  \"11\": [\n    [\"GA00000000000001\", \"If you lose your student card, please report it right away.\", \"学生証をなくしたら、すぐに届け出てください。\"],\n    [\"GB00000000000002\", \"The lecturer will hold extra office hours before the final exams.\", \"講師は期末試験の前に、追加のオフィスアワーを設けます。\"],\n    [\"GA00000000000003\", \"Our class is going to visit a local farm next Thursday.\", \"私たちのクラスは来週の木曜日に地元の農場を訪問します。\"],\n    [\"GB00000000000004\", \"The library has computers that you can use for your coursework.\", \"図書館には、課題に使えるパソコンがあります。\"],\n    [\"GA00000000000005\", \"Scientists believe that this mountain was formed millions of years ago.\", \"科学者たちは、この山は何百万年も前にできたと考えています。\"],\n    [\"GB00000000000006\", \"Please leave your wet coat and umbrella in the cloakroom downstairs.\", \"ぬれたコートと傘は、下の階のクロークに預けてください。\"],\n    [\"GA00000000000007\", \"The dining hall offers vegetarian meals for students who request them.\", \"食堂では希望する学生にベジタリアン向けの食事を用意しています。\"],\n    [\"GB00000000000008\", \"Many birds fly south in the autumn to find warmer weather.\", \"多くの鳥は秋になると、より暖かい気候を求めて南へ飛んでいきます。\"],\n    [\"GA00000000000009\", \"You need to sign up online before joining the campus tour.\", \"キャンパスツアーに参加する前に、オンラインで申し込む必要があります。\"],\n    [\"GB00000000000010\", \"The theatre society is always looking for new members to join.\", \"演劇サークルは、いつでも新しいメンバーを募集しています。\"]\n  ],\n  \"12\": [\n    [\"HA00000000000001\", \"The library stays open later during the last weeks of the semester.\", \"学期の最後の数週間は、図書館が遅くまで開いています。\"],\n    [\"HB00000000000002\", \"Before you start the practical, please read all the safety instructions carefully.\", \"実習を始める前に、安全上の注意をすべてよく読んでください。\"],\n    [\"HA00000000000003\", \"Our professor recommended a few articles to help us with the essay.\", \"教授は小論文の助けになる論文をいくつか勧めてくれました。\"],\n    [\"HB00000000000004\", \"Free tutoring in maths and writing is available at the learning centre.\", \"ラーニングセンターでは、数学とライティングの無料個別指導が受けられます。\"],\n    [\"HA00000000000005\", \"The museum is famous for its collection of paintings by local artists.\", \"その美術館は地元の画家の作品のコレクションで有名です。\"],\n    [\"HB00000000000006\", \"If the weather is bad, the outdoor concert will be moved inside.\", \"天気が悪ければ、野外コンサートは屋内で行われます。\"],\n    [\"HA00000000000007\", \"This new research suggests that sleep plays an important role in memory.\", \"この新しい研究は、睡眠が記憶に重要な役割を果たすことを示しています。\"],\n    [\"HB00000000000008\", \"Write your name and candidate number at the top of the page.\", \"ページの一番上に、名前と受験番号を書いてください。\"],\n    [\"HA00000000000009\", \"The campus bookstore sells used textbooks for much less than new ones.\", \"大学の書店では、中古の教科書を新品よりずっと安く売っています。\"],\n    [\"HB00000000000010\", \"Many ancient cities were built near rivers because people needed fresh water.\", \"人々は真水を必要としていたため、多くの古代都市は川の近くに作られました。\"]\n  ],\n  \"13\": [\n    [\"IA00000000000001\", \"The career fair will take place in the main gym next Friday afternoon.\", \"就職説明会は来週金曜日の午後、メイン体育館で行われます。\"],\n    [\"IB00000000000002\", \"Students who want to change their course should speak to their personal tutor.\", \"学科を変えたい学生は、担当の指導教員に相談してください。\"],\n    [\"IA00000000000003\", \"The professor explained that the experiment failed because the samples were too warm.\", \"教授は、サンプルの温度が高すぎたので実験が失敗したと説明しました。\"],\n    [\"IB00000000000004\", \"Please do not eat or drink while you are in the reading room.\", \"閲覧室では飲食をしないでください。\"],\n    [\"IA00000000000005\", \"This painting was created centuries ago by an artist whose name is unknown.\", \"この絵は何世紀も前に、名前の知られていない画家によって描かれました。\"],\n    [\"IB00000000000006\", \"You can book a group study room online through the main library website.\", \"グループ学習室は、中央図書館のウェブサイトからオンラインで予約できます。\"],\n    [\"IA00000000000007\", \"Bees play an important role in helping many kinds of plants produce fruit.\", \"ハチは多くの種類の植物が実をつけるのを助ける重要な役割を担っています。\"],\n    [\"IB00000000000008\", \"The new science building was designed to use less energy than older buildings.\", \"新しい理学部棟は、古い建物より使うエネルギーが少なくなるよう設計されました。\"],\n    [\"IA00000000000009\", \"If you miss a class, you can ask a classmate for their notes.\", \"授業を休んだら、クラスメートにノートを見せてもらうよう頼めます。\"],\n    [\"IB00000000000010\", \"The guided tour of the old campus lasts about an hour in total.\", \"旧キャンパスのガイドツアーは全部で約1時間です。\"]\n  ],\n  \"14\": [\n    [\"JA00000000000001\", \"The library offers free workshops on how to find reliable sources for research papers.\", \"図書館では、研究論文のための信頼できる情報源の探し方について無料のワークショップを開いています。\"],\n    [\"JB00000000000002\", \"Students living in halls must keep the noise down late at night on weekdays.\", \"寮に住む学生は、平日の夜遅くは静かにしなければなりません。\"],\n    [\"JA00000000000003\", \"Our professor said that the final exam will cover everything we studied this semester.\", \"教授は、期末試験は今学期に学んだことすべてが範囲だと言いました。\"],\n    [\"JB00000000000004\", \"Before you leave the laboratory, make sure that all the equipment is turned off.\", \"実験室を出る前に、すべての機器の電源が切れていることを確認してください。\"],\n    [\"JA00000000000005\", \"The new exhibit shows how people lived in this region thousands of years ago.\", \"新しい展示は、何千年も前にこの地域で人々がどのように暮らしていたかを紹介しています。\"],\n    [\"JB00000000000006\", \"Many students find it helpful to revise their notes right after each lecture ends.\", \"多くの学生は、毎回の講義が終わった直後にノートを復習すると役に立つと感じています。\"],\n    [\"JA00000000000007\", \"The city built a new bridge so people could cross the river more easily.\", \"市は、人々がもっと楽に川を渡れるように新しい橋を建設しました。\"],\n    [\"JB00000000000008\", \"To join the volunteer programme, please fill in the online application form by Friday.\", \"ボランティアプログラムに参加するには、金曜日までにオンラインの申込書に記入してください。\"],\n    [\"JA00000000000009\", \"Some desert plants store water in their thick leaves to survive long dry seasons.\", \"砂漠の植物の中には、長い乾季を生き抜くために厚い葉に水を蓄えるものがあります。\"],\n    [\"JB00000000000010\", \"The student union is planning a big festival to celebrate the end of term.\", \"学生自治会は、学期の終わりを祝う大きなお祭りを計画しています。\"]\n  ],\n  \"15\": [\n    [\"KA00000000000001\", \"The library will be closed for repairs next week, so please return your books early.\", \"図書館は来週修理のため休館するので、本は早めに返却してください。\"],\n    [\"KB00000000000002\", \"Students who need help choosing their modules can book an appointment with a tutor online.\", \"履修科目の選び方に助けが必要な学生は、オンラインでチューターとの面談を予約できます。\"],\n    [\"KA00000000000003\", \"The professor showed us a short video about how volcanoes form under the ocean floor.\", \"教授は、海底で火山がどのようにできるかについての短い動画を見せてくれました。\"],\n    [\"KB00000000000004\", \"Keep your student card with you because you will need it to enter the building.\", \"建物に入るのに必要なので、学生証を持ち歩いてください。\"],\n    [\"KA00000000000005\", \"The guide told us that the statue was discovered by farmers working in a field.\", \"ガイドは、その像は畑で働いていた農民によって発見されたと教えてくれました。\"],\n    [\"KB00000000000006\", \"Researchers found that students who exercise regularly tend to perform better on their final exams.\", \"研究者たちは、定期的に運動する学生は期末試験の成績が良い傾向にあることを発見しました。\"],\n    [\"KA00000000000007\", \"If you are interested in studying abroad, please come to the information session on Wednesday.\", \"留学に興味がある人は、水曜日の説明会に来てください。\"],\n    [\"KB00000000000008\", \"The new recycling programme has helped the university reduce the amount of rubbish it produces.\", \"新しいリサイクル制度のおかげで、大学は出すごみの量を減らすことができました。\"],\n    [\"KA00000000000009\", \"Many early maps were not accurate because explorers had no reliable way to measure distance.\", \"探検家たちには距離を正確に測る方法がなかったため、初期の地図の多くは不正確でした。\"],\n    [\"KB00000000000010\", \"The student newspaper is looking for writers who can report on football and campus events.\", \"学生新聞は、サッカーや学内行事を取材できる記者を募集しています。\"]\n  ],\n  \"16\": [\n    [\"LA00000000000001\", \"The guided tour of the historic campus lasts about an hour and ends at the library.\", \"歴史あるキャンパスのガイドツアーは約1時間で、図書館で終わります。\"],\n    [\"LB00000000000002\", \"During Freshers Week, new students meet their personal tutors and take a tour of the campus.\", \"新入生歓迎週間（フレッシャーズ・ウィーク）には、新入生は担当の指導教員と会い、キャンパスツアーに参加します。\"],\n    [\"LA00000000000003\", \"The professor asked each group to choose a topic and give a short presentation next week.\", \"教授は各グループにテーマを選んで、来週短い発表をするように言いました。\"],\n    [\"LB00000000000004\", \"The research team spent several months studying how climate change affects the birds in the mountains.\", \"研究チームは、気候変動が山にすむ鳥にどう影響するかを数か月かけて調べました。\"],\n    [\"LA00000000000005\", \"If you want to use the music practice rooms, you need to reserve them in advance.\", \"音楽練習室を使いたい場合は、事前に予約する必要があります。\"],\n    [\"LB00000000000006\", \"The lecturer explained that the ancient city was abandoned after the river slowly changed its course.\", \"講師は、川の流れが少しずつ変わった後、その古代都市は捨てられたと説明しました。\"],\n    [\"LA00000000000007\", \"Visitors may not take photos with a flash because the bright light can damage the paintings.\", \"強い光は絵画を傷めることがあるため、来館者はフラッシュ撮影ができません。\"],\n    [\"LB00000000000008\", \"Students who live off campus can use the east car park if they buy a permit.\", \"学外に住む学生は、許可証を買えば東駐車場を使えます。\"],\n    [\"LA00000000000009\", \"The cafeteria has started offering more healthy options because many students asked for them last year.\", \"昨年多くの学生から要望があったため、学食は健康的なメニューを増やし始めました。\"],\n    [\"LB00000000000010\", \"Scientists use satellites to track the movement of ice sheets and measure how fast they melt.\", \"科学者たちは人工衛星を使って氷床の動きを追跡し、どれくらいの速さで溶けているかを測っています。\"]\n  ]\n};\n// 前の版のサンプル文（イギリス英語版に入れ替える前の英文）。setup が入れ替えに使います\nconst OLD_SAMPLES = {\n  \"AB00000000000002\": \"Please sign your name here.\",\n  \"AB00000000000004\": \"The professor answered every question.\",\n  \"AB00000000000006\": \"The museum is closed tomorrow.\",\n  \"AB00000000000008\": \"I forgot my student card.\",\n  \"AB00000000000010\": \"Turn left at the fountain.\",\n  \"BB00000000000002\": \"Please keep your voice down here.\",\n  \"BB00000000000004\": \"You can print on this floor.\",\n  \"BB00000000000006\": \"She is studying biology this semester.\",\n  \"BB00000000000008\": \"The tour begins at the entrance.\",\n  \"BB00000000000010\": \"Lunch is served in the courtyard.\",\n  \"CB00000000000002\": \"Return your books to the front desk.\",\n  \"CB00000000000004\": \"Our group will present the project tomorrow.\",\n  \"CB00000000000006\": \"Free coffee is available in the lobby.\",\n  \"CB00000000000008\": \"The shuttle bus stops near the dormitory.\",\n  \"CB00000000000010\": \"The science building has a new elevator.\",\n  \"DB00000000000002\": \"The professor posted the reading list last night.\",\n  \"DB00000000000004\": \"The writing center helps students improve their essays.\",\n  \"DB00000000000006\": \"The library offers quiet rooms for group study.\",\n  \"DB00000000000008\": \"The exhibition shows paintings from the last century.\",\n  \"DB00000000000010\": \"The main cafeteria closes early on Friday afternoons.\",\n  \"EB00000000000002\": \"The new student center will open early next month.\",\n  \"EB00000000000004\": \"The museum has a large collection of ancient pottery.\",\n  \"EB00000000000006\": \"Campus residents can use the swimming pool for free.\",\n  \"EB00000000000008\": \"Please put your bags in the lockers before entering.\",\n  \"EB00000000000010\": \"Many plants in this garden come from tropical regions.\",\n  \"FB00000000000002\": \"Register for your classes before the end of this week.\",\n  \"FB00000000000004\": \"You can borrow several books at once with your card.\",\n  \"FB00000000000006\": \"The museum guide explained how these old machines once worked.\",\n  \"FB00000000000008\": \"The campus shuttle runs more often during the exam period.\",\n  \"FB00000000000010\": \"This workshop teaches students how to write better cover letters.\",\n  \"GB00000000000002\": \"The professor will hold extra office hours before the final exam.\",\n  \"GB00000000000004\": \"The library has computers that you can use for your research.\",\n  \"GB00000000000006\": \"Please leave your wet umbrella at the entrance of the gallery.\",\n  \"GB00000000000008\": \"Many birds fly south in the fall to find warmer weather.\",\n  \"GB00000000000010\": \"The theater club is always looking for new members to join.\",\n  \"HB00000000000002\": \"Before you start the experiment, please read all the safety instructions carefully.\",\n  \"HB00000000000004\": \"Free tutoring in math and writing is available at the learning center.\",\n  \"HB00000000000008\": \"Write your name and student number at the top of the page.\",\n  \"IB00000000000002\": \"Students who want to change their major should talk to an academic advisor.\",\n  \"IB00000000000006\": \"You can reserve a group study room online through the main library website.\",\n  \"JB00000000000002\": \"Students living in the dormitory must observe quiet hours late at night on weekdays.\",\n  \"JB00000000000006\": \"Many students find it helpful to review their notes right after each lecture ends.\",\n  \"JB00000000000008\": \"To join the volunteer program, please fill out the online application form by Friday.\",\n  \"JB00000000000010\": \"The student council is planning a festival to celebrate the end of the year.\",\n  \"KB00000000000002\": \"Students who need help choosing their classes can make an appointment with an advisor online.\",\n  \"KB00000000000008\": \"The new recycling program has helped the university reduce the amount of waste it produces.\",\n  \"KB00000000000010\": \"The student newspaper is looking for writers who can report on sports and campus events.\",\n  \"LB00000000000002\": \"During the orientation, new students will meet their advisors and take a tour of the campus.\",\n  \"LB00000000000006\": \"The professor explained that the ancient city was abandoned after the river slowly changed its course.\",\n  \"LB00000000000008\": \"Students who live off campus can park in the east lot if they buy a permit.\"\n};\n\n/** スプレッドシートを開いたときにメニューを追加します */\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu('Repeat Ladder')\n    .addItem('初期設定・更新（シートを作る）', 'setup')\n    .addItem('空欄にIDをつける', 'fillIds')\n    .addItem('語数とIDをチェック', 'checkSheets')\n    .addSeparator()\n    .addItem('インタビュー：採点プログラム用の合言葉', 'showScorerToken')\n    .addItem('インタビュー：エラーになった回答を採点し直す', 'retryInterviewErrors')\n    .addItem('インタビュー：録音フォルダを開く', 'showAudioFolder')\n    .addToUi();\n}\n\n/** シートを作る・前の形から更新する（何回実行しても大丈夫） */\nfunction setup() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let added = 0;\n  let migrated = 0;\n  let newIds = 0;\n  let refreshed = 0;\n\n  LEVELS.forEach(function (n) {\n    const name = String(n);\n    let sh = ss.getSheetByName(name);\n    if (!sh) sh = ss.insertSheet(name);\n    if (sh.getLastRow() === 0) {\n      writeLevelHeader_(sh, n);\n      const rows = (SAMPLES[name] || []).map(function (p) { return [p[0], p[1], p[2]]; });\n      if (rows.length) {\n        sh.getRange(2, 1, rows.length, 3).setValues(rows);\n        added += rows.length;\n      }\n    } else if (!isV2Level_(sh)) {\n      migrated += migrateLevel_(sh, n);\n    }\n    refreshed += refreshSamples_(sh, n);\n  });\n  levelSheets_().forEach(function (x) {\n    if (LEVELS.indexOf(x.n) < 0 && x.sh.getLastRow() > 0 && !isV2Level_(x.sh)) migrated += migrateLevel_(x.sh, x.n);\n    newIds += assignIds_(x.sh, x.n);\n  });\n\n  const mistakes = ensureMistakeSheet_(ss);\n  const log = ensureLogSheet_(ss);\n  const ivQ = ensureInterviewQuestionSheet_(ss);\n  const ivA = ensureInterviewAnswerSheet_(ss);\n  newIds += assignInterviewIds_(ivQ);\n  let audioNote = '';\n  try {\n    audioFolder_();\n    audioNote = '録音はGoogleドライブの「' + AUDIO_FOLDER_NAME + '」フォルダに保存されます。';\n  } catch (err) {\n    audioNote = 'Googleドライブが使えないため、録音は保存されません（' + err + '）。';\n  }\n\n  // 並び順：5, 6, … 16, 間違いログ, 記録, インタビュー問題, インタビュー回答\n  let pos = 1;\n  LEVELS.forEach(function (n) {\n    ss.setActiveSheet(ss.getSheetByName(String(n)));\n    ss.moveActiveSheet(pos++);\n  });\n  [mistakes, log, ivQ, ivA].forEach(function (sh) {\n    ss.setActiveSheet(sh);\n    ss.moveActiveSheet(pos++);\n  });\n\n  // 最初からある空の「シート1」を消す\n  ss.getSheets().forEach(function (sh) {\n    if (/^(シート|Sheet)\\d+$/.test(sh.getName()) && sh.getLastRow() === 0 && sh.getLastColumn() === 0 && ss.getSheets().length > 1) {\n      ss.deleteSheet(sh);\n    }\n  });\n\n  ss.setActiveSheet(ss.getSheetByName('5'));\n  const parts = [];\n  if (added) parts.push('サンプル文を ' + added + ' 文入れました');\n  if (migrated) parts.push(migrated + ' 文にID列を追加しました');\n  if (refreshed) parts.push('サンプル文 ' + refreshed + ' 文をイギリス英語版に入れ替えました');\n  if (newIds) parts.push(newIds + ' 文に新しいIDをつけました');\n  const msg = '準備できました。' + (parts.length ? parts.join('。') + '。' : '') + audioNote + '（v' + REVISION + '）';\n  ss.toast(msg, 'Repeat Ladder', 10);\n  Logger.log(msg);\n}\n\n/** ID欄が空、または「A」「B」だけの行にIDをつけます */\nfunction fillIds() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let n = 0;\n  levelSheets_().forEach(function (x) { n += assignIds_(x.sh, x.n); });\n  const msg = n + ' 文にIDをつけました。';\n  ss.toast(msg, 'Repeat Ladder', 8);\n  Logger.log(msg);\n}\n\n/** 語数が合わない英文を黄色に、重複・形のおかしいIDをオレンジにします */\nfunction checkSheets() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let checked = 0;\n  let badCount = 0;\n  let badIds = 0;\n  levelSheets_().forEach(function (x) {\n    const sh = x.sh;\n    const last = sh.getLastRow();\n    if (last < 2) return;\n    const v2 = isV2Level_(sh);\n    const enCol = v2 ? 2 : 1;\n    const enRange = sh.getRange(2, enCol, last - 1, 1);\n    const enColors = enRange.getDisplayValues().map(function (r) {\n      const s = String(r[0]).trim();\n      if (!s) return [null];\n      checked++;\n      if (s.split(/\\s+/).length !== x.n) { badCount++; return ['#ffe08a']; }\n      return [null];\n    });\n    enRange.setBackgrounds(enColors);\n    if (!v2) return;\n    const idRange = sh.getRange(2, 1, last - 1, 1);\n    const ids = idRange.getDisplayValues().map(function (r) { return String(r[0]).trim().toUpperCase(); });\n    const seen = {};\n    ids.forEach(function (id) { if (id) seen[id] = (seen[id] || 0) + 1; });\n    const letter = levelLetter_(x.n);\n    idRange.setBackgrounds(ids.map(function (id) {\n      if (!id) return [null];\n      if (!ID_RE.test(id) || id.charAt(0) !== letter || seen[id] > 1) { badIds++; return ['#ffc9a8']; }\n      return [null];\n    }));\n  });\n  const msg = checked + ' 文をチェックしました。語数が合わない文：' + badCount + '（黄色）／ IDの重複や形の間違い：' + badIds + '（オレンジ）';\n  ss.toast(msg, 'Repeat Ladder', 12);\n  Logger.log(msg);\n}\n\n/** 前の版のメニューから呼ばれても動くように残しています */\nfunction checkWordCounts() { checkSheets(); }\n\n/** 採点プログラム用の合言葉を表示します（なければ作ります） */\nfunction showScorerToken() {\n  const token = scorerToken_(true);\n  Logger.log('採点プログラム用の合言葉: ' + token);\n  const html = HtmlService.createHtmlOutput(\n    '<div style=\"font-family:sans-serif;font-size:14px;line-height:1.6\">' +\n    '<p>Windowsの採点プログラムを最初に起動したときに聞かれたら、次の合言葉を貼り付けてください。<\/p>' +\n    '<input id=\"t\" value=\"' + token + '\" readonly style=\"width:100%;font-size:15px;padding:6px;font-family:monospace\" onclick=\"this.select()\">' +\n    '<p style=\"color:#666\">クリックすると全体が選択されます（Ctrl+C でコピー）。ほかの人には教えないでください。<\/p><\/div>'\n  ).setWidth(460).setHeight(210);\n  SpreadsheetApp.getUi().showModalDialog(html, '採点プログラム用の合言葉');\n}\n\n/** 録音を保存しているGoogleドライブのフォルダへのリンクを表示します */\nfunction showAudioFolder() {\n  const folder = audioFolder_();\n  const url = folder.getUrl();\n  const html = HtmlService.createHtmlOutput(\n    '<div style=\"font-family:sans-serif;font-size:14px;line-height:1.6\">' +\n    '<p>インタビューの録音は、Googleドライブのこのフォルダに入っています（1問1ファイル。ファイル名は「受付ID_Q質問番号」）。<\/p>' +\n    '<p><a href=\"' + url + '\" target=\"_blank\">' + AUDIO_FOLDER_NAME + ' を開く<\/a><\/p><\/div>'\n  ).setWidth(420).setHeight(160);\n  SpreadsheetApp.getUi().showModalDialog(html, '録音フォルダ');\n}\n\n/** 「エラー」になったインタビューの回答を「採点待ち」に戻します */\nfunction retryInterviewErrors() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  const sh = ensureInterviewAnswerSheet_(ss);\n  const last = sh.getLastRow();\n  let n = 0;\n  if (last >= 2) {\n    const range = sh.getRange(2, IV['状態'], last - 1, 1);\n    const vals = range.getValues().map(function (r) {\n      if (String(r[0]) === IV_STATUS.ERR) { n++; return [IV_STATUS.WAIT]; }\n      return [r[0]];\n    });\n    if (n) range.setValues(vals);\n  }\n  const msg = n + ' 問を「採点待ち」に戻しました。採点プログラムが動いていれば、まもなく採点されます。';\n  ss.toast(msg, 'Repeat Ladder', 10);\n  Logger.log(msg);\n}\n\n/** アプリが文を読み込むときに呼ばれます */\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  try {\n    const action = p.action || 'sentences';\n    if (action === 'sentences') {\n      const lock = LockService.getScriptLock();\n      try {\n        lock.waitLock(15000);\n        levelSheets_().forEach(function (x) { assignIds_(x.sh, x.n); });\n        const q = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(IV_Q_SHEET);\n        if (q) assignInterviewIds_(q);\n      } catch (lockErr) {\n        // ロックが取れなくても、文の読み込みは続けます\n      } finally {\n        try { lock.releaseLock(); } catch (ignore) {}\n      }\n      return json_({ ok: true, app: 'repeat-ladder', version: VERSION, revision: REVISION, audio: true, levels: readSentences_(), interviews: readInterviews_() });\n    }\n    if (action === 'interview') {\n      return json_({ ok: true, version: VERSION, session: readInterviewSession_(String(p.id || '')) });\n    }\n    if (action === 'interviews') {\n      return json_({ ok: true, version: VERSION, sessions: listInterviewSessions_(Number(p.limit) || 20) });\n    }\n    if (action === 'audio') {\n      return json_(readAudio_(String(p.id || '')));\n    }\n    return json_({ ok: true, app: 'repeat-ladder', version: VERSION });\n  } catch (err) {\n    return json_({ ok: false, version: VERSION, error: String(err) });\n  }\n}\n\n/** アプリが練習の記録を書き込むとき、採点プログラムが採点を書き込むときに呼ばれます */\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(20000);\n    const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');\n    if (body && body.action) return json_(handleInterviewAction_(body));\n    const records = Array.isArray(body.records) ? body.records.slice(0, 200) : [];\n    const includePerfect = body.mistakesIncludePerfect === true;\n    if (!records.length) return json_({ ok: true, version: VERSION, saved: 0, mistakes: 0, ids: [] });\n\n    const ss = SpreadsheetApp.getActiveSpreadsheet();\n    const log = ensureLogSheet_(ss);\n    const mistakeSheet = ensureMistakeSheet_(ss);\n    const hist = readHistory_(log);\n    const ids = [];\n    const logRows = [];\n    const mistakeRows = [];\n\n    records.forEach(function (r) {\n      const recId = String(r.id || '');\n      if (recId) ids.push(recId);\n      if (recId && hist.recIds[recId]) return; // 送信済み（再送）なのでスキップ\n      if (recId) hist.recIds[recId] = true;\n\n      let t = new Date(r.time || Date.now());\n      if (isNaN(t.getTime())) t = new Date();\n      const sid = String(r.sentenceId || '').trim().toUpperCase();\n      const target = String(r.target || '').trim();\n      const accent = (r.accent === 'A' || r.accent === 'B') ? r.accent : (ID_RE.test(sid) ? sid.charAt(1) : '');\n      const perfect = r.perfect === true;\n      const prev = pastCounts_(hist, sid, target);\n\n      logRows.push([\n        t,\n        Number(r.level) || '',\n        safe_(target),\n        safe_(r.heard),\n        Number(r.correct) || 0,\n        Number(r.total) || 0,\n        perfect ? '◎' : '',\n        safe_(Array.isArray(r.missed) ? r.missed.join(', ') : r.missed),\n        safe_(r.mode),\n        safe_(recId),\n        safe_(sid),\n        accent ? ACCENT_NAMES[accent] : ''\n      ]);\n      if (!perfect || includePerfect) {\n        mistakeRows.push([\n          t,\n          Number(r.level) || '',\n          safe_(target),\n          safe_(r.heard),\n          Number(r.correct) || 0,\n          perfect ? '◎' : '×',\n          prev.perfects,\n          prev.attempts,\n          safe_(sid)\n        ]);\n      }\n      addHistory_(hist, sid, target, perfect);\n    });\n\n    if (logRows.length) log.getRange(log.getLastRow() + 1, 1, logRows.length, LOG_HEADERS.length).setValues(logRows);\n    if (mistakeRows.length) mistakeSheet.getRange(mistakeSheet.getLastRow() + 1, 1, mistakeRows.length, MISTAKE_HEADERS.length).setValues(mistakeRows);\n    return json_({ ok: true, version: VERSION, saved: logRows.length, mistakes: mistakeRows.length, ids: ids });\n  } catch (err) {\n    return json_({ ok: false, version: VERSION, error: String(err) });\n  } finally {\n    try { lock.releaseLock(); } catch (ignore) {}\n  }\n}\n\n// ───────────── ここから下は内部で使う関数です ─────────────\n\nfunction levelSheets_() {\n  return SpreadsheetApp.getActiveSpreadsheet().getSheets()\n    .map(function (sh) { return { sh: sh, name: sh.getName().trim() }; })\n    .filter(function (x) { return /^\\d{1,2}$/.test(x.name); })\n    .map(function (x) { return { sh: x.sh, n: Number(x.name) }; });\n}\n\nfunction levelLetter_(n) {\n  const i = Number(n) - 5;\n  return (i >= 0 && i < 26) ? String.fromCharCode(65 + i) : 'Z';\n}\n\nfunction makeId_(n, accent, seq) {\n  return levelLetter_(n) + accent + ('00000000000000' + seq).slice(-14);\n}\n\nfunction isV2Level_(sh) {\n  return String(sh.getRange(1, 1).getDisplayValue()).trim().toUpperCase() === 'ID';\n}\n\nfunction writeLevelHeader_(sh, n) {\n  sh.getRange(1, 1, 1, 3)\n    .setValues([['ID', '英文（' + n + '語）', '日本語訳（なくてもOK）']])\n    .setFontWeight('bold')\n    .setBackground('#e3eef0');\n  sh.setFrozenRows(1);\n  sh.setColumnWidth(1, 170);\n  sh.setColumnWidth(2, 560);\n  sh.setColumnWidth(3, 420);\n}\n\n/** 前の形（A列＝英文）のシートに、ID列を差し込みます */\nfunction migrateLevel_(sh, n) {\n  sh.insertColumnBefore(1);\n  writeLevelHeader_(sh, n);\n  const last = sh.getLastRow();\n  if (last < 2) return 0;\n  const sampleIds = {};\n  (SAMPLES[String(n)] || []).forEach(function (p) { sampleIds[String(p[1]).trim()] = p[0]; });\n  Object.keys(OLD_SAMPLES).forEach(function (id) { if (id.charAt(0) === levelLetter_(n)) sampleIds[OLD_SAMPLES[id]] = id; });\n  const used = {};\n  const out = sh.getRange(2, 2, last - 1, 1).getDisplayValues().map(function (r) {\n    const id = sampleIds[String(r[0]).trim()];\n    if (id && !used[id]) { used[id] = true; return [id]; }\n    return [''];\n  });\n  sh.getRange(2, 1, out.length, 1).setValues(out);\n  return out.length;\n}\n\n/** 手を加えていない前の版のサンプル文（IDと英文が前のまま）を、新しいサンプル文に入れ替えます */\nfunction refreshSamples_(sh, n) {\n  const last = sh.getLastRow();\n  if (last < 2 || !isV2Level_(sh)) return 0;\n  const byId = {};\n  (SAMPLES[String(n)] || []).forEach(function (p) { byId[p[0]] = p; });\n  const range = sh.getRange(2, 1, last - 1, 3);\n  const vals = range.getValues();\n  let changed = 0;\n  vals.forEach(function (r) {\n    const id = String(r[0]).trim().toUpperCase();\n    const old = OLD_SAMPLES[id];\n    if (old && byId[id] && String(r[1]).trim() === old) {\n      r[1] = byId[id][1];\n      r[2] = byId[id][2];\n      changed++;\n    }\n  });\n  if (changed) range.setValues(vals);\n  return changed;\n}\n\n/** 空欄・「A」「B」だけのID欄に、続きの番号でIDをつけます */\nfunction assignIds_(sh, n) {\n  const last = sh.getLastRow();\n  if (last < 2 || !isV2Level_(sh)) return 0;\n  const vals = sh.getRange(2, 1, last - 1, 2).getDisplayValues();\n  const letter = levelLetter_(n);\n  let maxSeq = 0;\n  vals.forEach(function (r) {\n    const id = String(r[0]).trim().toUpperCase();\n    if (ID_RE.test(id) && id.charAt(0) === letter) maxSeq = Math.max(maxSeq, Number(id.slice(2)));\n  });\n  let changed = 0;\n  const out = vals.map(function (r) {\n    const raw = String(r[0]).trim();\n    const en = String(r[1]).trim();\n    if (!en) return [raw];\n    if (ID_RE.test(raw.toUpperCase())) {\n      if (raw !== raw.toUpperCase()) changed++;\n      return [raw.toUpperCase()];\n    }\n    const accent = accentFromHint_(raw);\n    if (!accent) return [raw]; // 何か別の文字が書いてあるときは、そのままにします\n    maxSeq++;\n    changed++;\n    return [makeId_(n, accent, maxSeq)];\n  });\n  if (changed) sh.getRange(2, 1, out.length, 1).setValues(out);\n  return changed;\n}\n\nfunction accentFromHint_(raw) {\n  const s = String(raw).trim().toUpperCase();\n  if (s === '' || s === 'A' || s === 'US' || s === 'アメリカ') return 'A';\n  if (s === 'B' || s === 'UK' || s === 'GB' || s === 'イギリス') return 'B';\n  return '';\n}\n\nfunction readSentences_() {\n  const out = {};\n  levelSheets_().forEach(function (x) {\n    const sh = x.sh;\n    const last = sh.getLastRow();\n    const key = String(x.n);\n    if (last < 2) { out[key] = []; return; }\n    if (isV2Level_(sh)) {\n      out[key] = sh.getRange(2, 1, last - 1, 3).getDisplayValues()\n        .map(function (r) { return [String(r[0]).trim().toUpperCase(), String(r[1]).trim(), String(r[2]).trim()]; })\n        .filter(function (r) { return r[1] !== ''; });\n    } else {\n      out[key] = sh.getRange(2, 1, last - 1, 2).getDisplayValues()\n        .map(function (r) { return ['', String(r[0]).trim(), String(r[1]).trim()]; })\n        .filter(function (r) { return r[1] !== ''; });\n    }\n  });\n  return out;\n}\n\nfunction ensureMistakeSheet_(ss) {\n  let sh = ss.getSheetByName(MISTAKE_SHEET_NAME);\n  if (!sh) sh = ss.insertSheet(MISTAKE_SHEET_NAME);\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, MISTAKE_HEADERS.length)\n      .setValues([MISTAKE_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#f6dcd7');\n    sh.setFrozenRows(1);\n    [150, 50, 420, 420, 110, 80, 140, 120, 170].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n    sh.getRange('A2:A').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n  }\n  return sh;\n}\n\nfunction ensureLogSheet_(ss) {\n  let sh = ss.getSheetByName(LOG_SHEET_NAME);\n  if (!sh) sh = ss.insertSheet(LOG_SHEET_NAME);\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, LOG_HEADERS.length)\n      .setValues([LOG_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#f6ead5');\n    sh.setFrozenRows(1);\n    [150, 50, 420, 420, 80, 80, 80, 200, 70, 120, 170, 100].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n    sh.getRange('A2:A').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n    return sh;\n  }\n  // 前の版の見出し（10列）に「文ID」「発音」を足します\n  const head = sh.getRange(1, 1, 1, LOG_HEADERS.length).getDisplayValues()[0];\n  let fixed = false;\n  const newHead = head.map(function (h, i) {\n    if (i === 9 && String(h).trim() === 'ID（自動）') { fixed = true; return LOG_HEADERS[i]; }\n    if (!String(h).trim()) { fixed = true; return LOG_HEADERS[i]; }\n    return h;\n  });\n  if (fixed) sh.getRange(1, 1, 1, LOG_HEADERS.length).setValues([newHead]).setFontWeight('bold');\n  return sh;\n}\n\n/** 「記録」シートから、文ごとの過去の回数を数えます */\nfunction readHistory_(log) {\n  const h = { recIds: {}, byId: {}, byText: {} };\n  const last = log.getLastRow();\n  if (last < 2) return h;\n  log.getRange(2, 1, last - 1, LOG_HEADERS.length).getValues().forEach(function (r) {\n    const target = String(r[2] || '').trim();\n    const perfect = String(r[6] || '').trim() === '◎';\n    const recId = String(r[9] || '').trim();\n    const sid = String(r[10] || '').trim().toUpperCase();\n    if (recId) h.recIds[recId] = true;\n    if (sid) bump_(h.byId, sid, perfect);\n    else if (target) bump_(h.byText, target, perfect);\n  });\n  return h;\n}\n\nfunction bump_(map, key, perfect) {\n  const c = map[key] || (map[key] = { attempts: 0, perfects: 0 });\n  c.attempts++;\n  if (perfect) c.perfects++;\n}\n\n/** IDで数え、IDがなかった頃（v1）の記録は同じ英文で数えます */\nfunction pastCounts_(h, sid, target) {\n  const a = (sid && h.byId[sid]) || { attempts: 0, perfects: 0 };\n  const b = (target && h.byText[target]) || { attempts: 0, perfects: 0 };\n  return { attempts: a.attempts + b.attempts, perfects: a.perfects + b.perfects };\n}\n\nfunction addHistory_(h, sid, target, perfect) {\n  if (sid) bump_(h.byId, sid, perfect);\n  else if (target) bump_(h.byText, target, perfect);\n}\n\nfunction safe_(v) {\n  let s = (v === undefined || v === null) ? '' : String(v);\n  s = s.slice(0, 1000);\n  if (/^[=+\\-@]/.test(s)) s = \"'\" + s; // 数式として解釈されないように\n  return s;\n}\n\nfunction json_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n\n// ───────────── インタビュー ─────────────\n\nfunction scorerToken_(create) {\n  const props = PropertiesService.getScriptProperties();\n  let t = props.getProperty('SCORER_TOKEN');\n  if (!t && create) {\n    t = Utilities.getUuid().replace(/-/g, '');\n    props.setProperty('SCORER_TOKEN', t);\n  }\n  return t || '';\n}\n\nfunction ensureInterviewQuestionSheet_(ss) {\n  let sh = ss.getSheetByName(IV_Q_SHEET);\n  if (!sh) sh = ss.insertSheet(IV_Q_SHEET);\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, IV_Q_HEADERS.length)\n      .setValues([IV_Q_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#dfe7f6');\n    sh.setFrozenRows(1);\n    [170, 220, 380, 380, 380, 380, 380, 260].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n  }\n  return sh;\n}\n\nfunction ensureInterviewAnswerSheet_(ss) {\n  let sh = ss.getSheetByName(IV_A_SHEET);\n  if (!sh) sh = ss.insertSheet(IV_A_SHEET);\n  if (sh.getMaxColumns() < IV_A_HEADERS.length) sh.insertColumnsAfter(sh.getMaxColumns(), IV_A_HEADERS.length - sh.getMaxColumns());\n  if (sh.getLastRow() === 0) {\n    sh.getRange(1, 1, 1, IV_A_HEADERS.length)\n      .setValues([IV_A_HEADERS])\n      .setFontWeight('bold')\n      .setBackground('#e6dff6');\n    sh.setFrozenRows(1);\n    IV_A_WIDTHS.forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });\n    sh.getRange('B2:B').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n    sh.getRange('Y2:Y').setNumberFormat('yyyy/mm/dd hh:mm:ss');\n    return sh;\n  }\n  // v3.0 のシート：右に足りない見出しを足します\n  const head = sh.getRange(1, 1, 1, IV_A_HEADERS.length).getDisplayValues()[0];\n  for (let c = 0; c < IV_A_HEADERS.length; c++) {\n    if (String(head[c]).trim()) continue;\n    sh.getRange(1, c + 1).setValue(IV_A_HEADERS[c]).setFontWeight('bold').setBackground('#e6dff6');\n    sh.setColumnWidth(c + 1, IV_A_WIDTHS[c]);\n  }\n  return sh;\n}\n\n/** インタビュー問題の空欄・「A」「B」だけのID欄にIDをつけます（V＋発音＋14桁） */\nfunction assignInterviewIds_(sh) {\n  const last = sh.getLastRow();\n  if (last < 2) return 0;\n  const vals = sh.getRange(2, 1, last - 1, 4).getDisplayValues();\n  let maxSeq = 0;\n  vals.forEach(function (r) {\n    const id = String(r[0]).trim().toUpperCase();\n    if (IV_ID_RE.test(id)) maxSeq = Math.max(maxSeq, Number(id.slice(2)));\n  });\n  let changed = 0;\n  const out = vals.map(function (r) {\n    const raw = String(r[0]).trim();\n    const q1 = String(r[3]).trim();\n    if (!q1) return [raw];\n    if (IV_ID_RE.test(raw.toUpperCase())) {\n      if (raw !== raw.toUpperCase()) changed++;\n      return [raw.toUpperCase()];\n    }\n    const accent = accentFromHint_(raw);\n    if (!accent) return [raw];\n    maxSeq++;\n    changed++;\n    return ['V' + accent + ('00000000000000' + maxSeq).slice(-14)];\n  });\n  if (changed) sh.getRange(2, 1, out.length, 1).setValues(out);\n  return changed;\n}\n\nfunction readInterviews_() {\n  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(IV_Q_SHEET);\n  if (!sh || sh.getLastRow() < 2) return [];\n  return sh.getRange(2, 1, sh.getLastRow() - 1, IV_Q_HEADERS.length).getDisplayValues()\n    .map(function (r) {\n      const id = String(r[0]).trim().toUpperCase();\n      const questions = [r[3], r[4], r[5], r[6]].map(function (q) { return String(q).trim(); }).filter(Boolean);\n      return {\n        id: id, accent: IV_ID_RE.test(id) ? id.charAt(1) : 'A', topic: String(r[1]).trim(),\n        intro: String(r[2]).trim(), questions: questions, note: String(r[7]).trim()\n      };\n    })\n    .filter(function (x) { return IV_ID_RE.test(x.id) && x.questions.length; });\n}\n\nfunction readAnswerRows_() {\n  const sh = ensureInterviewAnswerSheet_(SpreadsheetApp.getActiveSpreadsheet());\n  const last = sh.getLastRow();\n  return { sh: sh, rows: last < 2 ? [] : sh.getRange(2, 1, last - 1, IV_A_HEADERS.length).getValues() };\n}\n\nfunction col_(row, name) { return row[IV[name] - 1]; }\nfunction numOrNull_(v) { return (v === '' || v === null || v === undefined || isNaN(Number(v))) ? null : Number(v); }\n\n/** 受付IDごとに行をまとめます（シートの並び順のまま） */\nfunction groupSessions_(rows) {\n  const order = [];\n  const map = {};\n  rows.forEach(function (row, i) {\n    const id = String(col_(row, '受付ID') || '').trim();\n    if (!id) return;\n    if (!map[id]) { map[id] = []; order.push(id); }\n    map[id].push({ row: row, index: i });\n  });\n  return { order: order, map: map };\n}\n\nfunction sessionStatus_(items) {\n  const st = items.map(function (x) { return String(col_(x.row, '状態')); });\n  if (st.indexOf(IV_STATUS.ERR) >= 0) return IV_STATUS.ERR;\n  if (st.every(function (s) { return s === IV_STATUS.DONE; })) return IV_STATUS.DONE;\n  if (st.indexOf(IV_STATUS.WORK) >= 0) return IV_STATUS.WORK;\n  return IV_STATUS.WAIT;\n}\n\nfunction sessionObject_(id, items, withIntro) {\n  const first = items[0].row;\n  const obj = {\n    id: id, time: col_(first, '日時'), setId: String(col_(first, '問題ID') || ''),\n    accent: String(col_(first, '発音') || '') === ACCENT_NAMES.B ? 'B' : 'A',\n    topic: String(col_(first, 'テーマ') || ''), status: sessionStatus_(items),\n    overall: numOrNull_(col_(first, '総合（0〜5）')), band: numOrNull_(col_(first, 'バンド目安（1〜6）')),\n    overallComment: String(col_(first, '総合コメント') || ''), nextFocus: String(col_(first, '次に意識すること') || ''),\n    scoredAt: col_(first, '採点日時') || '', threadId: String(col_(first, 'スレッドID') || ''),\n    answers: items.map(function (x) {\n      const r = x.row;\n      return {\n        n: Number(col_(r, '質問番号')) || 0, question: String(col_(r, '質問') || ''), answer: String(col_(r, 'あなたの答え（音声認識）') || ''),\n        seconds: numOrNull_(col_(r, '回答時間（秒）')), startDelay: numOrNull_(col_(r, '話し始め（秒）')),\n        words: numOrNull_(col_(r, '語数')), wpm: numOrNull_(col_(r, '1分あたりの語数')),\n        score: numOrNull_(col_(r, '点数（0〜5）')), content: numOrNull_(col_(r, '内容')),\n        language: numOrNull_(col_(r, '言葉づかい')), fluency: numOrNull_(col_(r, '流暢さ')),\n        comment: String(col_(r, 'コメント') || ''), corrections: String(col_(r, '直したい表現') || ''),\n        improved: String(col_(r, '改善例') || ''),\n        audioId: String(col_(r, '録音ID') || ''), transcript: String(col_(r, '文字起こし（録音から）') || ''),\n        unclear: String(col_(r, '聞き取りにくかった語') || ''), pauses: numOrNull_(col_(r, '間の回数（1秒以上）')),\n        longestPause: numOrNull_(col_(r, '最長の間（秒）')), fillers: numOrNull_(col_(r, 'つなぎ言葉（um・uhなど）'))\n      };\n    })\n  };\n  if (withIntro) {\n    const set = readInterviews_().filter(function (s) { return s.id === obj.setId; })[0];\n    obj.intro = set ? set.intro : '';\n  }\n  return obj;\n}\n\nfunction readInterviewSession_(id) {\n  if (!id) return null;\n  const g = groupSessions_(readAnswerRows_().rows);\n  return g.map[id] ? sessionObject_(id, g.map[id], false) : null;\n}\n\nfunction listInterviewSessions_(limit) {\n  const g = groupSessions_(readAnswerRows_().rows);\n  return g.order.slice(-Math.max(1, Math.min(limit, 100))).reverse().map(function (id) {\n    const s = sessionObject_(id, g.map[id], false);\n    return { id: s.id, time: s.time, topic: s.topic, setId: s.setId, status: s.status, overall: s.overall, band: s.band, count: s.answers.length };\n  });\n}\n\nfunction longText_(v) {\n  let s = (v === undefined || v === null) ? '' : String(v);\n  s = s.slice(0, 5000);\n  if (/^[=+\\-@]/.test(s)) s = \"'\" + s;\n  return s;\n}\nfunction clampScore_(v, lo, hi) {\n  const n = Number(v);\n  if (isNaN(n)) return '';\n  return Math.round(Math.min(hi, Math.max(lo, n)) * 2) / 2;\n}\n\nfunction handleInterviewAction_(body) {\n  const action = String(body.action);\n  if (action === 'interview') return saveInterview_(body.session || {});\n  if (action === 'retry') return retrySession_(String(body.id || ''));\n  if (action === 'audio') return saveAudio_(body);\n  // ここから下は採点プログラム専用（合言葉が必要）\n  const token = scorerToken_(false);\n  if (!token || String(body.token || '') !== token) {\n    return { ok: false, version: VERSION, error: token ? 'TOKEN' : 'NO_TOKEN' };\n  }\n  if (action === 'ping') return { ok: true, version: VERSION, revision: REVISION, pending: countWaiting_() };\n  if (action === 'claim') return claimSession_();\n  if (action === 'result') return saveResult_(String(body.sessionId || ''), body.result || {}, String(body.threadId || ''));\n  if (action === 'fail') return failSession_(String(body.sessionId || ''), String(body.error || ''));\n  return { ok: false, version: VERSION, error: 'UNKNOWN_ACTION' };\n}\n\nfunction saveInterview_(s) {\n  const id = String(s.id || '').trim();\n  const answers = Array.isArray(s.answers) ? s.answers.slice(0, 6) : [];\n  if (!id || !answers.length) return { ok: false, version: VERSION, error: 'EMPTY' };\n  const data = readAnswerRows_();\n  const exists = data.rows.some(function (r) { return String(col_(r, '受付ID')) === id; });\n  if (exists) return { ok: true, version: VERSION, id: id, saved: 0 };\n  let t = new Date(s.time || Date.now());\n  if (isNaN(t.getTime())) t = new Date();\n  const setId = String(s.setId || '').trim().toUpperCase();\n  const accent = s.accent === 'B' ? 'B' : 'A';\n  const rows = answers.map(function (a, i) {\n    const row = IV_A_HEADERS.map(function () { return ''; });\n    const put = function (name, v) { row[IV[name] - 1] = v; };\n    put('受付ID', id);\n    put('日時', t);\n    put('問題ID', setId);\n    put('発音', ACCENT_NAMES[accent]);\n    put('テーマ', longText_(s.topic));\n    put('質問番号', Number(a.n) || i + 1);\n    put('質問', longText_(a.question));\n    put('あなたの答え（音声認識）', longText_(a.answer));\n    put('回答時間（秒）', numOrNull_(a.seconds) === null ? '' : Number(a.seconds));\n    put('話し始め（秒）', numOrNull_(a.startDelay) === null ? '' : Number(a.startDelay));\n    put('語数', numOrNull_(a.words) === null ? '' : Number(a.words));\n    put('1分あたりの語数', numOrNull_(a.wpm) === null ? '' : Number(a.wpm));\n    const audioId = String(a.audioId || '').trim();\n    if (DRIVE_ID_RE.test(audioId)) {\n      put('録音ID', audioId);\n      put('録音', '=HYPERLINK(\"https://drive.google.com/file/d/' + audioId + '/view\",\"▶ 聞く\")');\n    }\n    put('状態', IV_STATUS.WAIT);\n    return row;\n  });\n  data.sh.getRange(data.sh.getLastRow() + 1, 1, rows.length, IV_A_HEADERS.length).setValues(rows);\n  return { ok: true, version: VERSION, id: id, saved: rows.length };\n}\n\nfunction setStatus_(sh, index, status, extra) {\n  const r = index + 2;\n  sh.getRange(r, IV['状態']).setValue(status);\n  Object.keys(extra || {}).forEach(function (name) { sh.getRange(r, IV[name]).setValue(extra[name]); });\n}\n\nfunction countWaiting_() {\n  const g = groupSessions_(readAnswerRows_().rows);\n  return g.order.filter(function (id) { return sessionStatus_(g.map[id]) === IV_STATUS.WAIT; }).length;\n}\n\n/** いちばん古い「採点待ち」（または止まったままの「採点中」）を1件わたし、「採点中」にします */\nfunction claimSession_() {\n  const data = readAnswerRows_();\n  const g = groupSessions_(data.rows);\n  const now = new Date();\n  let pick = null;\n  let waiting = 0;\n  g.order.forEach(function (id) {\n    const items = g.map[id];\n    const st = sessionStatus_(items);\n    let ready = st === IV_STATUS.WAIT;\n    if (st === IV_STATUS.WORK) {\n      const since = col_(items[0].row, '採点日時');\n      const t = since instanceof Date ? since : new Date(since);\n      ready = isNaN(t.getTime()) || (now - t) > IV_STALE_MINUTES * 60000;\n    }\n    if (!ready) return;\n    if (!pick) pick = id; else waiting++;\n  });\n  if (!pick) return { ok: true, version: VERSION, session: null, pending: 0 };\n  g.map[pick].forEach(function (x) { setStatus_(data.sh, x.index, IV_STATUS.WORK, { '採点日時': now }); });\n  return { ok: true, version: VERSION, session: sessionObject_(pick, g.map[pick], true), pending: waiting };\n}\n\nfunction saveResult_(id, result, threadId) {\n  const data = readAnswerRows_();\n  const g = groupSessions_(data.rows);\n  const items = g.map[id];\n  if (!items) return { ok: false, version: VERSION, error: 'NOT_FOUND' };\n  const answers = Array.isArray(result.answers) ? result.answers : [];\n  const now = new Date();\n  items.forEach(function (x, i) {\n    const n = Number(col_(x.row, '質問番号')) || i + 1;\n    const a = answers.filter(function (y) { return Number(y.n) === n; })[0] || answers[i] || {};\n    const fixes = Array.isArray(a.corrections) ? a.corrections.map(function (c) {\n      return String(c.from || '').trim() + ' → ' + String(c.to || '').trim() + (c.why ? '（' + String(c.why).trim() + '）' : '');\n    }).join('\\n') : String(a.corrections || '');\n    const row = x.row.slice();\n    const put = function (name, v) { row[IV[name] - 1] = v; };\n    put('状態', IV_STATUS.DONE);\n    put('点数（0〜5）', clampScore_(a.score, 0, 5));\n    put('内容', clampScore_(a.content, 0, 5));\n    put('言葉づかい', clampScore_(a.language, 0, 5));\n    put('流暢さ', clampScore_(a.fluency, 0, 5));\n    put('コメント', longText_(a.comment));\n    put('直したい表現', longText_(fixes));\n    put('改善例', longText_(a.improved));\n    put('総合（0〜5）', clampScore_(result.overall, 0, 5));\n    put('バンド目安（1〜6）', clampScore_(result.band, 1, 6));\n    put('総合コメント', longText_(result.overallComment));\n    put('次に意識すること', longText_(result.nextFocus));\n    put('採点日時', now);\n    put('スレッドID', longText_(threadId));\n    // 採点プログラムが録音を文字起こししたときの値（なければ前の値のまま）\n    if (a.transcript !== undefined && a.transcript !== null) put('文字起こし（録音から）', longText_(a.transcript));\n    if (a.unclear !== undefined && a.unclear !== null) put('聞き取りにくかった語', longText_(Array.isArray(a.unclear) ? a.unclear.join(', ') : a.unclear));\n    [['pauses', '間の回数（1秒以上）'], ['longestPause', '最長の間（秒）'], ['fillers', 'つなぎ言葉（um・uhなど）'],\n      ['words', '語数'], ['wpm', '1分あたりの語数'], ['startDelay', '話し始め（秒）']].forEach(function (k) {\n      if (numOrNull_(a[k[0]]) !== null) put(k[1], Math.round(Number(a[k[0]]) * 10) / 10);\n    });\n    data.sh.getRange(x.index + 2, 1, 1, IV_A_HEADERS.length).setValues([row]);\n  });\n  return { ok: true, version: VERSION, id: id, saved: items.length };\n}\n\nfunction failSession_(id, message) {\n  const data = readAnswerRows_();\n  const g = groupSessions_(data.rows);\n  const items = g.map[id];\n  if (!items) return { ok: false, version: VERSION, error: 'NOT_FOUND' };\n  items.forEach(function (x) {\n    setStatus_(data.sh, x.index, IV_STATUS.ERR, { 'コメント': longText_('採点できませんでした：' + message), '採点日時': new Date() });\n  });\n  return { ok: true, version: VERSION, id: id };\n}\n\nfunction retrySession_(id) {\n  const data = readAnswerRows_();\n  const g = groupSessions_(data.rows);\n  const items = g.map[id];\n  if (!items) return { ok: false, version: VERSION, error: 'NOT_FOUND' };\n  if (sessionStatus_(items) === IV_STATUS.DONE) return { ok: true, version: VERSION, id: id, status: IV_STATUS.DONE };\n  items.forEach(function (x) { setStatus_(data.sh, x.index, IV_STATUS.WAIT, { 'コメント': '' }); });\n  return { ok: true, version: VERSION, id: id, status: IV_STATUS.WAIT };\n}\n\n// ───────────── 録音（Googleドライブ） ─────────────\n\n/** 録音フォルダ（なければ作ります） */\nfunction audioFolder_() {\n  const props = PropertiesService.getScriptProperties();\n  const id = props.getProperty('AUDIO_FOLDER_ID');\n  if (id) {\n    try {\n      const f = DriveApp.getFolderById(id);\n      if (!f.isTrashed()) return f;\n    } catch (ignore) {}\n  }\n  const folder = DriveApp.createFolder(AUDIO_FOLDER_NAME);\n  props.setProperty('AUDIO_FOLDER_ID', folder.getId());\n  return folder;\n}\n\n/** アプリから届いた1問分の録音を保存します（同じ名前があれば、それを返します） */\nfunction saveAudio_(body) {\n  const sid = String(body.sessionId || '').trim();\n  const n = Number(body.n);\n  const mime = String(body.mime || '').split(';')[0].trim().toLowerCase();\n  if (!IV_SESSION_RE.test(sid) || !(n >= 1 && n <= 6)) return { ok: false, version: VERSION, error: 'BAD_AUDIO' };\n  const ext = AUDIO_TYPES[mime];\n  if (!ext) return { ok: false, version: VERSION, error: 'AUDIO_TYPE' };\n  const data = String(body.data || '');\n  if (!data || data.length > AUDIO_MAX_BYTES * 4 / 3 + 8) return { ok: false, version: VERSION, error: 'AUDIO_SIZE' };\n  const folder = audioFolder_();\n  const name = sid + '_Q' + n + '.' + ext;\n  const same = folder.getFilesByName(name);\n  if (same.hasNext()) return { ok: true, version: VERSION, fileId: same.next().getId(), existed: true };\n  const blob = Utilities.newBlob(Utilities.base64Decode(data), mime, name);\n  const file = folder.createFile(blob);\n  return { ok: true, version: VERSION, fileId: file.getId() };\n}\n\n/** 録音を1つ返します（録音フォルダの中のファイルだけ） */\nfunction readAudio_(id) {\n  if (!DRIVE_ID_RE.test(id)) return { ok: false, version: VERSION, error: 'BAD_ID' };\n  const folderId = audioFolder_().getId();\n  let file;\n  try { file = DriveApp.getFileById(id); } catch (err) { return { ok: false, version: VERSION, error: 'NOT_FOUND' }; }\n  let inside = false;\n  const parents = file.getParents();\n  while (parents.hasNext()) { if (parents.next().getId() === folderId) { inside = true; break; } }\n  if (!inside) return { ok: false, version: VERSION, error: 'NOT_FOUND' };\n  const blob = file.getBlob();\n  return { ok: true, version: VERSION, name: file.getName(), mime: blob.getContentType(), data: Utilities.base64Encode(blob.getBytes()) };\n}\n";
 
   var SILENCE_MS = 1700;
 
@@ -579,12 +705,13 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   var DEFAULTS = {
     level: 5, mode: 'test', preview: false, hint: true, showJa: true, autoUp: true, upAfter: 3, autoDown: true, downAfter: 3, strict: false,
     rate: 1.0, voiceUS: '', voiceGB: '', accent: 'both', answerTime: 'auto', autoMic: true, sheetUrl: '',
-    saveToSheet: true, mistakesAll: false, hints: true
+    saveToSheet: true, mistakesAll: false, hints: true, view: 'repeat', ivSeconds: 45, ivShowText: false, ivAudio: true
   };
   var settings = Object.assign({}, DEFAULTS, store.get('settings', {}));
   if (settings.voice && !settings.voiceUS) settings.voiceUS = settings.voice;   // setting name from v1
   delete settings.voice;
   if (['both', 'A', 'B'].indexOf(settings.accent) < 0) settings.accent = 'both';
+  if (settings.view !== 'interview') settings.view = 'repeat';
   function saveSettings() { store.set('settings', settings); }
 
   // ---------- environment ----------
@@ -1267,7 +1394,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
         var data;
         try { data = JSON.parse(text); } catch (e) { throw new Error('NOT_JSON'); }
         if (!data || data.ok !== true || !data.levels) throw new Error('SERVER:' + ((data && data.error) || ''));
-        return { levels: data.levels, version: Number(data.version) || 1 };
+        return { levels: data.levels, version: Number(data.version) || 1, interviews: Array.isArray(data.interviews) ? data.interviews : [], audio: data.audio === true };
       });
   }
   function sheetErrorText(err) {
@@ -1294,12 +1421,13 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       serverVersion = res.version;
       var changed = settings.sheetUrl !== u;
       settings.sheetUrl = u; saveSettings();
-      sheetCache = { url: u, levels: levels, fetchedAt: Date.now() };
+      sheetCache = { url: u, levels: levels, interviews: res.interviews, version: res.version, audio: res.audio, fetchedAt: Date.now() };
       store.set('sheetCache', sheetCache);
       sheetState = serverVersion >= APP_VERSION ? 'ok' : 'old';
       decks = {};
       if (sheetState === 'ok') {
-        statusEl.textContent = '接続できました：' + summarizeLevels(levels) + '。この文で練習します。';
+        statusEl.textContent = '接続できました：' + summarizeLevels(levels) + '。この文で練習します。' +
+          (serverVersion >= IV_SERVER ? 'インタビュー問題：' + res.interviews.length + 'セット。' + (res.audio ? '' : 'インタビューの録音を使うには、コードを v3.1 に更新してください。') : 'インタビューを使うには、スプレッドシート側のコードを新しい版（v3）に更新してください（下の「前のコードで設定済みの場合」）。');
         statusEl.className = 'status-line ok';
       } else {
         statusEl.textContent = '接続できました（' + summarizeLevels(levels) + '）。ただし、スプレッドシート側のコードが前の版です。IDと「間違いログ」を使うには、下の「前のコードで設定済みの場合」の手順で更新してください。';
@@ -1319,6 +1447,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       statusEl.textContent = sheetErrorText(err);
       statusEl.className = 'status-line err';
       renderSheetChip();
+      renderView();
       return false;
     });
   }
@@ -1401,9 +1530,941 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
   }
 
   // =====================================================================
+  //  Interview & Speak: questions come from the sheet, answers go back to it,
+  //  and a scoring program on the user's PC writes the scores (see interview_scorer.py)
+  // =====================================================================
+  var IV_SERVER = 3;
+  var IV_DONE = '採点済み', IV_ERR = 'エラー', IV_WORK = '採点中';
+  var iv = {
+    state: 'gate', set: null, qIndex: 0, answers: [], runId: 0, rec: null,
+    session: null, sendState: '', pollTimer: null, pollId: '', pollUntil: 0, pollTimedOut: false,
+    history: [], historyState: '', pick: 'random',
+    useAudio: false, useSR: true, stream: null, analyser: null, meterBuf: null, audio: {}, audioSid: '', audioErr: null, upload: '', player: null
+  };
+  var ivPending = store.get('ivPending', []);
+  if (!Array.isArray(ivPending)) ivPending = [];
+
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function round1(x) { return Math.round(x * 10) / 10; }
+  function ivSets() {
+    return (sheetCache && sheetCache.url === settings.sheetUrl && Array.isArray(sheetCache.interviews)) ? sheetCache.interviews : [];
+  }
+  function ivServerVersion() {
+    if (serverVersion) return serverVersion;
+    return (sheetCache && sheetCache.url === settings.sheetUrl) ? (Number(sheetCache.version) || 0) : 0;
+  }
+  // ---------- recording ----------
+  function ivMobile() {
+    var ua = navigator.userAgent || '';
+    return /Android|iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  }
+  function ivCanRecord() { return !!(window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia); }
+  function ivServerAudio() { return !!(sheetCache && sheetCache.url === settings.sheetUrl && sheetCache.audio); }
+  function ivAudioOn() { return !!settings.ivAudio && ivServerAudio() && ivCanRecord(); }
+  // Phones cannot record and run the browser's speech recognition at the same time, so they only record.
+  function ivWantSR(audioOn) { return !!SR && !(audioOn && ivMobile()); }
+  function ivPickMime() {
+    var list = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'];
+    for (var i = 0; i < list.length; i++) {
+      try { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(list[i])) return list[i]; } catch (e) { /* ignore */ }
+    }
+    return '';
+  }
+  function ivOpenMic() {
+    if (iv.stream) return Promise.resolve(iv.stream);
+    var run = iv.runId;
+    return navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
+      .then(function (stream) {
+        if (run !== iv.runId) {   // the interview was stopped while the browser was opening the mic
+          try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { /* ignore */ }
+          throw new Error('stale');
+        }
+        iv.stream = stream;
+        micReady = true;
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (AC && stream instanceof MediaStream) {
+            audioCtx = audioCtx || new AC();
+            var an = audioCtx.createAnalyser();
+            an.fftSize = 512;
+            audioCtx.createMediaStreamSource(stream).connect(an);
+            iv.analyser = an;
+            iv.meterBuf = new Uint8Array(an.fftSize);
+          }
+        } catch (e) { iv.analyser = null; }
+        return stream;
+      });
+  }
+  function ivCloseMic() {
+    if (iv.stream) { try { iv.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { /* ignore */ } }
+    iv.stream = null; iv.analyser = null;
+  }
+  function ivLevel() {
+    if (!iv.analyser) return 0;
+    var a = iv.meterBuf, sum = 0;
+    iv.analyser.getByteTimeDomainData(a);
+    for (var i = 0; i < a.length; i++) { var v = (a[i] - 128) / 128; sum += v * v; }
+    return Math.min(1, Math.sqrt(sum / a.length) * 5);
+  }
+  function blobToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { var u = String(fr.result); resolve(u.slice(u.indexOf(',') + 1)); };
+      fr.onerror = function () { reject(fr.error); };
+      fr.readAsDataURL(blob);
+    });
+  }
+  function base64ToBlob(b64, mime) {
+    var bin = atob(b64), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: mime || 'audio/webm' });
+  }
+  // Recordings are also kept on this device (IndexedDB) for playback and for sending later when offline.
+  var ivDB = (function () {
+    var dbp = null;
+    function open() {
+      if (dbp) return dbp;
+      dbp = new Promise(function (resolve, reject) {
+        if (!window.indexedDB) { reject(new Error('no indexedDB')); return; }
+        var req = indexedDB.open('repeatLadder', 1);
+        req.onupgradeneeded = function () { req.result.createObjectStore('ivAudio'); };
+        req.onsuccess = function () { resolve(req.result); };
+        req.onerror = function () { reject(req.error); };
+      });
+      dbp.catch(function () { dbp = null; });
+      return dbp;
+    }
+    function run(mode, fn) {
+      return open().then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var t = db.transaction('ivAudio', mode), out;
+          var req = fn(t.objectStore('ivAudio'));
+          if (req) req.onsuccess = function () { out = req.result; };
+          t.oncomplete = function () { resolve(out); };
+          t.onerror = t.onabort = function () { reject(t.error); };
+        });
+      });
+    }
+    return {
+      put: function (k, v) { return run('readwrite', function (st) { return st.put(v, k); }); },
+      get: function (k) { return run('readonly', function (st) { return st.get(k); }); },
+      keys: function () { return run('readonly', function (st) { return st.getAllKeys(); }); },
+      del: function (k) { return run('readwrite', function (st) { return st.delete(k); }); }
+    };
+  })();
+  function ivKeepLocal(sid, audio) {
+    var ns = Object.keys(audio || {});
+    return Promise.all(ns.map(function (n) {
+      return ivDB.put(sid + ':' + n, { blob: audio[n].blob, mime: audio[n].mime, time: Date.now() }).catch(function () { /* private mode etc. */ });
+    })).then(function () {
+      // keep the newest 30 interviews on this device
+      return ivDB.keys().then(function (keys) {
+        var sids = [];
+        keys.forEach(function (k) { var id = String(k).split(':')[0]; if (sids.indexOf(id) < 0) sids.push(id); });
+        sids.sort();
+        var old = sids.slice(0, Math.max(0, sids.length - 30));
+        keys.forEach(function (k) { if (old.indexOf(String(k).split(':')[0]) >= 0) ivDB.del(k).catch(function () {}); });
+      }).catch(function () {});
+    });
+  }
+
+  function ivGate() {
+    if (!SR && !ivAudioOn()) return 'noSR';
+    if (!settings.sheetUrl) return 'noSheet';
+    var v = ivServerVersion();
+    if (!v) return sheetState === 'loading' ? 'loading' : 'sheetErr';
+    if (v < IV_SERVER) return 'old';
+    if (!ivSets().length) return 'noSets';
+    return '';
+  }
+  function ivRunning() { return ['prep', 'intro', 'question', 'answer', 'between'].indexOf(iv.state) >= 0; }
+
+  function setView(v) {
+    if (v !== 'repeat' && v !== 'interview') v = 'repeat';
+    if (settings.view !== v) {
+      if (v === 'interview') { cancelActivity(); if (state !== 'result' && state !== 'reveal') setState('idle'); }
+      else ivAbort(true);
+      settings.view = v;
+      saveSettings();
+      hideNotice();
+    }
+    renderView();
+  }
+  function renderView() {
+    var isIv = settings.view === 'interview';
+    $('#repeatView').hidden = isIv;
+    $('#interviewView').hidden = !isIv;
+    var btns = document.querySelectorAll('#modes .mode-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-current', btns[i].getAttribute('data-view') === settings.view ? 'page' : 'false');
+    $('#brandSub').textContent = isIv ? 'TOEFL Take an Interview を練習・AIが採点' : 'TOEFL Listen and Repeat を一段ずつ';
+    if (!isIv) return;
+    if (!ivRunning() && iv.state !== 'after') iv.state = ivGate() ? 'gate' : 'ready';
+    renderInterview();
+    if (iv.state === 'ready' || iv.state === 'after') ivLoadHistory(false);
+  }
+  function ivSetState(s) { iv.state = s; renderInterview(); }
+
+  // ---------- one interview ----------
+  function ivStart() {
+    unlockAudio();
+    var sets = ivSets();
+    if (!sets.length) return;
+    var sel = document.getElementById('ivPick');
+    var pick = sel ? sel.value : 'random';
+    var set = sets.filter(function (s) { return s.id === pick; })[0];
+    if (!set) {
+      var done = {};
+      (iv.history || []).forEach(function (h) { done[h.setId] = true; });
+      var fresh = sets.filter(function (s) { return !done[s.id]; });
+      var pool = fresh.length ? fresh : sets;
+      set = pool[Math.floor(Math.random() * pool.length)];
+    }
+    iv.set = set; iv.pick = pick; iv.qIndex = 0; iv.answers = []; iv.session = null; iv.sendState = ''; iv.pollTimedOut = false;
+    iv.useAudio = ivAudioOn(); iv.useSR = ivWantSR(iv.useAudio); iv.audio = {}; iv.upload = '';
+    ivStopOwn();
+    ivStopPolling();
+    hideNotice();
+    var id = ++iv.runId;
+    var go;
+    if (iv.useAudio) {
+      ivSetState('prep');
+      // ask for the microphone now; it is then opened only while answering (phones play speech quietly while the mic is open)
+      go = ivOpenMic().then(function () { ivCloseMic(); return true; }, function (e) {
+        if (e && (e.name === 'NotFoundError' || e.name === 'OverconstrainedError')) showNotice('micMissing');
+        else showNotice('micDenied');
+        return false;
+      });
+    } else go = micReady ? Promise.resolve(true) : (ivSetState('prep'), ensureMic());
+    go.then(function (ok) {
+      if (id !== iv.runId) return;
+      if (!ok) { ivCloseMic(); ivSetState('ready'); return; }
+      ivSetState('intro');
+      return (set.intro ? speak(set.intro, set.accent) : wait(400)).then(function () { return ivAsk(id, 0); });
+    }).catch(function () {
+      if (id !== iv.runId) return;
+      showNotice('ttsFailed');
+      ivSetState('ready');
+    });
+  }
+  function ivAsk(id, i) {
+    if (id !== iv.runId) return;
+    var qs = iv.set.questions;
+    if (i >= qs.length) { ivFinish(id); return; }
+    iv.qIndex = i;
+    ivSetState('question');
+    return speak(qs[i], iv.set.accent).then(function () {
+      if (id !== iv.runId) return null;
+      return (iv.useAudio ? ivOpenMic().catch(function () { return null; }) : Promise.resolve()).then(function () {
+        if (id !== iv.runId) return null;
+        return cueTone();
+      });
+    }).then(function () {
+      if (id !== iv.runId) return null;
+      ivSetState('answer');
+      return ivRecord(Number(settings.ivSeconds) || 45, iv.set.accent === 'B' ? 'en-GB' : 'en-US');
+    }).then(function (res) {
+      if (id !== iv.runId || !res) return;
+      ivCloseMic();
+      if (res.audio) iv.audio[i + 1] = { blob: res.audio, mime: res.mime };
+      if (res.error && res.audio && res.error !== 'not-allowed' && res.error !== 'audio-capture') {
+        iv.useSR = false;   // keep going with the recording only
+        res.error = '';
+      }
+      if (res.error) {
+        ivAbort(true);
+        showNotice(res.error === 'not-allowed' || res.error === 'service-not-allowed' ? 'micDenied'
+          : res.error === 'audio-capture' ? 'micMissing' : res.error === 'network' ? 'network' : 'srFailed');
+        renderInterview();
+        return;
+      }
+      var words = res.text ? res.text.split(/\s+/).filter(Boolean).length : 0;
+      iv.answers.push({
+        n: i + 1, question: qs[i], answer: res.text, seconds: round1(res.seconds),
+        startDelay: res.startDelay === null ? null : round1(res.startDelay),
+        words: words, wpm: words ? Math.round(words * 60 / Math.max(3, res.speechSpan)) : 0
+      });
+      ivSetState('between');
+      return wait(800).then(function () { return ivAsk(id, i + 1); });
+    });
+  }
+
+  // Records one answer until the time is up or the user presses "finished".
+  // Recording (MediaRecorder) and the browser's speech recognition run side by side when both are on;
+  // recognition keeps restarting after silences, and the recording keeps going even if recognition gives up.
+  function ivRecord(seconds, lang) {
+    return new Promise(function (resolve) {
+      var startedAt = performance.now(), limit = seconds * 1000;
+      var parts = [], cur = '', firstAt = null, lastAt = null;
+      var stopping = false, finished = false, r = null, fatal = '', restarts = 0, guard = null;
+      var useSR = iv.useSR;
+      var recorder = null, chunks = [], mime = '', recDone = null;
+      if (iv.useAudio && iv.stream) {
+        try {
+          mime = ivPickMime();
+          var opts = { audioBitsPerSecond: 96000 };
+          if (mime) opts.mimeType = mime;
+          recorder = new MediaRecorder(iv.stream, opts);
+          mime = recorder.mimeType || mime || 'audio/webm';
+          recDone = new Promise(function (res) { recorder.onstop = res; recorder.onerror = res; });
+          recorder.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+          recorder.start(1000);
+        } catch (e) { recorder = null; }
+      }
+      function text() { return (parts.join(' ') + ' ' + cur).replace(/\s+/g, ' ').trim(); }
+      function tick() {
+        var left = Math.max(0, limit - (performance.now() - startedAt));
+        ivUpdateClock(left / 1000, left / limit, text());
+        var lv = document.getElementById('ivLevel');
+        if (lv) lv.style.setProperty('--lv', String(ivLevel()));
+        if (left <= 0) stop();
+      }
+      var ticker = setInterval(tick, 150);
+      function finish() {
+        if (finished) return;
+        finished = true;
+        clearInterval(ticker); clearTimeout(guard);
+        iv.rec = null;
+        var end = performance.now();
+        var out = {
+          text: text(), seconds: Math.min(seconds, (end - startedAt) / 1000),
+          startDelay: firstAt === null ? null : (firstAt - startedAt) / 1000,
+          speechSpan: firstAt === null ? 0 : (lastAt - firstAt) / 1000 + 1, error: fatal, audio: null, mime: ''
+        };
+        if (!recorder) { resolve(out); return; }
+        try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) { /* ignore */ }
+        Promise.race([recDone, wait(3000)]).then(function () {
+          if (chunks.length) { out.audio = new Blob(chunks, { type: mime }); out.mime = mime; }
+          resolve(out);
+        });
+      }
+      function stop() {
+        if (stopping) return;
+        stopping = true;
+        if (r) { try { r.stop(); } catch (e) { /* ignore */ } guard = setTimeout(finish, 2500); }
+        else finish();
+      }
+      function begin() {
+        if (stopping || finished) return;
+        var mine;
+        try { mine = new SR(); } catch (e) { fatal = 'srFailed'; if (recorder) return; stop(); return; }
+        r = mine;
+        mine.lang = lang;
+        mine.interimResults = true;
+        mine.maxAlternatives = 1;
+        mine.continuous = true;
+        mine.onresult = function (ev) {
+          if (mine !== r) return;
+          var t = '';
+          for (var k = 0; k < ev.results.length; k++) t += ' ' + (ev.results[k][0] ? ev.results[k][0].transcript : '');
+          cur = t.replace(/\s+/g, ' ').trim();
+          if (cur) { var now = performance.now(); if (firstAt === null) firstAt = now; lastAt = now; }
+          tick();
+        };
+        mine.onerror = function (ev) {
+          var e = (ev && ev.error) || '';
+          if (/^(not-allowed|service-not-allowed|audio-capture|network|language-not-supported)$/.test(e)) fatal = e;
+        };
+        mine.onend = function () {
+          if (mine !== r) return;
+          if (cur) { parts.push(cur); cur = ''; }
+          r = null;
+          if (stopping) { finish(); return; }
+          if (fatal || restarts++ > 60) {
+            if (recorder) return;   // recognition gave up, but the recording goes on until the time is up
+            finish(); return;
+          }
+          setTimeout(begin, 150);
+        };
+        try { mine.start(); } catch (e) { r = null; fatal = fatal || 'srFailed'; if (!recorder) stop(); }
+      }
+      iv.rec = {
+        stop: stop,
+        abort: function () {
+          stopping = true; finished = true;
+          clearInterval(ticker); clearTimeout(guard);
+          if (r) { try { r.abort(); } catch (e) { /* ignore */ } }
+          if (recorder) { try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) { /* ignore */ } }
+          r = null; iv.rec = null;
+          resolve(null);
+        }
+      };
+      if (useSR) begin();
+      else if (!recorder) { fatal = 'srFailed'; finish(); }
+    });
+  }
+  function ivUpdateClock(secLeft, frac, liveText) {
+    var c = document.getElementById('ivClockNum');
+    if (c) c.textContent = String(Math.ceil(secLeft));
+    var bar = document.getElementById('ivTimer');
+    if (bar) bar.style.setProperty('--t', String(Math.max(0, frac)));
+    var lv = document.getElementById('ivLive');
+    if (lv) lv.textContent = liveText ? liveText : '';
+  }
+  function ivAbort(quiet) {
+    var was = ivRunning();
+    iv.runId++;
+    if (iv.rec) iv.rec.abort();
+    ivCloseMic();
+    try { if (TTS) TTS.cancel(); } catch (e) { /* ignore */ }
+    if (was) { iv.state = ivGate() ? 'gate' : 'ready'; if (!quiet) renderInterview(); }
+  }
+  function ivFinish(id) {
+    if (id !== iv.runId) return;
+    var sub = {
+      id: 'IV' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase(),
+      time: new Date().toISOString(), setId: iv.set.id, accent: iv.set.accent, topic: iv.set.topic,
+      answers: iv.answers.slice()
+    };
+    var ns = Object.keys(iv.audio).map(Number).sort();
+    if (ns.length) sub.audioPending = ns;
+    iv.session = { id: sub.id, time: sub.time, setId: sub.setId, accent: sub.accent, topic: sub.topic, status: '送信中', answers: sub.answers.slice() };
+    iv.audioSid = sub.id;
+    ivCloseMic();
+    ivSetState('after');
+    ivKeepLocal(sub.id, iv.audio).then(function () { ivSubmit(sub); });
+  }
+
+  // ---------- talking to the sheet ----------
+  function ivPost(body) {
+    return fetch(settings.sheetUrl, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), redirect: 'follow'
+    }).then(function (res) { return res.text(); }).then(function (t) {
+      var d;
+      try { d = JSON.parse(t); } catch (e) { var pe = new Error('NOT_JSON'); pe.server = true; throw pe; }
+      if (!d || d.ok !== true) { var se = new Error((d && d.error) || 'server'); se.server = true; throw se; }
+      return d;
+    });
+  }
+  function ivGet(params) {
+    var u = settings.sheetUrl;
+    return fetch(u + (u.indexOf('?') >= 0 ? '&' : '?') + params + '&_=' + Date.now(), { redirect: 'follow' })
+      .then(function (res) { return res.text(); }).then(function (t) {
+        var d = JSON.parse(t);
+        if (!d || d.ok !== true) throw new Error((d && d.error) || 'server');
+        return d;
+      });
+  }
+  // Sends the recordings one by one (Google Drive via the sheet), then the answers.
+  // A network failure keeps everything queued; if the sheet refuses a recording, the answers go without it.
+  function ivUploadAudio(sub) {
+    var list = (sub.audioPending || []).slice();
+    var mine = iv.session && iv.session.id === sub.id;
+    var chain = Promise.resolve();
+    list.forEach(function (n, k) {
+      chain = chain.then(function () {
+        var mem = mine && iv.audio && iv.audio[n];
+        return (mem ? Promise.resolve(mem) : ivDB.get(sub.id + ':' + n).catch(function () { return null; })).then(function (rec) {
+          if (!rec || !rec.blob) { drop(n); return; }
+          if (iv.session && iv.session.id === sub.id) { iv.upload = '録音を送っています（' + (k + 1) + ' / ' + list.length + '）…'; renderInterview(); }
+          return blobToBase64(rec.blob).then(function (b64) {
+            return ivPost({ action: 'audio', sessionId: sub.id, n: n, mime: rec.mime, data: b64 });
+          }).then(function (d) {
+            sub.answers.forEach(function (a) { if (a.n === n) a.audioId = d.fileId; });
+            drop(n);
+          }, function (err) {
+            if (err && err.server) { drop(n); sub.audioError = String(err.message || err); return; }
+            throw err;
+          });
+        });
+      });
+    });
+    function drop(n) { sub.audioPending = (sub.audioPending || []).filter(function (x) { return x !== n; }); }
+    return chain.then(function () { iv.upload = ''; }, function (e) { iv.upload = ''; throw e; });
+  }
+  function ivWire(sub) {
+    return { id: sub.id, time: sub.time, setId: sub.setId, accent: sub.accent, topic: sub.topic, answers: sub.answers };
+  }
+  function ivSubmit(sub) {
+    iv.sendState = 'sending';
+    renderInterview();
+    ivUploadAudio(sub).then(function () {
+      return ivPost({ action: 'interview', session: ivWire(sub) });
+    }).then(function () {
+      if (sub.audioError) iv.audioErr = { id: sub.id, msg: sub.audioError };
+      if (iv.session && iv.session.id === sub.id) iv.session.answers = sub.answers.slice();
+      ivPending = ivPending.filter(function (x) { return x.id !== sub.id; });
+      store.set('ivPending', ivPending);
+      if (iv.session && iv.session.id === sub.id) { iv.session.status = '採点待ち'; iv.sendState = 'sent'; }
+      store.set('ivLast', sub.id);
+      renderInterview();
+      if (iv.session && iv.session.id === sub.id) ivStartPolling(sub.id);
+      ivLoadHistory(true);
+    }).catch(function () {
+      if (!ivPending.some(function (x) { return x.id === sub.id; })) ivPending.push(sub);
+      ivPending = ivPending.slice(-20);
+      store.set('ivPending', ivPending);
+      if (iv.session && iv.session.id === sub.id) { iv.session.status = '未送信'; iv.sendState = 'failed'; }
+      renderInterview();
+    });
+  }
+  function ivSendPending() {
+    ivPending.slice().forEach(function (sub) {
+      ivUploadAudio(sub).then(function () {
+        return ivPost({ action: 'interview', session: ivWire(sub) });
+      }).then(function () {
+        ivPending = ivPending.filter(function (x) { return x.id !== sub.id; });
+        store.set('ivPending', ivPending);
+        renderInterview();
+        ivLoadHistory(true);
+      }).catch(function () { /* stays queued */ });
+    });
+  }
+  function ivStartPolling(id) {
+    ivStopPolling();
+    iv.pollId = id;
+    iv.pollUntil = Date.now() + 20 * 60000;
+    iv.pollTimedOut = false;
+    ivPollOnce();
+  }
+  function ivStopPolling() { clearTimeout(iv.pollTimer); iv.pollTimer = null; iv.pollId = ''; }
+  function ivPollOnce() {
+    var id = iv.pollId;
+    if (!id) return;
+    ivGet('action=interview&id=' + encodeURIComponent(id)).then(function (d) {
+      if (id !== iv.pollId) return;
+      if (d.session) { iv.session = d.session; iv.sendState = 'sent'; }
+      else if (!iv.session || iv.session.id !== id) iv.session = { id: id, status: '見つかりません', answers: [] };
+      renderInterview();
+      var st = d.session && d.session.status;
+      if (!d.session || st === IV_DONE || st === IV_ERR) {
+        ivStopPolling();
+        if (st === IV_DONE) ivLoadHistory(true);
+        return;
+      }
+      ivNextPoll();
+    }).catch(function () { if (id === iv.pollId) ivNextPoll(); });
+  }
+  function ivNextPoll() {
+    if (Date.now() > iv.pollUntil) { iv.pollTimedOut = true; ivStopPolling(); renderInterview(); return; }
+    iv.pollTimer = setTimeout(ivPollOnce, document.hidden ? 15000 : 5000);
+  }
+  function ivRetryScoring() {
+    if (!iv.session) return;
+    var id = iv.session.id;
+    iv.session.status = '採点待ち';
+    renderInterview();
+    ivPost({ action: 'retry', id: id }).then(function () { ivStartPolling(id); }).catch(function () { ivStartPolling(id); });
+  }
+  function ivLoadHistory(force) {
+    if (!settings.sheetUrl || ivServerVersion() < IV_SERVER) return;
+    if (iv.historyState === 'loading' || (iv.historyState === 'ok' && !force)) return;
+    iv.historyState = 'loading';
+    ivGet('action=interviews&limit=20').then(function (d) {
+      iv.history = Array.isArray(d.sessions) ? d.sessions : [];
+      iv.historyState = 'ok';
+      renderIvHistory();
+    }).catch(function () { iv.historyState = 'err'; renderIvHistory(); });
+  }
+  function ivOpen(id) {
+    ivAbort(true);
+    iv.session = { id: id, status: '読み込み中', answers: [] };
+    iv.sendState = 'sent';
+    iv.state = 'after';
+    renderInterview();
+    ivStartPolling(id);
+    var box = document.getElementById('interviewView');
+    if (box && box.scrollIntoView) box.scrollIntoView({ block: 'start' });
+  }
+
+  // ---------- drawing the interview ----------
+  function ivButton(label, cls, onClick, id) {
+    var b = mk('button', 'btn' + (cls ? ' ' + cls : ''));
+    b.type = 'button';
+    b.innerHTML = label;
+    if (id) b.id = id;
+    b.addEventListener('click', onClick);
+    return b;
+  }
+  function ivSteps(stage) {
+    var n = iv.set ? iv.set.questions.length : 0;
+    if (!n) return;
+    var bar = mk('div', 'iv-steps');
+    bar.setAttribute('aria-label', '質問 ' + (iv.qIndex + 1) + ' / ' + n);
+    for (var i = 0; i < n; i++) {
+      var done = i < iv.answers.length;
+      bar.appendChild(mk('i', done ? 'done' : (i === iv.qIndex && iv.state !== 'intro' ? 'now' : '')));
+    }
+    stage.appendChild(bar);
+  }
+  function ivFmtTime(t) {
+    var d = new Date(t);
+    if (isNaN(d.getTime())) return '';
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+  var IV_GATES = {
+    noSR: { title: 'このブラウザでは音声認識が使えません', body: ['パソコンの Google Chrome で開いてください。'] },
+    noSheet: {
+      title: 'Interview & Speak は、スプレッドシートにつないで使います',
+      body: ['設定の「Googleスプレッドシート連携」でスプレッドシートにつなぎます。', 'シート「インタビュー問題」に問題を入れます（サンプルはありません）。',
+        'Windowsパソコンで採点プログラムを動かすと、答えがAIで採点されます。'],
+      ordered: true
+    },
+    loading: { title: 'スプレッドシートを読み込んでいます…', body: [] },
+    sheetErr: { title: 'スプレッドシートに接続できませんでした', body: ['インターネット接続と、設定のURLを確認してください。'] },
+    old: {
+      title: 'スプレッドシート側のコードを新しい版（v3）に更新してください',
+      body: ['設定 →「スプレッドシートとつなぐ手順」の「コードをコピー」でコードを写します。', 'Apps Script のコードを全部消して貼り付け、保存します。',
+        '関数 setup を実行します（シート「インタビュー問題」「インタビュー回答」ができます）。',
+        '「デプロイ」→「デプロイを管理」→ 鉛筆アイコン →「バージョン」で「新バージョン」→「デプロイ」。'],
+      ordered: true
+    },
+    noSets: {
+      title: 'シート「インタビュー問題」に問題を入れてください',
+      body: ['1行に1セット（2行目から）。A列のIDは空欄でOK（イギリス英語で読ませたいときは「B」）。', 'B列＝テーマ、C列＝面接官の導入（なくてもOK）、D〜G列＝質問1〜4、H列＝メモ。',
+        '入れたら「シートを読み込み直す」を押してください。']
+    }
+  };
+  function renderInterview() {
+    if (settings.view !== 'interview') return;
+    var lamp = $('#ivLamp'), tag = $('#ivTag'), status = $('#ivStatus'), meta = $('#ivMeta'), stage = $('#ivStage'), ctl = $('#ivControls');
+    var lampState = 'idle', tagText = 'INTERVIEW', st = '';
+    stage.innerHTML = '';
+    stage.className = 'stage' + (iv.state === 'after' || iv.state === 'between' ? ' compact' : '');
+    ctl.innerHTML = '';
+    meta.innerHTML = '';
+    if (iv.set && iv.state !== 'gate' && iv.state !== 'ready') {
+      meta.appendChild(mk('span', 'pill level', iv.set.topic || 'インタビュー'));
+      meta.appendChild(mk('span', 'pill', iv.set.accent === 'B' ? 'イギリス英語' : 'アメリカ英語'));
+    } else if (iv.state === 'after' && iv.session && iv.session.topic) {
+      meta.appendChild(mk('span', 'pill level', iv.session.topic));
+    }
+    var showText = !!settings.ivShowText;
+    var n = iv.set ? iv.set.questions.length : 0;
+    switch (iv.state) {
+      case 'gate': {
+        var why = ivGate() || 'loading';
+        var g = IV_GATES[why];
+        st = why === 'loading' ? '' : '準備が必要です';
+        var box = mk('div', 'iv-gate');
+        box.appendChild(mk('h3', null, g.title));
+        if (g.body.length) {
+          var list = mk(g.ordered ? 'ol' : 'ul');
+          g.body.forEach(function (t) { list.appendChild(mk('li', null, t)); });
+          box.appendChild(list);
+        }
+        if (why === 'loading') box.appendChild(mk('span', 'spinner'));
+        stage.appendChild(box);
+        if (why === 'noSheet' || why === 'sheetErr') ctl.appendChild(ivButton('スプレッドシートにつなぐ', 'primary', function () { openSettings(true); }));
+        if (why === 'old') ctl.appendChild(ivButton('コードを表示する（設定）', 'primary', function () { openSettings(true); $('#setupHelp').open = true; }));
+        if (why === 'noSets' || why === 'sheetErr') ctl.appendChild(ivButton('シートを読み込み直す', why === 'noSets' ? 'primary' : '', function () { connectSheet(settings.sheetUrl, true); }, 'ivReload'));
+        break;
+      }
+      case 'ready': {
+        st = 'テーマを選んで始めましょう';
+        var sets = ivSets();
+        var pick = mk('div', 'iv-pick');
+        var lab = mk('label', 'line-label', 'テーマ');
+        lab.setAttribute('for', 'ivPick');
+        pick.appendChild(lab);
+        var sel = mk('select');
+        sel.id = 'ivPick';
+        var o0 = mk('option', null, 'おまかせ（まだやっていないテーマから）');
+        o0.value = 'random';
+        sel.appendChild(o0);
+        var doneIds = {};
+        (iv.history || []).forEach(function (h) { doneIds[h.setId] = true; });
+        sets.forEach(function (s) {
+          var o = mk('option', null, (s.topic || s.id) + '（' + s.questions.length + '問・' + (s.accent === 'B' ? 'イギリス英語' : 'アメリカ英語') + (doneIds[s.id] ? '・済' : '') + '）');
+          o.value = s.id;
+          sel.appendChild(o);
+        });
+        sel.value = sets.some(function (s) { return s.id === iv.pick; }) ? iv.pick : 'random';
+        pick.appendChild(sel);
+        stage.appendChild(pick);
+        var facts = mk('div', 'iv-facts');
+        var recPill = ivAudioOn() ? (ivWantSR(true) ? '録音する（Whisperで文字起こし）' : '録音だけ（文字起こしはパソコンで）')
+          : (settings.ivAudio && !ivServerAudio() ? '録音：コードを v3.1 に更新すると使えます' : '録音しない');
+        [sets.length + 'セット', '質問は最大4問', '1問 ' + (Number(settings.ivSeconds) || 45) + '秒', '準備時間なし', showText ? '質問の文字：表示' : '質問は音声だけ', recPill]
+          .forEach(function (t) { facts.appendChild(mk('span', 'pill', t)); });
+        stage.appendChild(facts);
+        stage.appendChild(mk('span', 'count-note', '答え終わると、スプレッドシートに送られ、パソコンの採点プログラムが採点します（数十秒〜数分）。'));
+        if (ivPending.length) {
+          var pend = mk('div', 'iv-status');
+          pend.appendChild(mk('span', 'hint', '送れていないインタビューが ' + ivPending.length + ' 件あります。'));
+          pend.appendChild(ivButton('今すぐ送る', 'small', ivSendPending));
+          stage.appendChild(pend);
+        }
+        ctl.appendChild(ivButton(ICONS.play + 'インタビューを始める <span class="kbd">Space</span>', 'primary', ivStart, 'ivPrimary'));
+        break;
+      }
+      case 'prep':
+        st = 'マイクの使用を許可してください';
+        ctl.appendChild(ivButton(ICONS.wait + '準備中…', 'primary', function () {}, 'ivPrimary')).disabled = true;
+        break;
+      case 'intro':
+        lampState = 'listen'; tagText = 'LISTEN'; st = '面接官の話を聞いてください';
+        ivSteps(stage);
+        if (showText && iv.set.intro) stage.appendChild(mk('p', 'iv-q', iv.set.intro));
+        else { var wv = mk('div', 'waves'); for (var a = 0; a < 5; a++) wv.appendChild(mk('span')); stage.appendChild(wv); }
+        ctl.appendChild(ivButton('中止する', '', function () { ivAbort(false); }));
+        break;
+      case 'question':
+        lampState = 'listen'; tagText = 'LISTEN'; st = '質問 ' + (iv.qIndex + 1) + ' / ' + n;
+        ivSteps(stage);
+        if (showText) stage.appendChild(mk('p', 'iv-q', iv.set.questions[iv.qIndex]));
+        else {
+          var wv2 = mk('div', 'waves'); for (var b2 = 0; b2 < 5; b2++) wv2.appendChild(mk('span')); stage.appendChild(wv2);
+          stage.appendChild(mk('span', 'count-note', '質問は音声だけです（設定で文字も表示できます）'));
+        }
+        ctl.appendChild(ivButton('中止する', '', function () { ivAbort(false); }));
+        break;
+      case 'answer': {
+        lampState = 'speak'; tagText = 'SPEAK'; st = '質問 ' + (iv.qIndex + 1) + ' / ' + n + '：どうぞ話してください';
+        ivSteps(stage);
+        if (showText) stage.appendChild(mk('p', 'iv-q', iv.set.questions[iv.qIndex]));
+        var clock = mk('div', 'iv-clock');
+        clock.innerHTML = '<span id="ivClockNum">' + (Number(settings.ivSeconds) || 45) + '</span><small>秒</small>';
+        stage.appendChild(clock);
+        var tm = mk('div', 'timer');
+        tm.appendChild(mk('i'));
+        tm.id = 'ivTimer';
+        stage.appendChild(tm);
+        if (iv.useAudio) {
+          var meter = mk('div', 'iv-level');
+          meter.id = 'ivLevel';
+          meter.setAttribute('aria-hidden', 'true');
+          meter.appendChild(mk('i'));
+          stage.appendChild(meter);
+        }
+        if (!iv.useSR) stage.appendChild(mk('span', 'iv-recnote', '録音しています。文字起こしは、採点のときにパソコンで行います。'));
+        var lv = mk('div', 'live');
+        lv.id = 'ivLive';
+        stage.appendChild(lv);
+        var stopBtn = ivButton(ICONS.stop + '話し終わった（次へ） <span class="kbd">Space</span>', 'primary rec', function () { if (iv.rec) iv.rec.stop(); }, 'ivPrimary');
+        ctl.appendChild(stopBtn);
+        ctl.appendChild(ivButton('中止する', '', function () { ivAbort(false); }));
+        break;
+      }
+      case 'between':
+        lampState = 'listen'; tagText = 'NEXT'; st = iv.qIndex + 1 < n ? '次の質問です…' : 'おつかれさまでした';
+        ivSteps(stage);
+        break;
+      case 'after': {
+        var s = iv.session || { status: '', answers: [] };
+        var stx = s.status;
+        if (stx === IV_DONE) { lampState = 'ok'; tagText = 'SCORED'; st = '採点が終わりました'; }
+        else if (stx === IV_ERR) { lampState = 'miss'; tagText = 'ERROR'; st = '採点できませんでした'; }
+        else if (stx === '未送信') { lampState = 'miss'; tagText = 'OFFLINE'; st = 'スプレッドシートに送れませんでした'; }
+        else { lampState = 'listen'; tagText = 'SCORING'; st = stx === '送信中' ? 'スプレッドシートに送っています…' : stx === '読み込み中' ? '結果を読み込んでいます…' : stx === '見つかりません' ? 'この結果は見つかりませんでした' : (stx === IV_WORK ? 'AIが採点しています…' : '採点を待っています…'); }
+        var info = mk('div', 'iv-status');
+        if (stx !== IV_DONE && stx !== IV_ERR && stx !== '未送信' && stx !== '見つかりません' && !iv.pollTimedOut) info.appendChild(mk('span', 'spinner'));
+        var msg = '';
+        if (iv.upload && stx === '送信中') msg = iv.upload;
+        else if (stx === IV_DONE) msg = '下に点数とコメントがあります。自分の答えと改善例を聞きくらべて、まねして言ってみましょう。';
+        else if (stx === IV_ERR) msg = (s.answers[0] && s.answers[0].comment) || '採点プログラムでエラーが起きました。';
+        else if (stx === '未送信') msg = '答えはこの端末に保存しました。インターネットにつながったら「もう一度送る」を押してください。';
+        else if (iv.pollTimedOut) msg = '時間がかかっています。Windowsパソコンの採点プログラムが動いているか確認してください。結果は「これまでの結果」からも見られます。';
+        else if (stx === '採点待ち') msg = 'Windowsパソコンの採点プログラムが動いていれば、まもなく採点が始まります。この画面を閉じても、結果はスプレッドシートに残ります。';
+        else if (stx === IV_WORK) msg = 'ふつう数十秒〜数分かかります。';
+        if (msg) info.appendChild(mk('span', 'hint', msg));
+        stage.appendChild(info);
+        if (iv.audioErr && iv.audioErr.id === s.id) {
+          stage.appendChild(mk('span', 'iv-recnote', '録音はスプレッドシートに保存できませんでした（' + iv.audioErr.msg + '）。答えの文字だけで採点します。' +
+            'スプレッドシート側で setup をもう一度実行し、Googleドライブの使用を許可してから、新バージョンでデプロイしてください。'));
+        }
+        if (stx === '未送信') ctl.appendChild(ivButton('もう一度送る', 'primary', function () {
+          var sub = ivPending.filter(function (x) { return x.id === s.id; })[0];
+          if (sub) { iv.session.status = '送信中'; ivSubmit(sub); }
+        }));
+        if (stx === IV_ERR) ctl.appendChild(ivButton('もう一度採点してもらう', 'primary', ivRetryScoring));
+        if (iv.pollTimedOut) ctl.appendChild(ivButton('結果を確認する', 'primary', function () { ivStartPolling(s.id); renderInterview(); }));
+        ctl.appendChild(ivButton(ICONS.play + '次のインタビューへ', stx === IV_DONE ? 'primary' : '', function () { ivStopPolling(); iv.session = null; iv.state = ivGate() ? 'gate' : 'ready'; renderInterview(); }, stx === IV_DONE ? 'ivPrimary' : null));
+        break;
+      }
+    }
+    lamp.dataset.state = lampState;
+    tag.textContent = tagText;
+    status.textContent = st;
+    renderIvResult();
+    renderIvHistory();
+  }
+
+  function ivScoreText(v, max) { return (v === null || v === undefined || v === '') ? '—' : String(v) + (max ? ' / ' + max : ''); }
+  function renderIvResult() {
+    var box = $('#ivResult');
+    var s = iv.session;
+    box.innerHTML = '';
+    if (iv.state !== 'after' || !s || !s.answers || !s.answers.length) { box.hidden = true; return; }
+    box.hidden = false;
+    var done = s.status === IV_DONE;
+    if (done) {
+      var top = mk('div', 'iv-card');
+      var tot = mk('div', 'iv-total');
+      var t1 = mk('div');
+      t1.innerHTML = '<span class="lbl">総合（0〜5）</span><span class="big">' + ivScoreText(s.overall) + '<small> / 5</small></span>';
+      var t2 = mk('div');
+      t2.innerHTML = '<span class="lbl">TOEFLバンドの目安（1〜6）</span><span class="big">' + ivScoreText(s.band) + '</span>';
+      tot.appendChild(t1); tot.appendChild(t2);
+      top.appendChild(tot);
+      if (s.overallComment) top.appendChild(mk('div', null, s.overallComment));
+      if (s.nextFocus) {
+        var nf = mk('div', 'banner tip');
+        nf.appendChild(mk('span', null, '次に意識すること：' + s.nextFocus));
+        top.appendChild(nf);
+      }
+      var anyRec = s.answers.some(function (a) { return String(a.transcript || '').trim(); });
+      top.appendChild(mk('div', 'hint', anyRec
+        ? 'AIによる目安です。録音を文字起こしした内容と、話し始め・間・つなぎ言葉・聞き取りにくかった語から採点しています。AIが声そのものを聞いているわけではないので、発音の良し悪しは「自分の声」を聞いて確かめてください。'
+        : 'AIによる目安です。音声認識の文字起こしと話した時間から採点しているため、発音そのものは評価していません。'));
+      box.appendChild(top);
+    }
+    s.answers.forEach(function (a) {
+      var c = mk('div', 'iv-card');
+      c.appendChild(mk('h3', null, 'Q' + a.n + '. '));
+      c.lastChild.appendChild(mk('span', 'iv-ans', a.question || ''));
+      var fromRec = !!String(a.transcript || '').trim();
+      var canHear = !!a.audioId || !!(iv.audioSid === s.id && iv.audio[a.n]);
+      var head0 = mk('div', 'row');
+      head0.appendChild(mk('span', 'line-label', fromRec ? 'あなたの答え（録音から文字起こし）' : 'あなたの答え（音声認識）'));
+      if (canHear) head0.appendChild(ivOwnButton(s, a));
+      c.appendChild(head0);
+      var shown = fromRec ? a.transcript : a.answer;
+      if (!shown) shown = (canHear && !done && s.status !== IV_ERR) ? '（録音から文字起こしします）' : '（何も聞き取れませんでした）';
+      c.appendChild(mk('div', 'iv-ans', shown));
+      if (fromRec && a.answer && ivNorm(a.answer) !== ivNorm(a.transcript)) {
+        var also = mk('div', 'iv-also', 'ブラウザの音声認識では：');
+        also.appendChild(mk('span', null, a.answer));
+        c.appendChild(also);
+      }
+      var facts = mk('div', 'iv-sub');
+      if (a.seconds !== null && a.seconds !== undefined) facts.appendChild(mk('span', 'pill', a.seconds + '秒'));
+      if (a.startDelay !== null && a.startDelay !== undefined) facts.appendChild(mk('span', 'pill', '話し始め ' + a.startDelay + '秒'));
+      if (a.words !== null && a.words !== undefined) facts.appendChild(mk('span', 'pill', a.words + '語'));
+      if (a.wpm) facts.appendChild(mk('span', 'pill', a.wpm + '語/分'));
+      if (a.pauses !== null && a.pauses !== undefined) facts.appendChild(mk('span', 'pill', '1秒以上の間 ' + a.pauses + '回' + (a.pauses && a.longestPause ? '（最長 ' + a.longestPause + '秒）' : '')));
+      if (a.fillers !== null && a.fillers !== undefined) facts.appendChild(mk('span', 'pill', 'um・uh など ' + a.fillers + '回'));
+      c.appendChild(facts);
+      var unclear = String(a.unclear || '').split(/\s*,\s*/).filter(Boolean);
+      if (unclear.length) {
+        var uc = mk('div', 'iv-unclear');
+        uc.appendChild(mk('span', 'lbl', 'はっきり聞き取れなかったかもしれない語'));
+        unclear.forEach(function (w) { uc.appendChild(mk('b', null, w)); });
+        c.appendChild(uc);
+      }
+      if (done) {
+        var sc = mk('div', 'iv-sub');
+        var main = mk('span', 'badge ' + (a.score >= 4 ? 'ok' : a.score >= 2.5 ? 'mid' : 'miss'), '点数 ' + ivScoreText(a.score, 5));
+        sc.appendChild(main);
+        sc.appendChild(mk('span', 'pill', '内容 ' + ivScoreText(a.content)));
+        sc.appendChild(mk('span', 'pill', '言葉づかい ' + ivScoreText(a.language)));
+        sc.appendChild(mk('span', 'pill', '流暢さ ' + ivScoreText(a.fluency)));
+        c.appendChild(sc);
+        if (a.comment) c.appendChild(mk('div', null, a.comment));
+        var fixes = String(a.corrections || '').split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+        if (fixes.length) {
+          c.appendChild(mk('div', 'line-label', '直したい表現'));
+          var ul = mk('ul', 'iv-fixes');
+          fixes.forEach(function (f) {
+            var li = mk('li');
+            var m = f.match(/^(.*?)\s*→\s*(.*?)(?:（(.*)）)?$/);
+            if (m) {
+              li.appendChild(mk('span', 'from', m[1]));
+              li.appendChild(document.createTextNode(' → '));
+              li.appendChild(mk('span', 'to', m[2]));
+              if (m[3]) { li.appendChild(document.createTextNode(' ')); li.appendChild(mk('span', 'why', m[3])); }
+            } else li.textContent = f;
+            ul.appendChild(li);
+          });
+          c.appendChild(ul);
+        }
+        if (a.improved) {
+          var head = mk('div', 'row');
+          head.appendChild(mk('span', 'line-label', '改善例（この答えをもとに）'));
+          var say = mk('button', 'btn small', '');
+          say.type = 'button';
+          say.innerHTML = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>聞く';
+          say.setAttribute('data-say', String(a.n));
+          say.addEventListener('click', function () { ivStopOwn(); unlockAudio(); speak(a.improved, s.accent === 'B' ? 'B' : 'A').catch(function () { showNotice('ttsFailed'); }); });
+          head.appendChild(say);
+          c.appendChild(head);
+          c.appendChild(mk('div', 'iv-improved', a.improved));
+        }
+      }
+      box.appendChild(c);
+    });
+    if (done && s.threadId) box.appendChild(mk('div', 'id-line', '受付ID ' + s.id + ' ・ スレッドID ' + s.threadId));
+    else box.appendChild(mk('div', 'id-line', '受付ID ' + s.id));
+  }
+
+  function ivNorm(t) { return String(t || '').toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function ivOwnButton(s, a) {
+    var b = mk('button', 'btn small');
+    b.type = 'button';
+    b.setAttribute('data-own', String(a.n));
+    var playing = iv.player && iv.player.key === s.id + ':' + a.n;
+    b.innerHTML = playing ? ICONS.stop + '止める' : ICONS.play + '自分の声';
+    b.addEventListener('click', function () { ivPlayOwn(s.id, a, b); });
+    return b;
+  }
+  function ivStopOwn() {
+    if (!iv.player) return;
+    try { iv.player.el.pause(); } catch (e) { /* ignore */ }
+    try { URL.revokeObjectURL(iv.player.url); } catch (e) { /* ignore */ }
+    var key = iv.player.key;
+    iv.player = null;
+    var btn = document.querySelector('#ivResult [data-own="' + key.split(':')[1] + '"]');
+    if (btn) btn.innerHTML = ICONS.play + '自分の声';
+  }
+  function ivPlayOwn(sid, a, btn) {
+    var key = sid + ':' + a.n;
+    if (iv.player && iv.player.key === key) { ivStopOwn(); return; }
+    ivStopOwn();
+    try { if (TTS) TTS.cancel(); } catch (e) { /* ignore */ }
+    var mem = iv.audioSid === sid && iv.audio[a.n];
+    var got = mem ? Promise.resolve(mem) : ivDB.get(key).catch(function () { return null; });
+    btn.disabled = true;
+    got.then(function (rec) {
+      if (rec && rec.blob) return rec.blob;
+      if (!a.audioId) throw new Error('none');
+      btn.innerHTML = ICONS.wait + '読み込み中…';
+      return ivGet('action=audio&id=' + encodeURIComponent(a.audioId)).then(function (d) {
+        var blob = base64ToBlob(d.data, d.mime);
+        ivDB.put(key, { blob: blob, mime: d.mime, time: Date.now() }).catch(function () {});
+        return blob;
+      });
+    }).then(function (blob) {
+      btn.disabled = false;
+      var url = URL.createObjectURL(blob);
+      var el = new Audio(url);
+      iv.player = { key: key, el: el, url: url };
+      el.onended = ivStopOwn;
+      btn.innerHTML = ICONS.stop + '止める';
+      var p = el.play();
+      if (p && p.catch) p.catch(function () { ivStopOwn(); });
+    }).catch(function () {
+      btn.disabled = false;
+      btn.innerHTML = ICONS.play + '自分の声';
+      btn.title = '録音を読み込めませんでした';
+      showNotice('ownAudio');
+    });
+  }
+
+  function renderIvHistory() {
+    var det = $('#ivHistory'), list = $('#ivHistoryList');
+    if (settings.view !== 'interview' || ivRunning() || iv.historyState === '' || (!iv.history.length && iv.historyState !== 'err')) { det.hidden = true; return; }
+    det.hidden = false;
+    $('#ivHistorySummary').textContent = 'これまでの結果（' + iv.history.length + '）';
+    list.innerHTML = '';
+    if (iv.historyState === 'err') { list.appendChild(mk('li', 'hint', '読み込めませんでした。')); return; }
+    iv.history.forEach(function (h) {
+      var li = mk('li');
+      var b = mk('button');
+      b.type = 'button';
+      b.appendChild(mk('span', 't', h.topic || h.setId || 'インタビュー'));
+      var scored = h.status === IV_DONE;
+      b.appendChild(mk('span', 's' + (scored ? '' : ' wait'), scored ? (ivScoreText(h.overall) + ' / 5') : h.status));
+      b.appendChild(mk('span', 'd', ivFmtTime(h.time) + (scored && h.band ? ' ・ バンド目安 ' + h.band : '')));
+      b.addEventListener('click', function () { ivOpen(h.id); });
+      li.appendChild(b);
+      list.appendChild(li);
+    });
+  }
+
+  // =====================================================================
   //  Rendering
   // =====================================================================
   var NOTICES = {
+    ownAudio: { cls: 'err', html: '<b>録音を読み込めませんでした。</b>インターネット接続を確認してください。スプレッドシートの「録音」列からも聞けます。' },
     micDenied: { cls: 'err', html: '<b>マイクが使えません。</b>アドレスバーの左のアイコン → マイク →「許可」にして、ページを読み込み直してください。' },
     micMissing: { cls: 'err', html: '<b>マイクが見つかりません。</b>マイク（イヤホンマイクなど）がつながっているか確認してください。' },
     network: { cls: 'err', html: '<b>音声認識にはインターネット接続が必要です。</b>接続を確認して、もう一度ためしてください。' },
@@ -1848,6 +2909,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     renderSheetChip();
     renderBooth();
     renderPending();
+    renderView();
   }
 
   // =====================================================================
@@ -1871,6 +2933,9 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     $('#optSave').checked = !!settings.saveToSheet;
     $('#optMistakesAll').checked = !!settings.mistakesAll;
     $('#optHints').checked = !!settings.hints;
+    $('#optIvSeconds').value = String(settings.ivSeconds);
+    $('#optIvText').checked = !!settings.ivShowText;
+    $('#optIvAudio').checked = !!settings.ivAudio;
     if (document.activeElement !== $('#sheetUrl')) $('#sheetUrl').value = settings.sheetUrl || '';
   }
   function bindSettings() {
@@ -1908,6 +2973,9 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     $('#sheetUrl').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); connectSheet(e.target.value, false); } });
     $('#disconnectBtn').addEventListener('click', disconnectSheet);
     $('#flushBtn').addEventListener('click', function () { releaseHeld(); });
+    onChange('#optIvSeconds', function (t) { settings.ivSeconds = Number(t.value) || 45; });
+    onChange('#optIvText', function (t) { settings.ivShowText = t.checked; });
+    onChange('#optIvAudio', function (t) { settings.ivAudio = t.checked; });
     onChange('#optHints', function (t) { settings.hints = t.checked; if (t.checked) hintBroken = false; renderHintState(); });
     $('#hintInstall').addEventListener('click', installHints);
     $('#copyCode').addEventListener('click', function () {
@@ -1938,6 +3006,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     });
   }
   function openSettings(focusSheet) {
+    if (ivRunning()) ivAbort(false);
     cancelActivity();
     if (state === 'replaying') setState(lastResult ? 'result' : 'reveal');
     else if (state !== 'result' && state !== 'reveal') setState('idle');
@@ -1978,10 +3047,20 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       segBtns[i].addEventListener('click', function (e) { setAccentFilter(e.currentTarget.getAttribute('data-accent')); });
     }
 
+    var modeBtns = document.querySelectorAll('#modes .mode-btn');
+    for (var m = 0; m < modeBtns.length; m++) {
+      modeBtns[m].addEventListener('click', function (e) { setView(e.currentTarget.getAttribute('data-view')); });
+    }
+
     document.addEventListener('keydown', function (e) {
       if (D.dialog.open) return;
       var tag = (e.target && e.target.tagName) || '';
       if (/^(INPUT|TEXTAREA|SELECT|BUTTON|SUMMARY|A)$/.test(tag)) return;
+      if (settings.view === 'interview') {
+        var ivp = document.getElementById('ivPrimary');
+        if ((e.code === 'Space' || e.key === ' ') && ivp && !ivp.disabled) { e.preventDefault(); ivp.click(); }
+        return;
+      }
       if (e.code === 'Space' || e.key === ' ') { e.preventDefault(); if (!D.primary.disabled) onPrimary(); }
       else if (e.key === 'r' || e.key === 'R') { if (!D.replayBtn.hidden) onReplay(); }
     });
