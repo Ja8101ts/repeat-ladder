@@ -2290,12 +2290,23 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     if (done) {
       var top = mk('div', 'iv-card');
       var tot = mk('div', 'iv-total');
+      var sum = ivSummary(s.answers);
       var t1 = mk('div');
-      t1.innerHTML = '<span class="lbl">総合（0〜5）</span><span class="big">' + ivScoreText(s.overall) + '<small> / 5</small></span>';
+      if (sum) {
+        t1.innerHTML = '<span class="lbl">素点（' + s.answers.length + '問×5点）</span><span class="big">' + sum.raw + '<small> / ' + sum.max + '</small></span>';
+        var t0 = mk('div');
+        t0.innerHTML = '<span class="lbl">1問あたり（0〜5）</span><span class="big">' + sum.avgText + '<small> / 5</small></span>';
+        tot.appendChild(t1); tot.appendChild(t0);
+      } else {
+        t1.innerHTML = '<span class="lbl">総合（0〜5）</span><span class="big">' + ivScoreText(s.overall) + '<small> / 5</small></span>';
+        tot.appendChild(t1);
+      }
       var t2 = mk('div');
-      t2.innerHTML = '<span class="lbl">TOEFLバンドの目安（1〜6）</span><span class="big">' + ivScoreText(s.band) + '</span>';
-      tot.appendChild(t1); tot.appendChild(t2);
+      t2.innerHTML = '<span class="lbl">TOEFLバンドの目安（1〜6）</span><span class="big">' + (sum ? sum.band.toFixed(1) : ivScoreText(s.band)) + '</span>';
+      tot.appendChild(t2);
       top.appendChild(tot);
+      if (sum) top.appendChild(mk('div', 'hint', 'バンドの目安は、1問あたりの平均点から計算しています（平均 2.0〜2.4点→3.5、2.5〜2.9点→4.0、3.0〜3.4点→4.5、3.5〜3.9点→5.0 …）。' +
+        'ETS は素点からバンドへの換算を公表していないので、よく使われる目安表と同じ割合で出した推定です。本番のバンドは Listen and Repeat（7問）と合わせて決まります。'));
       if (s.overallComment) top.appendChild(mk('div', null, s.overallComment));
       if (s.nextFocus) {
         var nf = mk('div', 'banner tip');
@@ -2386,6 +2397,23 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     else box.appendChild(mk('div', 'id-line', '受付ID ' + s.id));
   }
 
+  // Raw score of the interview and a band estimate. ETS does not publish how raw scores become bands; this uses the
+  // common guide (per-question average 2.0-2.4 → 3.5, 2.5-2.9 → 4.0, 3.0-3.4 → 4.5, 3.5-3.9 → 5.0), extended both ways.
+  function ivBandFromAverage(avg) {
+    if (!(avg > 0)) return 1;
+    return Math.min(6, Math.max(1.5, 1.5 + Math.floor(avg * 2 + 1e-9) / 2));
+  }
+  function ivSummary(answers) {
+    if (!answers || !answers.length) return null;
+    var raw = 0;
+    for (var i = 0; i < answers.length; i++) {
+      var v = answers[i].score;
+      if (v === null || v === undefined || v === '' || isNaN(Number(v))) return null;
+      raw += Math.floor(Math.min(5, Math.max(0, Number(v))) * 2 + 0.5) / 2;
+    }
+    var avg = raw / answers.length;
+    return { raw: raw, max: answers.length * 5, avg: avg, avgText: String(Math.round(avg * 10) / 10), band: ivBandFromAverage(avg) };
+  }
   function ivNorm(t) { return String(t || '').toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
   function ivOwnButton(s, a) {
     var b = mk('button', 'btn small');
@@ -2453,7 +2481,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
       b.appendChild(mk('span', 't', h.topic || h.setId || 'インタビュー'));
       var scored = h.status === IV_DONE;
       b.appendChild(mk('span', 's' + (scored ? '' : ' wait'), scored ? (ivScoreText(h.overall) + ' / 5') : h.status));
-      b.appendChild(mk('span', 'd', ivFmtTime(h.time) + (scored && h.band ? ' ・ バンド目安 ' + h.band : '')));
+      b.appendChild(mk('span', 'd', ivFmtTime(h.time)));
       b.addEventListener('click', function () { ivOpen(h.id); });
       li.appendChild(b);
       list.appendChild(li);
