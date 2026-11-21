@@ -529,11 +529,12 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
 .cw-text { font-family: var(--font-en); font-size: 1.12rem; line-height: 2.2; margin: 0; overflow-wrap: break-word; }
 .cw-gap { white-space: nowrap; }
 .cw-stem { font-weight: 700; }
-.cw-in { font-family: var(--font-code); font-size: 16px; width: calc(var(--n, 3) * 1.1ch + 12px); padding: 0 4px; margin: 0 1px;
+.cw-in { font-family: var(--font-code); font-size: 16px; width: calc(var(--n, 3) * 1.1ch + 12px); padding: 0 4px; margin: 0 2px;
   border: 0; border-bottom: 2px solid var(--accent); border-radius: 4px 4px 0 0; background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   color: var(--ink); letter-spacing: .06em; line-height: 1.6; vertical-align: baseline; }
 .cw-in::placeholder { color: color-mix(in srgb, var(--muted) 70%, transparent); letter-spacing: .06em; }
-.cw-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; background: var(--surface); }
+/* the focus mark is drawn inside the box, so it never covers the letters next to it (v5.1) */
+.cw-in:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); background: var(--surface); }
 .cw-fill { font-weight: 700; border-radius: 3px; padding: 0 2px; }
 .cw-fill.ok { color: var(--ok); background: var(--ok-soft); }
 .cw-fill.bad { color: var(--miss); text-decoration: line-through; text-decoration-thickness: 2px; }
@@ -863,7 +864,7 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     </details>
   </div>
 
-  <footer>Repeat Ladder v5.0 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
+  <footer>Repeat Ladder v5.1 ・ 英文の読み上げと音声認識はブラウザの機能を使っています</footer>
 </div>
 </div>
 
@@ -4416,10 +4417,26 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     return W.filter(function (w) { return w.state === 'review'; });
   }
   function wbItem(w, as) { return { w: w, as: as, turns: 0, mcq: 0, typeMiss: 0, typed: '', firstTyped: null }; }
+  // the order of new words (v5.1): words typed in the app first (in the order they were added), then the rest in a
+  // fixed mixed order made from the ID, so a long list pasted a→z into the sheet does not come out a→z
+  function wbMix(id) {
+    var s = String(id || ''), h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16;
+    return h >>> 0;
+  }
+  function wbTyped(w) { return /^M/.test(String(w.cid || '')); }
+  function wbNewOrder(list) {
+    return list.map(function (w, i) { return { w: w, i: i, t: wbTyped(w), k: wbMix(w.id) }; }).sort(function (a, b) {
+      if (a.t !== b.t) return a.t ? -1 : 1;
+      if (a.t || a.k === b.k) return a.i - b.i;
+      return a.k < b.k ? -1 : 1;
+    }).map(function (x) { return x.w; });
+  }
   // the next round for a tab: { items, catchup, rrOnly }
   function wbPlan(tab) {
     if (tab === 'new') {
-      var fresh = wbPool('new').filter(wbHasMeaning);
+      var fresh = wbNewOrder(wbPool('new').filter(wbHasMeaning));
       var due = wbDueList();
       if (fresh.length && due.length >= WB_CATCHUP_AT && wb.lastNew !== 'catchup') {
         return { catchup: true, items: due.slice(0, WB_CATCHUP).map(function (w) { return wbItem(w, 'srs'); }) };
