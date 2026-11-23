@@ -10,21 +10,26 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-/* Skill Ascent v6.0 design: graphite surfaces, the teal of the old app, and pill buttons with a 2px ring that lights up
-   on hover (taken from the user's "glowing outline button"). Headings and the menu use Archivo (condensed);
-   English to read uses Atkinson Hyperlegible; Japanese uses the system font. */
+/* Skill Ascent v6.0 design ("instrument panel", the user's pick): graphite panels on a faint 32px grid, the old teal as the
+   brand colour, and one signal colour per TOEFL section (Reading teal, Listening blue, Writing amber, Speaking coral,
+   Words violet) used for the menu tiles, the corner marks of the working panel, the LED and the active tab.
+   The main button keeps the user's "glowing outline" (a ring that turns once on hover). Headings, numbers and the menu
+   use Archivo (condensed); English to read uses Atkinson Hyperlegible; Japanese uses the system font. */
 :root {
-  --bg: #EDF1F1;
+  --bg: #ECF0F1;
+  --side: #E3E9EB;
   --surface: #FFFFFF;
-  --surface-2: #E3EAEA;
+  --surface-2: #F1F5F6;
   --heat-mix: 20%;
-  --ink: #15292F;
-  --muted: #56696E;
-  --line: #C9D5D5;
+  --ink: #13232A;
+  --muted: #56676D;
+  --line: #CDD7DA;
+  --grid: rgba(19, 35, 42, .045);
   --accent: #1C6984;
   --accent-2: #5CC0DC;
   --accent-hover: #15566D;
   --on-accent: #FFFFFF;
+  --sec-reading: #1C6984; --sec-listening: #3558C0; --sec-writing: #9A6A0E; --sec-speaking: #B5482B; --sec-words: #6A4DC6;
   --rec: #C97A12;
   --rec-soft: #F8E6C8;
   --on-rec: #241703;
@@ -32,17 +37,20 @@
   --ok-soft: #D8EDE0;
   --miss: #B83F2E;
   --miss-soft: #F5DCD7;
-  --shadow: 0 12px 32px rgba(21, 41, 47, .14);
+  --shadow: 0 12px 32px rgba(19, 35, 42, .14);
   --font-display: "Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-en: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-ja: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
   --font-code: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sec: var(--accent);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --heat-mix: 34%; --bg: #17191B; --surface: #212426; --surface-2: #2A2E31; --ink: #E7ECEC; --muted: #9AA4A7; --line: #383E42;
+    --heat-mix: 34%; --bg: #111417; --side: #161A1E; --surface: #1B2025; --surface-2: #222930; --ink: #E6ECEE; --muted: #8E9AA1; --line: #2D353C;
+    --grid: rgba(255, 255, 255, .025);
     --accent: #5AB4D0; --accent-2: #BDEFFB; --accent-hover: #7CC6DD; --on-accent: #062029;
+    --sec-reading: #5AB4D0; --sec-listening: #7EA7F7; --sec-writing: #E9B24D; --sec-speaking: #F08B6E; --sec-words: #B59CF4;
     --rec: #F0AE4A; --rec-soft: #3A2B12; --on-rec: #231503;
     --ok: #5EC48E; --ok-soft: #153226; --miss: #F07D6D; --miss-soft: #3D1F1B;
     --shadow: 0 14px 36px rgba(0, 0, 0, .45);
@@ -50,13 +58,20 @@
   }
 }
 :root[data-theme="dark"] {
-  --heat-mix: 34%; --bg: #17191B; --surface: #212426; --surface-2: #2A2E31; --ink: #E7ECEC; --muted: #9AA4A7; --line: #383E42;
+  --heat-mix: 34%; --bg: #111417; --side: #161A1E; --surface: #1B2025; --surface-2: #222930; --ink: #E6ECEE; --muted: #8E9AA1; --line: #2D353C;
+  --grid: rgba(255, 255, 255, .025);
   --accent: #5AB4D0; --accent-2: #BDEFFB; --accent-hover: #7CC6DD; --on-accent: #062029;
+  --sec-reading: #5AB4D0; --sec-listening: #7EA7F7; --sec-writing: #E9B24D; --sec-speaking: #F08B6E; --sec-words: #B59CF4;
   --rec: #F0AE4A; --rec-soft: #3A2B12; --on-rec: #231503;
   --ok: #5EC48E; --ok-soft: #153226; --miss: #F07D6D; --miss-soft: #3D1F1B;
   --shadow: 0 14px 36px rgba(0, 0, 0, .45);
   color-scheme: dark;
 }
+body[data-section="reading"], .mode-group[data-sec="reading"] { --sec: var(--sec-reading); }
+body[data-section="listening"], .mode-group[data-sec="listening"] { --sec: var(--sec-listening); }
+body[data-section="writing"], .mode-group[data-sec="writing"] { --sec: var(--sec-writing); }
+body[data-section="speaking"], .mode-group[data-sec="speaking"] { --sec: var(--sec-speaking); }
+body[data-section="words"], .mode-group[data-sec="words"] { --sec: var(--sec-words); }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -314,48 +329,66 @@ details.recent summary { cursor: pointer; color: var(--muted); font-size: .86rem
 .recent .tx em { font-style: normal; color: var(--miss); }
 footer { color: var(--muted); font-size: .76rem; text-align: center; }
 
-/* ---------- the menu (v6.0): Reading → Listening → Writing → Speaking → Words.
-   Wide screens: one column on the left. Narrower screens: one row of pills that scrolls sideways. ---------- */
+/* ---------- the menu (v6.0): Reading → Listening → Writing → Speaking → Words, each in its own colour.
+   Wide screens: a panel on the left with the brand on top. Narrower screens: one row that scrolls sideways. ---------- */
 .shell { display: block; }
 .view { display: grid; gap: 18px; min-width: 0; }
 .modes {
-  display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  display: flex; gap: 14px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
   padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
-  max-width: 760px; margin: 0 auto;
+  max-width: 820px; margin: 0 auto;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 32px), transparent);
   mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 32px), transparent);
 }
 .modes::-webkit-scrollbar { display: none; }
+.modes-brand { display: none; }
 .mode-group { display: grid; gap: 6px; flex: none; align-content: start; }
-.modes-cap { font-family: var(--font-display); font-stretch: 85%; font-weight: 700; font-size: .84rem; color: var(--muted); padding-left: 14px; }
+.modes-cap { display: flex; align-items: center; gap: 7px; font-family: var(--font-display); font-stretch: 85%; font-weight: 700; font-size: .8rem; color: var(--muted); padding-left: 4px; }
+.modes-cap i { width: 8px; height: 8px; border-radius: 2px; background: var(--sec); box-shadow: 0 0 10px color-mix(in srgb, var(--sec) 70%, transparent); flex: none; }
 .mode-row { display: flex; gap: 6px; }
 .mode-btn {
-  appearance: none; display: flex; align-items: center; gap: 8px; min-width: 0; cursor: pointer; text-align: left;
-  border: 2px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px;
-  min-height: 44px; padding: 4px 16px 4px 11px;
+  appearance: none; position: relative; display: flex; align-items: center; gap: 9px; min-width: 0; cursor: pointer; text-align: left;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 12px;
+  min-height: 44px; padding: 4px 14px 4px 5px;
 }
-.mode-btn > span { min-width: 0; }
-.mode-btn b { display: block; font-family: var(--font-display); font-stretch: 85%; font-weight: 700; font-size: .98rem; color: var(--ink); line-height: 1.2; white-space: nowrap; }
-.mode-btn small { display: none; font-size: .72rem; line-height: 1.3; }
+.mode-btn .tile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none;
+  background: color-mix(in srgb, var(--sec) 15%, transparent); color: var(--sec); }
+.mode-btn .tile svg.i.ms { width: 20px; height: 20px; }
+.mode-btn > span:last-child { min-width: 0; }
+.mode-btn b { display: block; font-family: var(--font-display); font-stretch: 88%; font-weight: 700; font-size: .95rem; color: var(--ink); line-height: 1.2; white-space: nowrap; }
+.mode-btn small { display: none; font-size: .7rem; line-height: 1.3; }
 .mode-btn .long { display: none; }
-.mode-btn svg.i { color: var(--accent); }
-.mode-btn:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
-.mode-btn[aria-current="page"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, var(--surface)); }
+.mode-btn:hover { border-color: color-mix(in srgb, var(--sec) 55%, var(--line)); }
+.mode-btn[aria-current="page"] { border-color: var(--sec); background: color-mix(in srgb, var(--sec) 14%, var(--surface)); }
+.mode-btn[aria-current="page"] .tile { background: var(--sec); color: var(--surface); }
 @media (min-width: 1040px) {
-  .shell { display: grid; grid-template-columns: 240px minmax(0, 760px); justify-content: center; align-items: start; gap: 32px; }
+  .shell { display: grid; grid-template-columns: 290px minmax(0, 1fr); align-items: start; }
   .modes {
-    display: grid; gap: 16px; align-content: start; position: sticky; top: 0; max-height: 100vh; overflow-x: hidden; overflow-y: auto;
-    padding: 24px 4px 20px 2px; margin: 0; max-width: none; -webkit-mask-image: none; mask-image: none; scrollbar-width: thin;
+    display: grid; gap: 18px; align-content: start; position: sticky; top: 0; height: 100vh; overflow-x: hidden; overflow-y: auto;
+    padding: 22px 18px 20px; margin: 0; max-width: none; -webkit-mask-image: none; mask-image: none; scrollbar-width: thin;
+    background: var(--side); border-right: 1px solid var(--line);
   }
-  .mode-row { display: grid; gap: 6px; }
-  .mode-btn { min-height: 56px; padding: 6px 18px 6px 14px; gap: 12px; }
+  .modes-brand { display: flex; align-items: center; gap: 10px; padding: 0 6px 4px; }
+  .modes-brand .brand-mark { width: 26px; height: 26px; }
+  .modes-brand b { display: block; font-family: var(--font-display); font-stretch: 72%; font-weight: 800; font-size: 1.55rem; line-height: 1; letter-spacing: .01em; }
+  .modes-brand small { display: block; color: var(--muted); font-family: var(--font-display); font-stretch: 90%; font-weight: 600; font-size: .72rem; margin-top: 3px; }
+  .modes-cap { padding: 0 6px 2px; }
+  .mode-row { display: grid; gap: 2px; }
+  .mode-btn { border: 0; background: transparent; min-height: 48px; padding: 6px 8px; gap: 11px; }
+  .mode-btn .tile { width: 34px; height: 34px; border-radius: 10px; }
+  .mode-btn:hover { background: var(--surface); }
   .mode-btn .long { display: inline; }
   .mode-btn .short { display: none; }
   .mode-btn small { display: block; }
   .mode-btn b { white-space: normal; }
-  .wrap { margin: 0; }
+  .mode-btn[aria-current="page"] { background: linear-gradient(90deg, color-mix(in srgb, var(--sec) 20%, transparent), transparent 88%); }
+  .mode-btn[aria-current="page"]::before {
+    content: ""; position: absolute; left: -18px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0;
+    background: var(--sec); box-shadow: 0 0 12px var(--sec);
+  }
+  .wrap { margin: 0 auto; width: 100%; max-width: 860px; padding-left: 40px; padding-right: 40px; }
 }
-@media (min-width: 1040px) and (max-height: 900px) { .modes { gap: 12px; } .mode-btn small { display: none; } .mode-btn { min-height: 46px; } }
+@media (min-width: 1040px) and (max-height: 860px) { .modes { gap: 12px; } .mode-btn small { display: none; } .mode-btn { min-height: 40px; } }
 
 /* ---------- voices ---------- */
 .voice-table h4 { margin: 10px 0 4px; font-size: .86rem; }
@@ -652,84 +685,171 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
 .wb-done-list .row-w.has-star .r { grid-column: 3; }
 .wb-done-list .row-w.has-star .d { grid-column: 2 / -1; }
 @media (max-width: 560px) { .tabs.four .tab b { font-size: .8rem; } .tabs.four .tab { padding: 8px 2px; } }
+
+/* ================= v6.0 instrument-panel layer (overrides the older component styles above) ================= */
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(900px 520px at 88% -12%, color-mix(in srgb, var(--sec) 11%, transparent), transparent 62%),
+    linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: auto, 32px 32px, 32px 32px;
+  background-repeat: no-repeat, repeat, repeat;
+  min-height: 100vh;
+}
+/* header: the view's name big, its section in colour, the brand only on narrow screens (wide ones have it in the menu) */
+.top { align-items: flex-end; padding-top: 6px; row-gap: 10px; }
+.brand { gap: 4px; flex: 1 1 300px; }
+.top-actions { margin-left: auto; }
+.brand-line { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: .95rem; color: var(--ink); }
+.brand-line .brand-mark { width: 18px; height: 18px; }
+.brand h1 { display: block; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.7rem); line-height: 1.02; letter-spacing: 0; margin: 2px 0 0; }
+.brand .sub { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: .82rem; }
+.sec-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-stretch: 88%; font-weight: 700; font-size: .8rem; color: var(--sec); }
+.sec-tag::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--sec); box-shadow: 0 0 10px color-mix(in srgb, var(--sec) 70%, transparent); }
+@media (min-width: 1040px) { .brand-line { display: none; } }
+.top-actions { align-items: flex-end; gap: 10px; }
+.meter { display: grid; justify-items: end; gap: 3px; margin-right: 8px; }
+.meter .lbl { font-size: .7rem; color: var(--muted); }
+.meter .n { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 1.9rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.meter .n small { font-size: .85rem; color: var(--muted); font-weight: 600; margin-left: 2px; }
+.meter .bars { display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+.meter .bars i { width: 7px; border-radius: 2px; background: var(--line); }
+.meter .bars i.half { background: color-mix(in srgb, var(--sec) 45%, var(--line)); }
+.meter .bars i.on { background: var(--sec); box-shadow: 0 0 8px color-mix(in srgb, var(--sec) 55%, transparent); }
+@media (max-width: 560px) { .meter .lbl { display: none; } .meter .n { font-size: 1.4rem; } }
+.icon-btn { border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
+.chip { border-width: 1px; background: var(--surface); }
+
+/* the working panel: graphite, with corner marks in the section's colour */
+.booth { position: relative; border-radius: 20px; padding: 20px 24px 24px; background: var(--surface); border: 1px solid var(--line); }
+.booth::before, .booth::after, .booth > .booth-head::before, .booth > .booth-head::after {
+  content: ""; position: absolute; width: 18px; height: 18px; border: 0 solid var(--sec); opacity: .8; pointer-events: none;
+}
+.booth::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-top-left-radius: 20px; }
+.booth::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-bottom-right-radius: 20px; }
+.booth > .booth-head::before { top: -1px; right: -1px; border-width: 2px 2px 0 0; border-top-right-radius: 20px; }
+.booth > .booth-head::after { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; border-bottom-left-radius: 20px; }
+.stage { background: var(--surface-2); border-radius: 14px; }
+.lamp i { width: 10px; height: 10px; }
+.lamp[data-state="listen"] i { background: var(--sec); box-shadow: 0 0 0 3px color-mix(in srgb, var(--sec) 20%, transparent), 0 0 12px var(--sec); }
+.lamp[data-state="ok"] i { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent), 0 0 12px var(--ok); }
+.lamp[data-state="miss"] i { box-shadow: 0 0 0 3px color-mix(in srgb, var(--miss) 20%, transparent), 0 0 12px var(--miss); }
+.lamp[data-state="speak"] i { box-shadow: 0 0 12px var(--rec); }
+.pill { border-radius: 7px; background: var(--surface-2); border: 1px solid var(--line); font-family: var(--font-display); font-stretch: 90%; font-weight: 600; font-size: .76rem; padding: 1px 8px; }
+
+/* buttons: the main one keeps the glowing ring; the others are quieter panels */
+.btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 14px; min-height: 48px; font-weight: 700; }
+.btn:hover:not(:disabled) { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)); }
+.btn.primary { border: 2px solid var(--accent); border-radius: 999px; min-height: 62px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, var(--surface)), color-mix(in srgb, var(--accent) 10%, var(--surface))); }
+.btn.primary:hover:not(:disabled) { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 28%, var(--surface)), color-mix(in srgb, var(--accent) 14%, var(--surface))); }
+.btn.primary.rec { border-color: var(--rec); background: linear-gradient(180deg, color-mix(in srgb, var(--rec) 24%, var(--surface)), color-mix(in srgb, var(--rec) 10%, var(--surface))); }
+.btn.small { border-radius: 10px; min-height: 36px; }
+.kbd { font-family: var(--font-display); font-weight: 600; }
+
+/* tabs: big numbers on top, the active one underlined in the section's colour */
+.tabs { gap: 0; padding: 0; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+.tab { position: relative; border-radius: 0; border-right: 1px solid var(--line); padding: 11px 16px 12px; min-height: 66px;
+  align-items: flex-start; justify-content: flex-start; text-align: left; gap: 1px; }
+.tab:last-child { border-right: 0; }
+.tab b { display: flex; flex-direction: column-reverse; align-items: flex-start; gap: 3px; font-size: .84rem; font-weight: 600; }
+.tab .n { margin: 0; padding: 0; min-width: 0; border-radius: 0; background: none; color: var(--muted);
+  font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 1.65rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { background: var(--surface-2); box-shadow: none; }
+.tab[aria-selected="true"] .n { background: none; color: var(--sec); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 16px; right: 16px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--sec); }
+@media (max-width: 560px) { .tab { padding: 9px 10px 10px; min-height: 58px; } .tab .n { font-size: 1.35rem; } .tab b { font-size: .74rem; } #wbTabs .tab small { display: none; } }
+
+/* choices, cards, inputs */
+.qz-opt { border-radius: 14px; background: var(--surface-2); }
+.qz-letter { border-radius: 8px; font-family: var(--font-display); }
+.qz-opt.sel .qz-letter { background: var(--sec); color: var(--surface); }
+.qz-opt.sel { border-color: var(--sec); background: color-mix(in srgb, var(--sec) 12%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--sec); }
+.iv-card { border-radius: 18px; }
+.wb-en { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem); letter-spacing: -.01em; line-height: 1.05; }
+.wb-ex { border-left: 2px solid var(--sec); padding-left: 12px; }
+.wb-bar i { background: var(--sec); }
+.timer { height: 5px; }
+.seg button[aria-checked="true"] { background: var(--sec); color: var(--surface); }
+footer { font-family: var(--font-display); font-stretch: 90%; }
 </style>
 </head>
 <body>
 <div class="shell">
 <nav class="modes" id="modes" aria-label="練習の種類">
-  <div class="mode-group">
-    <span class="modes-cap">Reading</span>
+  <div class="modes-brand"><svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="16" width="6.5" height="10" rx="3.25"/><rect x="10.75" y="9" width="6.5" height="17" rx="3.25"/><rect x="19.5" y="2" width="6.5" height="24" rx="3.25"/></svg><span><b>Skill Ascent</b><small>TOEFL iBT 2026 trainer</small></span></div>
+  <div class="mode-group" data-sec="reading">
+    <span class="modes-cap"><i></i>Reading</span>
     <div class="mode-row">
-      <button class="mode-btn glow" type="button" data-view="complete">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="m563-164 219-219q9-9 21-9t21 9q9 9 9 21t-9 21L605-122q-9 9-20 13t-22 4q-11 0-22-4t-20-13l-96-96q-9-9-9-21t9-21q9-9 21-9t21 9l96 96ZM238-454l-47 123q-3 9-11 14t-17 5q-16 0-24.5-13t-3.5-28l177-466q4-9 11.5-14.5T341-839h24q10 0 17.5 5.5T394-819l176 465q6 15-3 28.5T541-312q-10 0-18-5.5T511-332l-46-122H238Zm19-58h189l-92-254h-5l-92 254Z"/></svg>
+      <button class="mode-btn" type="button" data-view="complete">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="m563-164 219-219q9-9 21-9t21 9q9 9 9 21t-9 21L605-122q-9 9-20 13t-22 4q-11 0-22-4t-20-13l-96-96q-9-9-9-21t9-21q9-9 21-9t21 9l96 96ZM238-454l-47 123q-3 9-11 14t-17 5q-16 0-24.5-13t-3.5-28l177-466q4-9 11.5-14.5T341-839h24q10 0 17.5 5.5T394-819l176 465q6 15-3 28.5T541-312q-10 0-18-5.5T511-332l-46-122H238Zm19-58h189l-92-254h-5l-92 254Z"/></svg></span>
         <span><b><span class="long">Complete the Words</span><span class="short">Complete</span></b><small>語の後ろ半分を入れる</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="daily">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M140-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h680q24 0 42 18t18 42v600q0 24-18 42t-42 18H140Zm0-60h680v-600H140v600Zm139-106h402q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H279q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5Zm0-166h95q12.75 0 21.38-8.63Q404-469.25 404-482v-162q0-12.75-8.62-21.38Q386.75-674 374-674h-95q-12.75 0-21.37 8.62Q249-656.75 249-644v162q0 12.75 8.63 21.37Q266.25-452 279-452Zm259 0h143q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H538q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5Zm0-162h143q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H538q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5ZM140-180v-600 600Z"/></svg>
+      <button class="mode-btn" type="button" data-view="daily">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M140-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h680q24 0 42 18t18 42v600q0 24-18 42t-42 18H140Zm0-60h680v-600H140v600Zm139-106h402q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H279q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5Zm0-166h95q12.75 0 21.38-8.63Q404-469.25 404-482v-162q0-12.75-8.62-21.38Q386.75-674 374-674h-95q-12.75 0-21.37 8.62Q249-656.75 249-644v162q0 12.75 8.63 21.37Q266.25-452 279-452Zm259 0h143q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H538q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5Zm0-162h143q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H538q-12.75 0-21.37 8.68-8.63 8.67-8.63 21.5 0 12.82 8.63 21.32 8.62 8.5 21.37 8.5ZM140-180v-600 600Z"/></svg></span>
         <span><b><span class="long">Read in Daily Life</span><span class="short">Daily</span></b><small>メールやお知らせを読む</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="passage">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M248-300q53.57 0 104.28 12.5Q403-275 452-250v-427q-45-30-97.62-46.5Q301.76-740 248-740q-38 0-74.5 9.5T100-707v434q31-14 70.5-20.5T248-300Zm264 50q50-25 98-37.5T712-300q38 0 78.5 6t69.5 16v-429q-34-17-71.82-25-37.82-8-76.18-8-54 0-104.5 16.5T512-677v427Zm-44.5 77.5Q461-174 456-178q-47-29-99.85-45-52.84-16-108.15-16-36.54 0-71.77 9T106-208q-23.1 11-44.55-3Q40-225 40-251v-463q0-15 7-27.5T68-761q42-20 87.39-29.5 45.4-9.5 92.61-9.5 63 0 122.5 17T482-731q51-35 109.5-52T712-800q46.87 0 91.93 9.5Q849-781 891-761q14 7 21.5 19.5T920-714v463q0 27.89-22.5 42.45Q875-194 853-208q-34-14-69.23-22.5Q748.54-239 712-239q-54.27 0-106.14 16Q554-207 508-178q-5 4-11.5 5.5T482-171q-8 0-14.5-1.5ZM276-489Zm284-119q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-640q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-610 700-610q-29 0-56 5.5T591-588q-14 5-22.5-.5T560-608Zm0 220q0-5.81 4.02-11.94 4.03-6.12 8.98-8.06 30-11 61.34-16.5 31.33-5.5 65.91-5.5 21.61 0 42.68 2.5T784-420q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-390 700-390q-29 0-56 5t-53 16q-14 5-22.5 0t-8.5-19Zm0-110q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-530q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-500 700-500q-29 0-56 5.5T591-478q-14 5-22.5-.5T560-498Z"/></svg>
+      <button class="mode-btn" type="button" data-view="passage">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M248-300q53.57 0 104.28 12.5Q403-275 452-250v-427q-45-30-97.62-46.5Q301.76-740 248-740q-38 0-74.5 9.5T100-707v434q31-14 70.5-20.5T248-300Zm264 50q50-25 98-37.5T712-300q38 0 78.5 6t69.5 16v-429q-34-17-71.82-25-37.82-8-76.18-8-54 0-104.5 16.5T512-677v427Zm-44.5 77.5Q461-174 456-178q-47-29-99.85-45-52.84-16-108.15-16-36.54 0-71.77 9T106-208q-23.1 11-44.55-3Q40-225 40-251v-463q0-15 7-27.5T68-761q42-20 87.39-29.5 45.4-9.5 92.61-9.5 63 0 122.5 17T482-731q51-35 109.5-52T712-800q46.87 0 91.93 9.5Q849-781 891-761q14 7 21.5 19.5T920-714v463q0 27.89-22.5 42.45Q875-194 853-208q-34-14-69.23-22.5Q748.54-239 712-239q-54.27 0-106.14 16Q554-207 508-178q-5 4-11.5 5.5T482-171q-8 0-14.5-1.5ZM276-489Zm284-119q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-640q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-610 700-610q-29 0-56 5.5T591-588q-14 5-22.5-.5T560-608Zm0 220q0-5.81 4.02-11.94 4.03-6.12 8.98-8.06 30-11 61.34-16.5 31.33-5.5 65.91-5.5 21.61 0 42.68 2.5T784-420q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-390 700-390q-29 0-56 5t-53 16q-14 5-22.5 0t-8.5-19Zm0-110q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-530q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-500 700-500q-29 0-56 5.5T591-478q-14 5-22.5-.5T560-498Z"/></svg></span>
         <span><b><span class="long">Academic Passage</span><span class="short">Passage</span></b><small>論説文を読んで答える</small></span>
       </button>
     </div>
   </div>
-  <div class="mode-group">
-    <span class="modes-cap">Listening</span>
+  <div class="mode-group" data-sec="listening">
+    <span class="modes-cap"><i></i>Listening</span>
     <div class="mode-row">
-      <button class="mode-btn glow" type="button" data-view="response">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M240-240 131-131q-14 14-32.5 6.34Q80-132.31 80-152v-668q0-24 18-42t42-18h680q24 0 42 18t18 42v250q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-250H140v600l74-80h402q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H240Zm526 0h-30.18q-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-180q0-12.75 8.63-21.38Q723.25-480 736-480h84q11 0 18 9.5t3 20.5l-48 140h53q12 0 19 10t2 21L780-74q-2 6-8 4.5t-6-7.5v-163Zm-626-60v-520 520Z"/></svg>
+      <button class="mode-btn" type="button" data-view="response">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M240-240 131-131q-14 14-32.5 6.34Q80-132.31 80-152v-668q0-24 18-42t42-18h680q24 0 42 18t18 42v250q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-250H140v600l74-80h402q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H240Zm526 0h-30.18q-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-180q0-12.75 8.63-21.38Q723.25-480 736-480h84q11 0 18 9.5t3 20.5l-48 140h53q12 0 19 10t2 21L780-74q-2 6-8 4.5t-6-7.5v-163Zm-626-60v-520 520Z"/></svg></span>
         <span><b><span class="long">Choose a Response</span><span class="short">Response</span></b><small>短い文を聞いて、返事を選ぶ</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="convo">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M850.33-123q-5.33 0-10.83-2t-10.5-7L721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v507q0 14-9.5 22t-20.17 8ZM140-425l75-75h405v-320H140v395Zm-30.33 103Q99-322 89.5-330q-9.5-8-9.5-22v-468q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L131-331q-5 5-10.5 7t-10.83 2ZM140-500v-320 320Z"/></svg>
+      <button class="mode-btn" type="button" data-view="convo">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M850.33-123q-5.33 0-10.83-2t-10.5-7L721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v507q0 14-9.5 22t-20.17 8ZM140-425l75-75h405v-320H140v395Zm-30.33 103Q99-322 89.5-330q-9.5-8-9.5-22v-468q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L131-331q-5 5-10.5 7t-10.83 2ZM140-500v-320 320Z"/></svg></span>
         <span><b><span class="long">Conversation</span><span class="short">Convo</span></b><small>2人の会話を聞いて答える</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="announce">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M850-450h-90q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h90q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5ZM677-274q8-10 19.83-12 11.82-2 22.17 6l73 54q10 8 12 19.83 2 11.82-6 22.17-8 10-19.83 12-11.82 2-22.17-6l-73-54q-10-8-12-19.83-2-11.82 6-22.17Zm115-460-70 53q-10.35 8-22.17 6Q688-677 680-687q-8-10-6-22t12-20l70-53q10.35-8 22.17-6Q790-786 798-776q8 10 6 22t-12 20ZM210-360h-70q-24.75 0-42.37-17.63Q80-395.25 80-420v-120q0-24.75 17.63-42.38Q115.25-600 140-600h180l155-93q15-9 30-.06 15 8.93 15 26.06v374q0 17.13-15 26.06-15 8.94-30-.06l-155-93h-50v130q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-130Zm250 14v-268l-124 74H140v120h196l124 74Zm100 0v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z"/></svg>
+      <button class="mode-btn" type="button" data-view="announce">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M850-450h-90q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h90q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5ZM677-274q8-10 19.83-12 11.82-2 22.17 6l73 54q10 8 12 19.83 2 11.82-6 22.17-8 10-19.83 12-11.82 2-22.17-6l-73-54q-10-8-12-19.83-2-11.82 6-22.17Zm115-460-70 53q-10.35 8-22.17 6Q688-677 680-687q-8-10-6-22t12-20l70-53q10.35-8 22.17-6Q790-786 798-776q8 10 6 22t-12 20ZM210-360h-70q-24.75 0-42.37-17.63Q80-395.25 80-420v-120q0-24.75 17.63-42.38Q115.25-600 140-600h180l155-93q15-9 30-.06 15 8.93 15 26.06v374q0 17.13-15 26.06-15 8.94-30-.06l-155-93h-50v130q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-130Zm250 14v-268l-124 74H140v120h196l124 74Zm100 0v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z"/></svg></span>
         <span><b><span class="long">Announcement</span><span class="short">Announce</span></b><small>アナウンスを聞いて答える</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="academic">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M860-131v-649H100v290q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63Q40-477.25 40-490v-290q0-24.75 17.63-42.38Q75.25-840 100-840h760q24.75 0 42.38 17.62Q920-804.75 920-780v580q0 26-17 45.5T860-131ZM252-443q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm172.5-43.5Q450-512 450-551t-25.5-64.5Q399-641 360-641t-64.5 25.5Q270-590 270-551t25.5 64.5Q321-461 360-461t64.5-25.5ZM100-80q-24.75 0-42.37-17.63Q40-115.25 40-140v-34q0-38 19-65t49-41q67-30 128.5-45T360-340q62 0 123 15.5t127.92 44.69q31.3 14.13 50.19 40.97Q680-212 680-174v34q0 24.75-17.62 42.37Q644.75-80 620-80H100Zm0-60h520v-34q0-16-9.5-30.5T587-226q-64-31-117-42.5T360-280q-57 0-111 11.5T132-226q-14 7-23 21.5t-9 30.5v34Zm260-411Zm0 411Z"/></svg>
+      <button class="mode-btn" type="button" data-view="academic">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M860-131v-649H100v290q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63Q40-477.25 40-490v-290q0-24.75 17.63-42.38Q75.25-840 100-840h760q24.75 0 42.38 17.62Q920-804.75 920-780v580q0 26-17 45.5T860-131ZM252-443q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm172.5-43.5Q450-512 450-551t-25.5-64.5Q399-641 360-641t-64.5 25.5Q270-590 270-551t25.5 64.5Q321-461 360-461t64.5-25.5ZM100-80q-24.75 0-42.37-17.63Q40-115.25 40-140v-34q0-38 19-65t49-41q67-30 128.5-45T360-340q62 0 123 15.5t127.92 44.69q31.3 14.13 50.19 40.97Q680-212 680-174v34q0 24.75-17.62 42.37Q644.75-80 620-80H100Zm0-60h520v-34q0-16-9.5-30.5T587-226q-64-31-117-42.5T360-280q-57 0-111 11.5T132-226q-14 7-23 21.5t-9 30.5v34Zm260-411Zm0 411Z"/></svg></span>
         <span><b><span class="long">Academic Talk</span><span class="short">Talk</span></b><small>講義を聞いて答える</small></span>
       </button>
     </div>
   </div>
-  <div class="mode-group">
-    <span class="modes-cap">Writing</span>
+  <div class="mode-group" data-sec="writing">
+    <span class="modes-cap"><i></i>Writing</span>
     <div class="mode-row">
-      <button class="mode-btn glow" type="button" data-view="build">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M180-180h560v-173q0-9 4.5-16t12.5-11l24-11q19-8 30.5-27t11.5-40q0-21.43-11.5-39.72Q800-516 781-525l-24-11q-8.13-3.75-12.57-10.88Q740-554 740-563v-177H564q-10.66 0-18.83-7-8.17-7-10.17-18.33L530-791q-5-27-24.67-45.5-19.68-18.5-45.91-18.5Q432-855 412-836.5T387-791l-5 25.67Q380-754 371.83-747q-8.17 7-18.83 7H181v110q55 20 89 66.78t34 105.5q0 59.72-34 107.22T180-287v107Zm11 60q-29 0-50-21t-21-51v-121q0-8 5-13t13-7q45-9 75.5-43.08T244-458q0-48.03-30-82.52Q184-575 139-583q-8-2-13-7t-5-13v-126q0-30 20.5-50.5T192-800h136q6.63-48.88 43.58-81.94Q408.53-915 458.74-915q49.26 0 86.45 33.06Q582.37-848.88 590-800h139q30 0 50.5 20.5T800-729v147q38 18 60.5 49.5T883-458q0 43-22.5 75T800-334v142q0 30-20.5 51T729-120H191Zm311-338Z"/></svg>
+      <button class="mode-btn" type="button" data-view="build">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M180-180h560v-173q0-9 4.5-16t12.5-11l24-11q19-8 30.5-27t11.5-40q0-21.43-11.5-39.72Q800-516 781-525l-24-11q-8.13-3.75-12.57-10.88Q740-554 740-563v-177H564q-10.66 0-18.83-7-8.17-7-10.17-18.33L530-791q-5-27-24.67-45.5-19.68-18.5-45.91-18.5Q432-855 412-836.5T387-791l-5 25.67Q380-754 371.83-747q-8.17 7-18.83 7H181v110q55 20 89 66.78t34 105.5q0 59.72-34 107.22T180-287v107Zm11 60q-29 0-50-21t-21-51v-121q0-8 5-13t13-7q45-9 75.5-43.08T244-458q0-48.03-30-82.52Q184-575 139-583q-8-2-13-7t-5-13v-126q0-30 20.5-50.5T192-800h136q6.63-48.88 43.58-81.94Q408.53-915 458.74-915q49.26 0 86.45 33.06Q582.37-848.88 590-800h139q30 0 50.5 20.5T800-729v147q38 18 60.5 49.5T883-458q0 43-22.5 75T800-334v142q0 30-20.5 51T729-120H191Zm311-338Z"/></svg></span>
         <span><b><span class="long">Build a Sentence</span><span class="short">Sentence</span></b><small>語を並べて文を作る</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="email">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm680-525L496-473q-4 2-7.5 3.5T480-468q-5 0-8.5-1.5T464-473L140-685v465h680v-465ZM480-522l336-218H145l335 218ZM140-685v7-39.32.73V-740v23-.91V-678v-7 465-465Z"/></svg>
+      <button class="mode-btn" type="button" data-view="email">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm680-525L496-473q-4 2-7.5 3.5T480-468q-5 0-8.5-1.5T464-473L140-685v465h680v-465ZM480-522l336-218H145l335 218ZM140-685v7-39.32.73V-740v23-.91V-678v-7 465-465Z"/></svg></span>
         <span><b><span class="long">Write an Email</span><span class="short">Email</span></b><small>7分でメールを書く・AI採点</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="discuss">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M270-400h81q5.57 0 10.78-2 5.22-2 10.22-7l189.83-190.56q9.08-9.13 13.63-20.78Q580-632 580-643t-4-22q-4-11-13-20l-36.8-37.19Q517-731 506-735.5t-23-4.5q-11 0-22 4t-20.18 13.14L249-532q-5 5-7 10.22-2 5.21-2 10.78v81q0 12.75 8.63 21.37Q257.25-400 270-400Zm250-243-37-37 37 37ZM300-460v-38l102-101 19 18 18 19-101 102h-38Zm121-121 18 19-37-37 19 18Zm14 181h255q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H495l-60 60ZM240-240 131-131q-14 14-32.5 6.34Q80-132.31 80-152v-668q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240Zm-26-60h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></svg>
+      <button class="mode-btn" type="button" data-view="discuss">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M270-400h81q5.57 0 10.78-2 5.22-2 10.22-7l189.83-190.56q9.08-9.13 13.63-20.78Q580-632 580-643t-4-22q-4-11-13-20l-36.8-37.19Q517-731 506-735.5t-23-4.5q-11 0-22 4t-20.18 13.14L249-532q-5 5-7 10.22-2 5.21-2 10.78v81q0 12.75 8.63 21.37Q257.25-400 270-400Zm250-243-37-37 37 37ZM300-460v-38l102-101 19 18 18 19-101 102h-38Zm121-121 18 19-37-37 19 18Zm14 181h255q12.75 0 21.38-8.68 8.62-8.67 8.62-21.5 0-12.82-8.62-21.32-8.63-8.5-21.38-8.5H495l-60 60ZM240-240 131-131q-14 14-32.5 6.34Q80-132.31 80-152v-668q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240Zm-26-60h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></svg></span>
         <span><b><span class="long">Academic Discussion</span><span class="short">Discuss</span></b><small>10分で意見を書く・AI採点</small></span>
       </button>
     </div>
   </div>
-  <div class="mode-group">
-    <span class="modes-cap">Speaking</span>
+  <div class="mode-group" data-sec="speaking">
+    <span class="modes-cap"><i></i>Speaking</span>
     <div class="mode-row">
-      <button class="mode-btn glow" type="button" data-view="repeat">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="m236-210 65 65q9 9 8.5 21t-8.75 21.12q-9 9.12-21.37 9.5Q267-93 258-102L141-219q-5-5-7-10.13-2-5.14-2-11 0-5.87 2-10.87 2-5 7-10l117-117q9.07-9 21.53-8.5Q292-386 301-377q8.25 9 8.63 21 .37 12-8.63 21l-65 65h464v-130q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v130q0 24.75-17.62 42.37Q724.75-210 700-210H236Zm488-480H260v130q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-130q0-24.75 17.63-42.38Q235.25-750 260-750h464l-65-65q-9-9-8.5-21t8.75-21.12q9-9.12 21.38-9.5Q693-867 702-858l117 117q5 5 7 10.13 2 5.14 2 11 0 5.87-2 10.87-2 5-7 10L702-582q-9.07 9-21.53 8.5Q668-574 659-583q-8.25-9-8.62-21-.38-12 8.62-21l65-65Z"/></svg>
+      <button class="mode-btn" type="button" data-view="repeat">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="m236-210 65 65q9 9 8.5 21t-8.75 21.12q-9 9.12-21.37 9.5Q267-93 258-102L141-219q-5-5-7-10.13-2-5.14-2-11 0-5.87 2-10.87 2-5 7-10l117-117q9.07-9 21.53-8.5Q292-386 301-377q8.25 9 8.63 21 .37 12-8.63 21l-65 65h464v-130q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v130q0 24.75-17.62 42.37Q724.75-210 700-210H236Zm488-480H260v130q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-130q0-24.75 17.63-42.38Q235.25-750 260-750h464l-65-65q-9-9-8.5-21t8.75-21.12q9-9.12 21.38-9.5Q693-867 702-858l117 117q5 5 7 10.13 2 5.14 2 11 0 5.87-2 10.87-2 5-7 10L702-582q-9.07 9-21.53 8.5Q668-574 659-583q-8.25-9-8.62-21-.38-12 8.62-21l65-65Z"/></svg></span>
         <span><b><span class="long">Listen &amp; Repeat</span><span class="short">Repeat</span></b><small>聞いて、そのまま言う</small></span>
       </button>
-      <button class="mode-btn glow" type="button" data-view="interview">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M824.94-305Q802-305 786-321.04q-16-16.04-16-38.96v-100q0-22.92 16.06-38.96t39-16.04Q848-515 864-498.96q16 16.04 16 38.96v100q0 22.92-16.06 38.96t-39 16.04ZM814.5-164.5Q810-169 810-175v-51q-45-7-78-37t-40-75q-1-7.16 3-12.08t10.52-4.92q6.52 0 11 3.5T722-342q5 38 34.52 62.5 29.52 24.5 68.53 24.5Q863-255 892-279.5t36-62.5q1-6 5.8-9.5T945-355q5.89 0 10.45 4.05Q960-346.89 959-341q-5 46-39 77t-80 38v51q0 6-4.5 10.5T825-160q-6 0-10.5-4.5ZM249-649.92q0-32.08 13-60.58t36-49.5q23-21 52.5-31t61.5-8q10 1 13.5 9.5T423-773q-17 25-25.5 56.5T389-650q0 35 8.5 66.5T423-527q5 8 2 16.5T413-500q-32 2-62-7.5T298-539q-23-22-36-50.42-13-28.41-13-60.5ZM40-220v-33.86Q40-291 57.5-317t51.5-45q31-17 74-30.5t97-22.5q10-2 13.5 8t-5.5 16q-35 29-49.5 63.76T224-254v34q0 8.33 1.5 16.67 1.5 8.33 3.64 16.25Q232-177 226.38-168.5 220.75-160 211-160H100q-24.75 0-42.37-17.63Q40-195.25 40-220Zm452.5-323.5Q449-587 449-650t43.5-106.5Q536-800 599-800t106.5 43.5Q749-713 749-650t-43.5 106.5Q662-500 599-500t-106.5-43.5ZM599-560q38 0 64-26.44T689-650q0-38-26-64t-63.5-26q-37.5 0-64 26T509-650.5q0 37.5 26.44 64T599-560ZM344-160q-24.75 0-42.37-17.63Q284-195.25 284-220v-34q0-35 18.5-63.5T353-360q47-21 108.5-40.5T599-420h11.64q12.36 0 21.36 9t9 21q0 12-9 21t-21 9h-12q-72 0-124 16.5T377-306q-16 8-24.5 21.5T344-254v34h292q15 0 22.5 9.32t7.5 20.5q0 11.18-7.5 20.68T636-160H344Zm255-490Zm0 430Z"/></svg>
+      <button class="mode-btn" type="button" data-view="interview">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M824.94-305Q802-305 786-321.04q-16-16.04-16-38.96v-100q0-22.92 16.06-38.96t39-16.04Q848-515 864-498.96q16 16.04 16 38.96v100q0 22.92-16.06 38.96t-39 16.04ZM814.5-164.5Q810-169 810-175v-51q-45-7-78-37t-40-75q-1-7.16 3-12.08t10.52-4.92q6.52 0 11 3.5T722-342q5 38 34.52 62.5 29.52 24.5 68.53 24.5Q863-255 892-279.5t36-62.5q1-6 5.8-9.5T945-355q5.89 0 10.45 4.05Q960-346.89 959-341q-5 46-39 77t-80 38v51q0 6-4.5 10.5T825-160q-6 0-10.5-4.5ZM249-649.92q0-32.08 13-60.58t36-49.5q23-21 52.5-31t61.5-8q10 1 13.5 9.5T423-773q-17 25-25.5 56.5T389-650q0 35 8.5 66.5T423-527q5 8 2 16.5T413-500q-32 2-62-7.5T298-539q-23-22-36-50.42-13-28.41-13-60.5ZM40-220v-33.86Q40-291 57.5-317t51.5-45q31-17 74-30.5t97-22.5q10-2 13.5 8t-5.5 16q-35 29-49.5 63.76T224-254v34q0 8.33 1.5 16.67 1.5 8.33 3.64 16.25Q232-177 226.38-168.5 220.75-160 211-160H100q-24.75 0-42.37-17.63Q40-195.25 40-220Zm452.5-323.5Q449-587 449-650t43.5-106.5Q536-800 599-800t106.5 43.5Q749-713 749-650t-43.5 106.5Q662-500 599-500t-106.5-43.5ZM599-560q38 0 64-26.44T689-650q0-38-26-64t-63.5-26q-37.5 0-64 26T509-650.5q0 37.5 26.44 64T599-560ZM344-160q-24.75 0-42.37-17.63Q284-195.25 284-220v-34q0-35 18.5-63.5T353-360q47-21 108.5-40.5T599-420h11.64q12.36 0 21.36 9t9 21q0 12-9 21t-21 9h-12q-72 0-124 16.5T377-306q-16 8-24.5 21.5T344-254v34h292q15 0 22.5 9.32t7.5 20.5q0 11.18-7.5 20.68T636-160H344Zm255-490Zm0 430Z"/></svg></span>
         <span><b><span class="long">Interview &amp; Speak</span><span class="short">Interview</span></b><small>質問に45秒で答える・AI採点</small></span>
       </button>
     </div>
   </div>
-  <div class="mode-group">
-    <span class="modes-cap">Words</span>
+  <div class="mode-group" data-sec="words">
+    <span class="modes-cap"><i></i>Words</span>
     <div class="mode-row">
-      <button class="mode-btn glow" type="button" data-view="wordbook">
-        <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M228-457h104l19 53q2 6 7 9.5t12 3.5q11 0 17.5-9t2.5-19l-82-216q-2-6-7.5-10t-12.5-4h-16q-7 0-12.5 4t-7.5 10l-82 216q-4 10 2.5 19t17.5 9q7 0 12.5-3.5T210-405l18-52Zm13-37 38-107h2l38 107h-78Zm7 194q53.57 0 104.28 12.5Q403-275 452-250v-427q-45-30-97.62-46.5Q301.76-740 248-740q-38 0-74.5 9.5T100-707v434q31-14 70.5-20.5T248-300Zm264 50q50-25 98-37.5T712-300q38 0 78.5 6t69.5 16v-429q-34-17-71.82-25-37.82-8-76.18-8-54 0-104.5 16.5T512-677v427ZM276-495Zm191.5 322.5Q461-174 456-178q-47-29-99.85-45-52.84-16-108.15-16-36.54 0-71.77 9T106-208q-23.1 11-44.55-3Q40-225 40-251v-463q0-15 7-27.5T68-761q42-20 87.39-29.5 45.4-9.5 92.61-9.5 63 0 122.5 17T482-731q51-35 109.5-52T712-800q46.87 0 91.93 9.5Q849-781 891-761q14 7 21.5 19.5T920-714v463q0 27.89-22.5 42.45Q875-194 853-208q-34-14-69.23-22.5Q748.54-239 712-239q-54.27 0-106.14 16Q554-207 508-178q-5 4-11.5 5.5T482-171q-8 0-14.5-1.5ZM560-608q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-640q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-610 700-610q-29 0-56 5.5T591-588q-14 5-22.5-.5T560-608Zm0 220q0-5.81 4.02-11.94 4.03-6.12 8.98-8.06 30-11 61.34-16.5 31.33-5.5 65.91-5.5 21.61 0 42.68 2.5T784-420q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-390 700-390q-29 0-56 5t-53 16q-14 5-22.5 0t-8.5-19Zm0-110q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-530q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-500 700-500q-29 0-56 5.5T591-478q-14 5-22.5-.5T560-498Z"/></svg>
+      <button class="mode-btn" type="button" data-view="wordbook">
+        <span class="tile"><svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M228-457h104l19 53q2 6 7 9.5t12 3.5q11 0 17.5-9t2.5-19l-82-216q-2-6-7.5-10t-12.5-4h-16q-7 0-12.5 4t-7.5 10l-82 216q-4 10 2.5 19t17.5 9q7 0 12.5-3.5T210-405l18-52Zm13-37 38-107h2l38 107h-78Zm7 194q53.57 0 104.28 12.5Q403-275 452-250v-427q-45-30-97.62-46.5Q301.76-740 248-740q-38 0-74.5 9.5T100-707v434q31-14 70.5-20.5T248-300Zm264 50q50-25 98-37.5T712-300q38 0 78.5 6t69.5 16v-429q-34-17-71.82-25-37.82-8-76.18-8-54 0-104.5 16.5T512-677v427ZM276-495Zm191.5 322.5Q461-174 456-178q-47-29-99.85-45-52.84-16-108.15-16-36.54 0-71.77 9T106-208q-23.1 11-44.55-3Q40-225 40-251v-463q0-15 7-27.5T68-761q42-20 87.39-29.5 45.4-9.5 92.61-9.5 63 0 122.5 17T482-731q51-35 109.5-52T712-800q46.87 0 91.93 9.5Q849-781 891-761q14 7 21.5 19.5T920-714v463q0 27.89-22.5 42.45Q875-194 853-208q-34-14-69.23-22.5Q748.54-239 712-239q-54.27 0-106.14 16Q554-207 508-178q-5 4-11.5 5.5T482-171q-8 0-14.5-1.5ZM560-608q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-640q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-610 700-610q-29 0-56 5.5T591-588q-14 5-22.5-.5T560-608Zm0 220q0-5.81 4.02-11.94 4.03-6.12 8.98-8.06 30-11 61.34-16.5 31.33-5.5 65.91-5.5 21.61 0 42.68 2.5T784-420q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-390 700-390q-29 0-56 5t-53 16q-14 5-22.5 0t-8.5-19Zm0-110q0-5.52 4.02-11.34 4.03-5.82 8.98-7.66 30-11 61.34-17 31.33-6 65.91-6 21.61 0 42.68 2.5T784-530q6 2 11 7.4 5 5.39 5 12.13 0 11.47-7.5 17.47-7.5 6-18.5 3-16.8-5-35.4-7.5Q720-500 700-500q-29 0-56 5.5T591-478q-14 5-22.5-.5T560-498Z"/></svg></span>
         <span><b><span class="long">Wordbook</span><span class="short">Words</span></b><small>わからなかった単語を覚える</small></span>
       </button>
     </div>
@@ -739,10 +859,12 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
 
   <header class="top">
     <div class="brand">
-      <h1><svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="16" width="6.5" height="10" rx="3.25"/><rect x="10.75" y="9" width="6.5" height="17" rx="3.25"/><rect x="19.5" y="2" width="6.5" height="24" rx="3.25"/></svg>Skill Ascent</h1>
-      <span class="sub" id="brandSub">TOEFL Listen and Repeat を一段ずつ</span>
+      <span class="brand-line"><svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="16" width="6.5" height="10" rx="3.25"/><rect x="10.75" y="9" width="6.5" height="17" rx="3.25"/><rect x="19.5" y="2" width="6.5" height="24" rx="3.25"/></svg><span>Skill Ascent</span></span>
+      <h1 id="viewTitle">Listen &amp; Repeat</h1>
+      <span class="sub"><span class="sec-tag" id="secTag">Speaking</span><span id="brandSub">TOEFL Listen and Repeat を一段ずつ</span></span>
     </div>
     <div class="top-actions">
+      <div class="meter" id="todayMeter" hidden aria-live="polite"></div>
       <button class="chip" id="sheetChip" type="button" title="スプレッドシート連携の設定を開く"><span class="dot"></span><span id="sheetChipText">サンプル文</span></button>
       <button class="icon-btn" id="openSettings" type="button" aria-label="設定を開く" title="設定">
         <svg class="i ms" viewBox="0 -960 960 960" aria-hidden="true"><path d="M421-80q-14 0-25-9t-13-23l-15-94q-19-7-40-19t-37-25l-86 40q-14 6-28 1.5T155-226L97-330q-8-13-4.5-27t15.5-23l80-59q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521l-80-59q-12-9-15.5-23t4.5-27l58-104q8-13 22-17.5t28 1.5l86 40q16-13 37-25t40-18l15-95q2-14 13-23t25-9h118q14 0 25 9t13 23l15 94q19 7 40.5 18.5T669-710l86-40q14-6 27.5-1.5T804-734l59 104q8 13 4.5 27.5T852-580l-80 57q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l80 58q12 8 15.5 22.5T863-330l-58 104q-8 13-22 17.5t-28-1.5l-86-40q-16 13-36.5 25.5T592-206l-15 94q-2 14-13 23t-25 9H421Zm15-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></svg>
@@ -2536,6 +2658,12 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     var btns = document.querySelectorAll('#modes .mode-btn');
     for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-current', btns[i].getAttribute('data-view') === settings.view ? 'page' : 'false');
     modesShowCurrent();
+    var curBtn = document.querySelector('#modes .mode-btn[aria-current="page"]');
+    var grp = curBtn && curBtn.closest('.mode-group');
+    document.body.setAttribute('data-section', grp ? grp.getAttribute('data-sec') : 'speaking');
+    $('#viewTitle').textContent = curBtn ? curBtn.querySelector('.long').textContent : 'Listen & Repeat';
+    $('#secTag').textContent = grp ? grp.querySelector('.modes-cap').textContent : '';
+    if (settings.view !== 'wordbook') $('#todayMeter').hidden = true;
     $('#brandSub').textContent = viewSub();
     if (qzIsView()) { qzRenderView(); return; }
     if (settings.view === 'wordbook') { wbRenderView(); return; }
@@ -4871,7 +4999,38 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
     bar.appendChild(fill);
     stage.appendChild(bar);
   }
+  // v6.0 header meter: how many words were studied today (each bar is 5 words, ten bars = 50)
+  function wbTodayCount() {
+    if (!wb.words) return 0;
+    var d = new Date(), key = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+    return wb.words.filter(function (w) {
+      if (!w.last) return false;
+      var x = new Date(w.last);
+      return !isNaN(x.getTime()) && x.getFullYear() + '-' + x.getMonth() + '-' + x.getDate() === key;
+    }).length;
+  }
+  function wbRenderMeter() {
+    var m = document.getElementById('todayMeter');
+    if (!m) return;
+    if (settings.view !== 'wordbook' || !wb.words) { m.hidden = true; return; }
+    var n = wbTodayCount();
+    m.hidden = false;
+    m.innerHTML = '';
+    m.appendChild(mk('span', 'lbl', '今日学んだ語'));
+    var num = mk('span', 'n', String(n));
+    num.appendChild(mk('small', null, '語'));
+    m.appendChild(num);
+    var bars = mk('span', 'bars');
+    for (var k = 0; k < 10; k++) {
+      var b = mk('i', n >= (k + 1) * 5 ? 'on' : (n > k * 5 ? 'half' : ''));
+      b.style.height = (6 + k * 1.6) + 'px';
+      bars.appendChild(b);
+    }
+    m.appendChild(bars);
+    m.title = '今日 ' + n + ' 語を学びました（棒1本＝5語）';
+  }
   function renderWordbook() {
+    wbRenderMeter();
     if (settings.view !== 'wordbook') return;
     wbRenderTabs();
     wbRenderMute();
