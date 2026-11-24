@@ -644,11 +644,33 @@ details.help ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px;
 .bs-end { padding: 8px 0; margin-left: -4px; }
 .bs-slot { appearance: none; font: inherit; color: var(--ink); min-width: 56px; min-height: 40px; padding: 6px 10px; border: 0; border-bottom: 2px solid var(--muted); border-radius: 8px 8px 0 0; background: var(--surface-2); cursor: pointer; }
 .bs-slot:disabled { cursor: default; opacity: 1; }
-.bs-slot.filled { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-bottom-color: var(--accent); }
+.bs-slot.filled { background: color-mix(in srgb, var(--sec) 14%, var(--surface)); border-bottom-color: var(--sec); }
 .bs-bank { display: flex; flex-wrap: wrap; gap: 8px; }
 .bs-tile { appearance: none; font: inherit; font-family: var(--font-en); font-weight: 600; font-size: 1.02rem; color: var(--ink); min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; box-shadow: 0 1px 0 var(--line); }
 .bs-tile:hover:not(:disabled) { border-color: var(--accent); }
 .bs-tile.used { opacity: .28; cursor: default; box-shadow: none; }
+/* v6.0: the problem numbers (go anywhere in the round) and drag and drop */
+.bs-nav { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.bs-num, .bs-step { appearance: none; font-family: var(--font-display); font-stretch: 85%; font-weight: 700; font-size: .9rem; font-variant-numeric: tabular-nums;
+  min-width: 36px; height: 36px; padding: 0 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.bs-step { font-size: 1.2rem; line-height: 1; color: var(--ink); }
+.bs-step:disabled { opacity: .35; cursor: default; }
+.bs-num:hover, .bs-step:hover:not(:disabled) { border-color: color-mix(in srgb, var(--sec) 60%, var(--line)); }
+.bs-num.part { color: var(--ink); background: linear-gradient(0deg, color-mix(in srgb, var(--sec) 22%, transparent) 0 40%, var(--surface) 40%); }
+.bs-num.full { color: var(--ink); background: color-mix(in srgb, var(--sec) 22%, var(--surface)); }
+.bs-num.ok { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
+.bs-num.miss { color: var(--miss); border-color: var(--miss); background: var(--miss-soft); }
+.bs-num.now { border: 2px solid var(--sec); color: var(--ink); box-shadow: 0 0 10px color-mix(in srgb, var(--sec) 40%, transparent); }
+.bs-tile:not(.used), .bs-slot.filled { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.bs-tile.dragging, .bs-slot.dragging { opacity: .3; }
+.bs-slot.drop-here, .bs-bank.drop-here { outline: 2px dashed var(--sec); outline-offset: 3px; }
+.bs-slot.drop-here { background: color-mix(in srgb, var(--sec) 20%, var(--surface-2)); }
+.bs-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; margin: 0; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-en); font-weight: 600; font-size: 1.02rem; color: var(--ink); min-height: 44px; padding: 8px 14px;
+  border: 2px solid var(--sec); border-radius: 12px; background: var(--surface); box-shadow: 0 14px 30px rgba(0, 0, 0, .35); }
+body.bs-dragging, body.bs-dragging * { cursor: grabbing !important; }
+.btn.warn { border-color: var(--rec); color: var(--rec); }
+.iv-facts .pill { white-space: normal; }
 .bs-answer { font-family: var(--font-en); font-weight: 700; }
 .bs-yours { display: grid; gap: 2px; }
 .bs-yours .iv-ans { color: var(--miss); }
@@ -6472,8 +6494,10 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
   //  Results go to 「Build a Sentenceの記録」.
   // =====================================================================
   var BS_ROUND = 10, BS_SECONDS_EACH = 36;
-  var bs = { state: 'gate', items: [], index: 0, answers: [], bank: [], slots: [], revealed: false, startedAt: 0, attempt: '',
-    left: 0, limit: 0, timer: null, tickAt: 0, timedOut: false, itemStart: 0, result: null, saveState: '' };
+  // v6.0: inside a round you can go back and forth freely (the numbers above the problem, ← →), and the tiles are
+  // dragged into the blanks (pressing still works). Each problem keeps its own tiles in bs.work[i].
+  var bs = { state: 'gate', items: [], index: 0, work: [], answers: [], startedAt: 0, attempt: '',
+    left: 0, limit: 0, timer: null, tickAt: 0, timedOut: false, itemStart: 0, result: null, saveState: '', submitArm: false };
   var bsDone = store.get('bsDone', {});
   if (!bsDone || typeof bsDone !== 'object') bsDone = {};
   var bsPending = store.get('bsPending', []);
@@ -6483,44 +6507,62 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
   function bsGate() { return taskGate(bsAll().length); }
   function bsRunning() { return bs.state === 'play'; }
   function bsTimed() { return settings.wrTimer !== false; }
+  function bsEach() { return settings.qzFeedback !== 'end'; }   // 答え合わせ：1問ごと（each）か、最後にまとめて（end）
   function bsKey(t) { return String(t).toLowerCase().replace(/\s+/g, ' ').trim(); }
   function bsCur() { return bs.items[bs.index]; }
+  function bsW(i) { return bs.work[i === undefined ? bs.index : i]; }
   function bsMovable(it) { return it.chunks.filter(function (c) { return !c.fixed; }).length; }
+  function bsFull(w) { return w.slots.every(function (k) { return k >= 0; }); }
+  function bsAny(w) { return w.slots.some(function (k) { return k >= 0; }); }
+  function bsEditable() { return bs.state === 'play' && !bsW().checked; }
 
-  function bsStart(again) {
-    var all = bsAll();
-    if (!all.length) return;
-    hideNotice();
-    bs.items = again && bs.items.length ? bs.items.slice() : taskPick(all, bsDone, BS_ROUND);
-    bs.answers = []; bs.result = null; bs.timedOut = false;
-    bs.attempt = taskUid('BS');
-    bs.startedAt = Date.now();
-    bs.limit = bs.items.length * BS_SECONDS_EACH;
-    bs.left = bs.limit;
-    bs.state = 'play';
-    bsShow(0);
-  }
-  function bsShow(i) {
-    var it = bs.items[i];
-    bs.index = i;
-    bs.revealed = false;
-    bs.itemStart = Date.now();
-    // the tiles, shuffled (never left in the right order)
+  // the tiles of one problem, shuffled (never left in the right order)
+  function bsMakeWork(it) {
     var tiles = it.tiles.map(function (t) { return { t: t, extra: false }; }).concat(it.distractors.map(function (t) { return { t: t, extra: true }; }));
     var order = tiles.map(function (_, k) { return k; });
     for (var tries = 0; tries < 8; tries++) {
       shuffle(order);
       if (!it.tiles.every(function (_, k) { return order[k] === k; })) break;
     }
-    bs.bank = order.map(function (k) { return { t: tiles[k].t, used: false }; });
-    bs.slots = it.tiles.map(function () { return -1; });   // index into bs.bank, or -1
+    return { bank: order.map(function (k) { return { t: tiles[k].t, used: false }; }), slots: it.tiles.map(function () { return -1; }),
+      checked: false, ok: false, seconds: 0 };
+  }
+  function bsStart(again) {
+    var all = bsAll();
+    if (!all.length) return;
+    hideNotice();
+    bs.items = again && bs.items.length ? bs.items.slice() : taskPick(all, bsDone, BS_ROUND);
+    bs.work = bs.items.map(bsMakeWork);
+    bs.answers = []; bs.result = null; bs.timedOut = false; bs.submitArm = false;
+    bs.attempt = taskUid('BS');
+    bs.startedAt = Date.now();
+    bs.limit = bs.items.length * BS_SECONDS_EACH;
+    bs.left = bs.limit;
+    bs.state = 'play';
+    bs.index = 0;
+    bs.itemStart = Date.now();
     renderBuild();
     bsRunClock();
   }
+  // time spent on a problem counts only while it can still be changed
+  function bsLeaveItem() {
+    var w = bsW();
+    if (w && !w.checked) w.seconds += (Date.now() - bs.itemStart) / 1000;
+    bs.itemStart = Date.now();
+  }
+  function bsGo(i) {
+    if (bs.state !== 'play' || i < 0 || i >= bs.items.length || i === bs.index) return;
+    bsLeaveItem();
+    bs.index = i;
+    bs.submitArm = false;
+    renderBuild();
+    bsRunClock();
+  }
+  // one clock for the whole round; with 1問ごと it waits while you read a problem you have checked
   function bsRunClock() {
     clearInterval(bs.timer);
     bs.timer = null;
-    if (!bsTimed() || bs.state !== 'play' || bs.revealed) return;
+    if (!bsTimed() || bs.state !== 'play' || (bsEach() && bsW().checked)) return;
     bs.tickAt = Date.now();
     bs.timer = setInterval(function () {
       var now = Date.now();
@@ -6536,34 +6578,47 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
     var bar = document.getElementById('bsBar');
     if (bar) bar.style.setProperty('--t', String(bs.limit ? Math.max(0, bs.left / bs.limit) : 0));
   }
-  function bsPlace(k) {
-    if (bs.state !== 'play' || bs.revealed) return;
-    var tile = bs.bank[k];
+  // put tile k in blank s (the first empty blank when s is not given); a word already there goes back down
+  function bsPlace(k, s) {
+    if (!bsEditable()) return;
+    var w = bsW(), tile = w.bank[k];
     if (!tile || tile.used) return;
-    var s = bs.slots.indexOf(-1);
-    if (s < 0) return;
-    bs.slots[s] = k;
+    if (s === undefined) s = w.slots.indexOf(-1);
+    if (s < 0 || s >= w.slots.length) return;
+    if (w.slots[s] >= 0) w.bank[w.slots[s]].used = false;
+    w.slots[s] = k;
     tile.used = true;
+    bs.submitArm = false;
     renderBuild();
   }
   function bsTake(s) {
-    if (bs.state !== 'play' || bs.revealed) return;
-    var k = bs.slots[s];
+    if (!bsEditable()) return;
+    var w = bsW(), k = w.slots[s];
     if (k < 0 || k === undefined) return;
-    bs.bank[k].used = false;
-    bs.slots[s] = -1;
+    w.bank[k].used = false;
+    w.slots[s] = -1;
+    renderBuild();
+  }
+  // a placed word dragged onto another blank: the two change places
+  function bsMove(a, b) {
+    if (!bsEditable() || a === b) return;
+    var w = bsW(), x = w.slots[a];
+    w.slots[a] = w.slots[b];
+    w.slots[b] = x;
     renderBuild();
   }
   function bsTakeLast() {
-    for (var s = bs.slots.length - 1; s >= 0; s--) { if (bs.slots[s] >= 0) { bsTake(s); return; } }
+    var w = bsW();
+    for (var s = w.slots.length - 1; s >= 0; s--) { if (w.slots[s] >= 0) { bsTake(s); return; } }
   }
   function bsClear() {
-    if (bs.state !== 'play' || bs.revealed) return;
-    bs.slots = bs.slots.map(function () { return -1; });
-    bs.bank.forEach(function (t) { t.used = false; });
+    if (!bsEditable()) return;
+    var w = bsW();
+    w.slots = w.slots.map(function () { return -1; });
+    w.bank.forEach(function (t) { t.used = false; });
     renderBuild();
   }
-  function bsPlaced() { return bs.slots.map(function (k) { return k >= 0 ? bs.bank[k].t : ''; }); }
+  function bsPlaced(i) { var w = bsW(i); return w.slots.map(function (k) { return k >= 0 ? w.bank[k].t : ''; }); }
   // the sentence with the placed tiles (empty slots as ___); sentence starts get a capital
   function bsSentence(it, placed) {
     var out = [], m = 0;
@@ -6579,41 +6634,63 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
     var mine = placed.map(bsKey).join('|');
     return [it.tiles].concat(it.alts || []).some(function (a) { return a.map(bsKey).join('|') === mine; });
   }
-  function bsRecord(timeUp) {
-    var it = bsCur();
-    var placed = bsPlaced();
-    var full = placed.every(Boolean);
-    var ok = full && bsRight(it, placed);
-    bs.answers[bs.index] = { placed: placed, yours: placed.some(Boolean) ? bsSentence(it, placed) : '', ok: ok, seconds: (Date.now() - bs.itemStart) / 1000, timeUp: !!timeUp };
+  // 1問ごと: check the problem on screen (it cannot be changed after that, but you can come back to read it)
+  function bsCheck() {
+    if (!bsEditable() || !bsFull(bsW())) return;
+    bsLeaveItem();
+    var w = bsW();
+    w.checked = true;
+    w.ok = bsRight(bsCur(), bsPlaced());
+    renderBuild();
+    bsRunClock();
+  }
+  // the next problem still to do after the one on screen (going round), or -1
+  function bsNextOpen() {
+    var n = bs.items.length;
+    for (var d = 1; d < n; d++) {
+      var i = (bs.index + d) % n;
+      if (!bsW(i).checked) return i;
+    }
+    return -1;
   }
   function bsConfirm() {
     if (bs.state !== 'play') return;
-    if (!bs.revealed) {
-      if (bs.slots.indexOf(-1) >= 0) return;
-      bsRecord(false);
-      if (settings.qzFeedback !== 'end') {
-        bs.revealed = true;
-        clearInterval(bs.timer); bs.timer = null;   // the clock waits while you read the answer
-        renderBuild();
-        return;
-      }
+    var last = bs.index + 1 >= bs.items.length;
+    if (bsEach()) {
+      if (!bsW().checked) { bsCheck(); return; }
+      var nx = bsNextOpen();
+      if (nx < 0) bsFinish();
+      else bsGo(bs.index + 1 < bs.items.length && !bsW(bs.index + 1).checked ? bs.index + 1 : nx);
+      return;
     }
-    if (bs.index + 1 < bs.items.length) bsShow(bs.index + 1);
-    else bsFinish();
+    if (!last) bsGo(bs.index + 1);
+    else bsSubmit();
+  }
+  // 提出する: when some problems are still empty, the first press only asks to press again
+  function bsEmptyCount() { return bs.work.filter(function (w) { return !w.checked && !bsFull(w); }).length; }
+  function bsSubmit() {
+    if (bs.state !== 'play') return;
+    if (bsEmptyCount() && !bs.submitArm) { bs.submitArm = true; renderBuild(); return; }
+    bsFinish();
   }
   function bsTimeUp() {
     clearInterval(bs.timer); bs.timer = null;
     if (bs.state !== 'play') return;
     bs.timedOut = true;
-    if (!bs.answers[bs.index]) bsRecord(true);
     bsFinish();
   }
   function bsFinish() {
     clearInterval(bs.timer); bs.timer = null;
+    bsDragCancel();
+    if (bs.state === 'play') bsLeaveItem();
     var now = new Date().toISOString();
     var right = 0;
     var recs = bs.items.map(function (it, i) {
-      var a = bs.answers[i] || { placed: [], yours: '', ok: false, seconds: 0, timeUp: true };
+      var w = bsW(i);
+      var placed = bsPlaced(i);
+      var full = bsFull(w);
+      var ok = w.checked ? w.ok : (full && bsRight(it, placed));
+      var a = { placed: placed, yours: bsAny(w) ? bsSentence(it, placed) : '', ok: ok, seconds: w.seconds, timeUp: bs.timedOut && !full && !w.checked };
       bs.answers[i] = a;
       if (a.ok) right++;
       bsDone[it.id] = { ok: a.ok, time: now };
@@ -6630,6 +6707,82 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
     bsFlush();
     var box = document.getElementById('bsView');
     if (box && box.scrollIntoView) box.scrollIntoView({ block: 'start' });
+  }
+
+  // ---------- drag and drop (mouse, pen and finger: pointer events) ----------
+  // a tile from below → a blank (a word already there goes back down); a placed word → another blank (they change
+  // places) or back down. A press without moving is still a click (place / take back).
+  var bsDrag = null, bsNoClick = false;
+  function bsDragBegin(e, kind, idx, el) {
+    if (!bsEditable() || (e.button !== undefined && e.button !== 0) || bsDrag) return;
+    bsDrag = { kind: kind, idx: idx, el: el, id: e.pointerId, x0: e.clientX, y0: e.clientY, started: false, ghost: null, over: null };
+    try { el.setPointerCapture(e.pointerId); } catch (err) { /* old browsers */ }
+  }
+  function bsDropTarget(x, y) {
+    var el = document.elementFromPoint(x, y);
+    if (!el || !el.closest) return null;
+    var slot = el.closest('#bsStage .bs-slot');
+    if (slot) return { slot: Number(slot.getAttribute('data-slot')), el: slot };
+    var bank = el.closest('#bsStage .bs-bank');
+    if (bank) return { bank: true, el: bank };
+    return null;
+  }
+  function bsDragMove(e) {
+    var d = bsDrag;
+    if (!d || e.pointerId !== d.id) return;
+    if (!d.started) {
+      if (Math.abs(e.clientX - d.x0) + Math.abs(e.clientY - d.y0) < 7) return;
+      d.started = true;
+      var r = d.el.getBoundingClientRect();
+      d.dx = d.x0 - r.left; d.dy = d.y0 - r.top;
+      d.ghost = d.el.cloneNode(true);
+      d.ghost.className = 'bs-ghost';
+      d.ghost.removeAttribute('id');
+      d.ghost.style.width = r.width + 'px';
+      document.body.appendChild(d.ghost);
+      d.el.classList.add('dragging');
+      document.body.classList.add('bs-dragging');
+    }
+    e.preventDefault();
+    d.ghost.style.transform = 'translate(' + (e.clientX - d.dx) + 'px,' + (e.clientY - d.dy) + 'px)';
+    var t = bsDropTarget(e.clientX, e.clientY);
+    var over = t ? t.el : null;
+    if (over !== d.over) {
+      if (d.over) d.over.classList.remove('drop-here');
+      if (over) over.classList.add('drop-here');
+      d.over = over;
+    }
+  }
+  function bsDragCancel() {
+    var d = bsDrag;
+    bsDrag = null;
+    if (!d) return null;
+    if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+    if (d.over) d.over.classList.remove('drop-here');
+    if (d.el) d.el.classList.remove('dragging');
+    document.body.classList.remove('bs-dragging');
+    return d;
+  }
+  function bsDragEnd(e) {
+    var d = bsDrag;
+    if (!d || e.pointerId !== d.id) return;
+    var t = d.started ? bsDropTarget(e.clientX, e.clientY) : null;
+    bsDragCancel();
+    if (!d.started) return;   // not moved: the click that follows does the work
+    bsNoClick = true;
+    setTimeout(function () { bsNoClick = false; }, 0);
+    if (d.kind === 'bank') {
+      if (t && t.slot !== undefined) bsPlace(d.idx, t.slot);
+      else renderBuild();
+    } else if (t && t.bank) bsTake(d.idx);
+    else if (t && t.slot !== undefined && t.slot !== d.idx) bsMove(d.idx, t.slot);
+    else renderBuild();
+  }
+  function bsDraggable(el, kind, idx) {
+    el.addEventListener('pointerdown', function (e) { bsDragBegin(e, kind, idx, el); });
+    el.addEventListener('pointermove', bsDragMove);
+    el.addEventListener('pointerup', bsDragEnd);
+    el.addEventListener('pointercancel', function () { if (bsDragCancel()) renderBuild(); });
   }
   var bsFlushing = false;
   function bsFlush() {
@@ -6654,6 +6807,7 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
   function bsAbort(quiet) {
     var was = bsRunning();
     clearInterval(bs.timer); bs.timer = null;
+    bsDragCancel();
     if (was) { bs.state = bsGate() ? 'gate' : 'ready'; if (!quiet) renderBuild(); }
   }
   function bsRenderView() {
@@ -6675,10 +6829,12 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
       slot.type = 'button';
       slot.setAttribute('data-slot', String(s));
       slot.textContent = t ? (start ? t.charAt(0).toUpperCase() + t.slice(1) : t) : '';
-      slot.setAttribute('aria-label', t ? t + '（押すともどします）' : (s + 1) + '番目の空欄');
+      slot.setAttribute('aria-label', t ? t + '（押すと下にもどします。ドラッグでほかの空欄と入れかえ）' : (s + 1) + '番目の空欄');
       if (opts.locked) slot.disabled = true;
-      else if (t) slot.addEventListener('click', function () { bsTake(s); });
-      else slot.disabled = true;
+      else if (t) {
+        slot.addEventListener('click', function () { if (!bsNoClick) bsTake(s); });
+        bsDraggable(slot, 'slot', s);
+      } else slot.setAttribute('aria-disabled', 'true');
       line.appendChild(slot);
     });
     line.appendChild(mk('span', 'bs-end', it.end));
@@ -6706,9 +6862,9 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
       var facts = mk('div', 'iv-facts');
       [all.length + '問中 まだやっていない問題 ' + all.filter(function (x) { return !bsDone[x.id]; }).length + '問',
         bsTimed() ? '制限時間あり（本番と同じ。時間が切れたら終わり）' : '制限時間なし',
-        settings.qzFeedback === 'end' ? '答え合わせ：最後にまとめて' : '答え合わせ：1問ごと（そのあいだ時計は止まります）'].forEach(function (t) { facts.appendChild(mk('span', 'pill', t)); });
+        settings.qzFeedback === 'end' ? '答え合わせ：最後にまとめて（提出まで直せます）' : '答え合わせ：1問ごと（見直し中は時計が止まります）'].forEach(function (t) { facts.appendChild(mk('span', 'pill', t)); });
       stage.appendChild(facts);
-      stage.appendChild(mk('p', 'hint', '下のタイルを押すと、左の空欄から順に入ります。入れた語を押すと、もとにもどります。使わないタイル（ダミー）が入っている問題もあります。全部の語が正しい順番のときだけ正解です。'));
+      stage.appendChild(mk('p', 'hint', '下のタイルを空欄にドラッグして入れます（押すと、左の空欄から順に入ります）。入れた語はドラッグでほかの空欄と入れかえたり、下にもどしたりできます（押してももどります）。上の番号や ← → キーで、10問の中を自由に行き来できます。使わないタイル（ダミー）が入っている問題もあります。全部の語が正しい順番のときだけ正解です。'));
       if (bsPending.length && settings.saveToSheet !== false) {
         var pend = mk('div', 'iv-status');
         pend.appendChild(mk('span', 'hint', 'スプレッドシートに送れていない結果が ' + bsPending.length + ' 問分あります。'));
@@ -6717,20 +6873,43 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
       }
       ctl.appendChild(ivButton(ICONS.play + '始める <span class="kbd">Space</span>', 'primary', function () { bsStart(false); }, 'bsPrimary'));
     } else if (bs.state === 'play') {
-      var it = bsCur();
+      var it = bsCur(), w = bsW();
       var total = bs.items.length;
-      var a = bs.answers[bs.index];
-      lampState = bs.revealed ? (a.ok ? 'ok' : 'miss') : 'speak';
-      tagText = bs.revealed ? (a.ok ? 'CORRECT' : 'MISS') : 'BUILD';
+      lampState = w.checked ? (w.ok ? 'ok' : 'miss') : 'speak';
+      tagText = w.checked ? (w.ok ? 'CORRECT' : 'MISS') : 'BUILD';
       st = '問題 ' + (bs.index + 1) + ' / ' + total;
       if (bsTimed()) {
         var clock = mk('span', 'pill bs-clock', '残り ' + taskClock(bs.left));
         clock.id = 'bsClock';
         meta.appendChild(clock);
       }
-      var steps = mk('div', 'iv-steps');
-      for (var k = 0; k < total; k++) steps.appendChild(mk('i', k < bs.index || (k === bs.index && bs.revealed) ? 'done' : (k === bs.index ? 'now' : '')));
-      stage.appendChild(steps);
+      // the numbers: go to any problem of the round
+      var nav = mk('div', 'bs-nav');
+      nav.id = 'bsNav';
+      nav.setAttribute('role', 'group');
+      nav.setAttribute('aria-label', '問題の番号（押すとその問題へ）');
+      var prev = mk('button', 'bs-step', '‹');
+      prev.type = 'button'; prev.id = 'bsPrev'; prev.title = '前の問題（←）'; prev.setAttribute('aria-label', '前の問題');
+      prev.disabled = bs.index === 0;
+      prev.addEventListener('click', function () { bsGo(bs.index - 1); });
+      nav.appendChild(prev);
+      bs.items.forEach(function (_, k) {
+        var wk = bsW(k);
+        var cls = 'bs-num' + (k === bs.index ? ' now' : '') + (wk.checked ? (wk.ok ? ' ok' : ' miss') : bsFull(wk) ? ' full' : bsAny(wk) ? ' part' : '');
+        var b = mk('button', cls, String(k + 1));
+        b.type = 'button';
+        b.setAttribute('data-q', String(k));
+        b.setAttribute('aria-label', '問題' + (k + 1) + (wk.checked ? (wk.ok ? '（正解）' : '（不正解）') : bsFull(wk) ? '（全部入れた）' : bsAny(wk) ? '（途中）' : '（まだ）'));
+        if (k === bs.index) b.setAttribute('aria-current', 'step');
+        b.addEventListener('click', function () { bsGo(k); });
+        nav.appendChild(b);
+      });
+      var next = mk('button', 'bs-step', '›');
+      next.type = 'button'; next.id = 'bsNext'; next.title = '次の問題（→）'; next.setAttribute('aria-label', '次の問題');
+      next.disabled = bs.index + 1 >= total;
+      next.addEventListener('click', function () { bsGo(bs.index + 1); });
+      nav.appendChild(next);
+      stage.appendChild(nav);
       if (bsTimed()) {
         var bar = mk('div', 'timer');
         bar.id = 'bsBar';
@@ -6741,38 +6920,50 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
       stage.appendChild(bsPromptBox(it));
       var mine = mk('div', 'bs-talk mine');
       mine.appendChild(mk('span', 'line-label', 'あなたの返事'));
-      mine.appendChild(bsLine(it, bsPlaced(), { locked: bs.revealed }));
+      mine.appendChild(bsLine(it, bsPlaced(), { locked: w.checked }));
       stage.appendChild(mine);
-      if (!bs.revealed) {
+      if (!w.checked) {
         var bank = mk('div', 'bs-bank');
         bank.setAttribute('role', 'group');
-        bank.setAttribute('aria-label', '語のタイル');
-        bs.bank.forEach(function (t, k2) {
-          var b = mk('button', 'bs-tile' + (t.used ? ' used' : ''), t.t);
-          b.type = 'button';
-          b.setAttribute('data-tile', String(k2));
-          b.disabled = t.used;
-          b.addEventListener('click', function () { bsPlace(k2); });
-          bank.appendChild(b);
+        bank.setAttribute('aria-label', '語のタイル（空欄にドラッグ。押しても入ります）');
+        w.bank.forEach(function (t, k2) {
+          var b2 = mk('button', 'bs-tile' + (t.used ? ' used' : ''), t.t);
+          b2.type = 'button';
+          b2.setAttribute('data-tile', String(k2));
+          b2.disabled = t.used;
+          b2.addEventListener('click', function () { if (!bsNoClick) bsPlace(k2); });
+          if (!t.used) bsDraggable(b2, 'bank', k2);
+          bank.appendChild(b2);
         });
         stage.appendChild(bank);
       } else {
-        var fb = mk('div', 'qz-feedback ' + (a.ok ? 'ok' : 'miss'));
-        fb.appendChild(mk('b', null, a.ok ? '正解です。' : '不正解です。正しい文：'));
-        if (!a.ok) fb.appendChild(mk('span', 'bs-answer', it.sentence));
+        var fb = mk('div', 'qz-feedback ' + (w.ok ? 'ok' : 'miss'));
+        fb.appendChild(mk('b', null, w.ok ? '正解です。' : '不正解です。正しい文：'));
+        if (!w.ok) fb.appendChild(mk('span', 'bs-answer', it.sentence));
         if (it.translation) fb.appendChild(mk('span', 'hint', it.translation));
         if (it.explanation) fb.appendChild(mk('span', null, it.explanation));
         stage.appendChild(fb);
       }
       var last = bs.index + 1 >= total;
-      var label = !bs.revealed && settings.qzFeedback !== 'end' ? '答える' : (last ? '結果を見る' : '次の問題へ');
+      var label, off = false;
+      if (bsEach()) {
+        if (!w.checked) { label = '答える'; off = !bsFull(w); }
+        else label = bsNextOpen() < 0 ? '結果を見る' : '次の問題へ';
+      } else label = last ? '提出する' : '次の問題へ';
       var go = ivButton(label + ' <span class="kbd">Enter</span>', 'primary', bsConfirm, 'bsPrimary');
-      go.disabled = !bs.revealed && bs.slots.indexOf(-1) >= 0;
+      go.disabled = off;
       ctl.appendChild(go);
-      if (!bs.revealed) {
+      if (!w.checked) {
         var cl = ivButton('全部もどす', 'small', bsClear, 'bsClear');
-        cl.disabled = bs.slots.every(function (x) { return x < 0; });
+        cl.disabled = !bsAny(w);
         ctl.appendChild(cl);
+      }
+      if (!(!bsEach() && last)) {
+        var empty = bsEmptyCount();
+        var sub = ivButton(bs.submitArm ? 'まだの問題が ' + empty + '問あります。もう一度押すと提出' : (bsEach() ? 'ここで終わって結果を見る' : '提出する'), bs.submitArm ? 'warn' : '', bsSubmit, 'bsSubmit');
+        ctl.appendChild(sub);
+      } else if (bs.submitArm) {
+        go.innerHTML = 'まだの問題が ' + bsEmptyCount() + '問あります。もう一度押すと提出 <span class="kbd">Enter</span>';
       }
       ctl.appendChild(ivButton('中止する', '', function () { bsAbort(false); }));
     } else if (bs.state === 'done') {
@@ -6838,16 +7029,20 @@ footer { font-family: var(--font-display); font-stretch: 90%; }
   }
   function bsKeyDown(e) {
     var key = e.key || '';
-    if (bs.state === 'play' && !bs.revealed) {
-      if (key.length === 1 && key >= '1' && key <= '9') {
-        // the n-th tile still in the bank
-        var free = [];
-        bs.bank.forEach(function (t, k) { if (!t.used) free.push(k); });
-        var k2 = free[Number(key) - 1];
-        if (k2 !== undefined) { e.preventDefault(); bsPlace(k2); }
-        return;
+    if (bs.state === 'play') {
+      if (key === 'ArrowLeft' || key === 'PageUp') { e.preventDefault(); bsGo(bs.index - 1); return; }
+      if (key === 'ArrowRight' || key === 'PageDown') { e.preventDefault(); bsGo(bs.index + 1); return; }
+      if (bsEditable()) {
+        if (key.length === 1 && key >= '1' && key <= '9') {
+          // the n-th tile still below
+          var free = [];
+          bsW().bank.forEach(function (t, k) { if (!t.used) free.push(k); });
+          var k2 = free[Number(key) - 1];
+          if (k2 !== undefined) { e.preventDefault(); bsPlace(k2); }
+          return;
+        }
+        if (key === 'Backspace') { e.preventDefault(); bsTakeLast(); return; }
       }
-      if (key === 'Backspace') { e.preventDefault(); bsTakeLast(); return; }
     }
     if (key === 'Enter' || e.code === 'Space' || key === ' ') {
       var p = document.getElementById('bsPrimary');
